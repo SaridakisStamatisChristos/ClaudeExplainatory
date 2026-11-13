@@ -1,0 +1,748 @@
+{
+  "schema_version": 2,
+  "mode": "editorial_illustrated",
+  "title": "Village Becomes City",
+  "handle": "@claudeexplainatory",
+  "voice": "af_heart",
+  "accent": "#E4B765",
+  "caption": "An original narrated scene-graph animation with moving characters and objects.",
+  "hashtags": [
+    "#animation",
+    "#history"
+  ],
+  "scenes": [
+    {
+      "template": "scene_graph",
+      "say": "A village begins to grow.",
+      "highlight": "village",
+      "illustrative": true,
+      "sfx": "none",
+      "props": {
+        "background": "#1b3645",
+        "style": {
+          "name": "cartoon"
+        },
+        "camera": {
+          "x": [
+            {
+              "t": 0,
+              "value": 0,
+              "ease": "smooth"
+            },
+            {
+              "t": 0.85,
+              "value": 14
+            }
+          ],
+          "y": [
+            {
+              "t": 0,
+              "value": 0,
+              "ease": "smooth"
+            },
+            {
+              "t": 0.85,
+              "value": 10
+            }
+          ],
+          "zoom": [
+            {
+              "t": 0,
+              "value": 1,
+              "ease": "smooth"
+            },
+            {
+              "t": 0.85,
+              "value": 1.045
+            }
+          ]
+        },
+        "objects": [
+          {
+            "id": "skyglow",
+            "kind": "circle",
+            "x": [
+              {
+                "t": 0,
+                "value": 420,
+                "ease": "smooth"
+              },
+              {
+                "t": 0.85,
+                "value": 446
+              }
+            ],
+            "y": [
+              {
+                "t": 0,
+                "value": 140,
+                "ease": "smooth"
+              },
+              {
+                "t": 0.85,
+                "value": 115
+              }
+            ],
+            "radius": 60,
+            "color": "#f1c886",
+            "opacity": [
+              {
+                "t": 0,
+                "value": 0.35,
+                "ease": "smooth"
+              },
+              {
+                "t": 0.85,
+                "value": 0.85
+              }
+            ]
+          },
+          {
+            "id": "horizon",
+            "kind": "rect",
+            "x": 0,
+            "y": 693,
+            "width": 540,
+            "height": 267,
+            "color": "#6c805a"
+          },
+          {
+            "id": "village_label",
+            "kind": "text",
+            "x": 42,
+            "y": 273,
+            "text": "A settlement begins",
+            "size": 32,
+            "color": "#f0dfb9",
+            "face": "serif",
+            "bold": true
+          },
+          {
+            "id": "cottage_base",
+            "kind": "rect",
+            "x": 93,
+            "y": 579,
+            "width": 125,
+            "height": 118,
+            "color": "#dfb98a",
+            "scale": [
+              {
+                "t": 0,
+                "value": 0.12,
+                "ease": "smooth"
+              },
+              {
+                "t": 0.64,
+                "value": 1
+              }
+            ],
+            "opacity": [
+              {
+                "t": 0,
+                "value": 0.1,
+                "ease": "smooth"
+              },
+              {
+                "t": 0.58,
+                "value": 1
+              }
+            ]
+          },
+          {
+            "id": "cottage_roof",
+            "kind": "path",
+            "x": 91,
+            "y": 576,
+            "points": [
+              [
+                0,
+                0
+              ],
+              [
+                64,
+                -46
+              ],
+              [
+                129,
+                0
+              ]
+            ],
+            "stroke": 13,
+            "color": "#a76451",
+            "reveal": [
+              {
+                "t": 0,
+                "value": 0.05,
+                "ease": "smooth"
+              },
+              {
+                "t": 0.85,
+                "value": 1
+              }
+            ]
+          },
+          {
+            "id": "cottage_door",
+            "kind": "rect",
+            "x": 137,
+            "y": 633,
+            "width": 31,
+            "height": 64,
+            "color": "#2d2524",
+            "opacity": [
+              {
+                "t": 0,
+                "value": 0,
+                "ease": "smooth"
+              },
+              {
+                "t": 0.85,
+                "value": 1
+              }
+            ]
+          },
+          {
+            "id": "new_home",
+            "kind": "rect",
+            "x": 299,
+            "y": 606,
+            "width": 110,
+            "height": 91,
+            "color": "#c9b59b",
+            "scale": [
+              {
+                "t": 0,
+                "value": 0.06,
+                "ease": "smooth"
+              },
+              {
+                "t": 0.85,
+                "value": 1
+              }
+            ],
+            "opacity": [
+              {
+                "t": 0,
+                "value": 0,
+                "ease": "smooth"
+              },
+              {
+                "t": 0.85,
+                "value": 1
+              }
+            ]
+          },
+          {
+            "id": "new_roof",
+            "kind": "path",
+            "x": 297,
+            "y": 604,
+            "points": [
+              [
+                0,
+                0
+              ],
+              [
+                58,
+                -41
+              ],
+              [
+                114,
+                0
+              ]
+            ],
+            "stroke": 12,
+            "color": "#9b5847",
+            "reveal": [
+              {
+                "t": 0,
+                "value": 0,
+                "ease": "smooth"
+              },
+              {
+                "t": 0.85,
+                "value": 1
+              }
+            ]
+          },
+          {
+            "id": "walking_builder",
+            "kind": "actor",
+            "x": [
+              {
+                "t": 0,
+                "value": 45,
+                "ease": "smooth"
+              },
+              {
+                "t": 0.85,
+                "value": 346
+              }
+            ],
+            "y": 729,
+            "height": 112,
+            "skin": "#E5AD8C",
+            "shirt": "#ebb669",
+            "trousers": "#425b79",
+            "hair": "#3a2830",
+            "shoes": "#2d2524",
+            "expression": "happy",
+            "facing": "right",
+            "phase": [
+              {
+                "t": 0,
+                "value": 0,
+                "ease": "smooth"
+              },
+              {
+                "t": 0.85,
+                "value": 5.2
+              }
+            ],
+            "stride": [
+              {
+                "t": 0,
+                "value": 13,
+                "ease": "smooth"
+              },
+              {
+                "t": 0.85,
+                "value": 16
+              }
+            ],
+            "gesture": [
+              {
+                "t": 0,
+                "value": 0,
+                "ease": "smooth"
+              },
+              {
+                "t": 0.85,
+                "value": 0.4
+              }
+            ],
+            "mouth": [
+              {
+                "t": 0,
+                "value": 0.2,
+                "ease": "smooth"
+              },
+              {
+                "t": 0.85,
+                "value": 0.5
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "template": "scene_graph",
+      "say": "Merchants arrive as new streets appear.",
+      "highlight": "Merchants",
+      "illustrative": true,
+      "sfx": "none",
+      "props": {
+        "background": "#233f53",
+        "style": {
+          "name": "cartoon"
+        },
+        "camera": {
+          "x": [
+            {
+              "t": 0,
+              "value": 0,
+              "ease": "smooth"
+            },
+            {
+              "t": 0.85,
+              "value": 24
+            }
+          ],
+          "y": [
+            {
+              "t": 0,
+              "value": 0,
+              "ease": "smooth"
+            },
+            {
+              "t": 0.85,
+              "value": 8
+            }
+          ],
+          "zoom": [
+            {
+              "t": 0,
+              "value": 1,
+              "ease": "smooth"
+            },
+            {
+              "t": 0.85,
+              "value": 1.045
+            }
+          ]
+        },
+        "objects": [
+          {
+            "id": "glow",
+            "kind": "circle",
+            "x": [
+              {
+                "t": 0,
+                "value": 445,
+                "ease": "smooth"
+              },
+              {
+                "t": 0.85,
+                "value": 471
+              }
+            ],
+            "y": [
+              {
+                "t": 0,
+                "value": 112,
+                "ease": "smooth"
+              },
+              {
+                "t": 0.85,
+                "value": 99
+              }
+            ],
+            "radius": 58,
+            "color": "#f5c984"
+          },
+          {
+            "id": "land",
+            "kind": "rect",
+            "x": 0,
+            "y": 696,
+            "width": 540,
+            "height": 264,
+            "color": "#63805e"
+          },
+          {
+            "id": "road",
+            "kind": "path",
+            "x": 17,
+            "y": 780,
+            "points": [
+              [
+                0,
+                0
+              ],
+              [
+                140,
+                -46
+              ],
+              [
+                286,
+                -53
+              ],
+              [
+                510,
+                -10
+              ]
+            ],
+            "stroke": 33,
+            "color": "#e4c89b",
+            "reveal": [
+              {
+                "t": 0,
+                "value": 0,
+                "ease": "smooth"
+              },
+              {
+                "t": 0.85,
+                "value": 1
+              }
+            ]
+          },
+          {
+            "id": "town_label",
+            "kind": "text",
+            "x": 45,
+            "y": 285,
+            "text": "The town comes alive",
+            "size": 31,
+            "color": "#f0dfb9",
+            "face": "serif",
+            "bold": true
+          },
+          {
+            "id": "left_house",
+            "kind": "rect",
+            "x": 43,
+            "y": 582,
+            "width": 105,
+            "height": 115,
+            "color": "#dfb98a"
+          },
+          {
+            "id": "left_roof",
+            "kind": "path",
+            "x": 42,
+            "y": 582,
+            "points": [
+              [
+                0,
+                0
+              ],
+              [
+                52,
+                -44
+              ],
+              [
+                108,
+                0
+              ]
+            ],
+            "stroke": 13,
+            "color": "#a76451"
+          },
+          {
+            "id": "tower",
+            "kind": "rect",
+            "x": 242,
+            "y": 475,
+            "width": 96,
+            "height": 220,
+            "color": "#e0cfb5",
+            "scale": [
+              {
+                "t": 0,
+                "value": 0.03,
+                "ease": "smooth"
+              },
+              {
+                "t": 0.85,
+                "value": 1
+              }
+            ],
+            "opacity": [
+              {
+                "t": 0,
+                "value": 0,
+                "ease": "smooth"
+              },
+              {
+                "t": 0.85,
+                "value": 1
+              }
+            ]
+          },
+          {
+            "id": "tower_roof",
+            "kind": "path",
+            "x": 239,
+            "y": 469,
+            "points": [
+              [
+                0,
+                0
+              ],
+              [
+                49,
+                -67
+              ],
+              [
+                102,
+                0
+              ]
+            ],
+            "stroke": 16,
+            "color": "#a25642",
+            "reveal": [
+              {
+                "t": 0,
+                "value": 0,
+                "ease": "smooth"
+              },
+              {
+                "t": 0.85,
+                "value": 1
+              }
+            ]
+          },
+          {
+            "id": "right_house",
+            "kind": "rect",
+            "x": 388,
+            "y": 615,
+            "width": 135,
+            "height": 84,
+            "color": "#cdb398",
+            "scale": [
+              {
+                "t": 0,
+                "value": 0.02,
+                "ease": "smooth"
+              },
+              {
+                "t": 0.85,
+                "value": 1
+              }
+            ],
+            "opacity": [
+              {
+                "t": 0,
+                "value": 0.1,
+                "ease": "smooth"
+              },
+              {
+                "t": 0.85,
+                "value": 1
+              }
+            ]
+          },
+          {
+            "id": "right_roof",
+            "kind": "path",
+            "x": 384,
+            "y": 612,
+            "points": [
+              [
+                0,
+                0
+              ],
+              [
+                72,
+                -47
+              ],
+              [
+                139,
+                0
+              ]
+            ],
+            "stroke": 12,
+            "color": "#a85a48",
+            "reveal": [
+              {
+                "t": 0,
+                "value": 0,
+                "ease": "smooth"
+              },
+              {
+                "t": 0.85,
+                "value": 1
+              }
+            ]
+          },
+          {
+            "id": "vendor",
+            "kind": "actor",
+            "x": [
+              {
+                "t": 0,
+                "value": 46,
+                "ease": "smooth"
+              },
+              {
+                "t": 0.85,
+                "value": 293
+              }
+            ],
+            "y": 767,
+            "height": 109,
+            "skin": "#E5AD8C",
+            "shirt": "#d6a459",
+            "trousers": "#334d70",
+            "hair": "#2d2524",
+            "shoes": "#2d2524",
+            "expression": "happy",
+            "phase": [
+              {
+                "t": 0,
+                "value": 0,
+                "ease": "smooth"
+              },
+              {
+                "t": 0.85,
+                "value": 4
+              }
+            ],
+            "stride": [
+              {
+                "t": 0,
+                "value": 13,
+                "ease": "smooth"
+              },
+              {
+                "t": 0.85,
+                "value": 12
+              }
+            ],
+            "gesture": [
+              {
+                "t": 0,
+                "value": 0,
+                "ease": "smooth"
+              },
+              {
+                "t": 0.85,
+                "value": 0.8
+              }
+            ],
+            "mouth": [
+              {
+                "t": 0,
+                "value": 0.1,
+                "ease": "smooth"
+              },
+              {
+                "t": 0.85,
+                "value": 0.7
+              }
+            ]
+          },
+          {
+            "id": "visitor",
+            "kind": "actor",
+            "x": [
+              {
+                "t": 0,
+                "value": 486,
+                "ease": "smooth"
+              },
+              {
+                "t": 0.85,
+                "value": 344
+              }
+            ],
+            "y": 780,
+            "height": 98,
+            "skin": "#d9a17d",
+            "shirt": "#789eaa",
+            "trousers": "#273747",
+            "hair": "#4c3027",
+            "shoes": "#2d2524",
+            "expression": "curious",
+            "facing": "left",
+            "phase": [
+              {
+                "t": 0,
+                "value": 4,
+                "ease": "smooth"
+              },
+              {
+                "t": 0.85,
+                "value": 0
+              }
+            ],
+            "stride": 13,
+            "gesture": [
+              {
+                "t": 0,
+                "value": 0.2,
+                "ease": "smooth"
+              },
+              {
+                "t": 0.85,
+                "value": 0.6
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}
