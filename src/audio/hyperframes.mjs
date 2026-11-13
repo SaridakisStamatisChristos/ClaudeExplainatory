@@ -68,7 +68,10 @@ export async function synthesizeSpeech(text,voice,{root,cli,exec}){
   }
   // Isolate each transcript.json in its own cache folder: no shared output or races across scenes.
   await rm(join(folder,'transcript.json'),{force:true});
-  await exec(cli,['tts',text,'--voice',voice,'--speed','1','--output',wav],{cwd:folder});
+  // A literal text file avoids argument parsing surprises for text beginning with '-'.
+  const scriptFile=join(folder,'script.txt');
+  await writeFile(scriptFile,text,'utf8');
+  await exec(cli,['tts',scriptFile,'--voice',voice,'--speed','1','--output',wav],{cwd:folder});
   if(!existsSync(wav))throw new Error('HyperFrames TTS completed without creating narration.wav');
   // The reference local CLI writes a normalized [{text,start,end}] array to transcript.json.
   // English voices use the small.en Whisper model; other languages need multilingual ASR.
