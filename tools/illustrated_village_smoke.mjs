@@ -34,6 +34,13 @@ for(const shot of staged.film.scenes){
 }
 const countImages=o=>(o.kind==='image'?1:0)+(o.children||[]).reduce((n,c)=>n+countImages(c),0);
 const perShot=staged.film.scenes.map(s=>s.objects.reduce((n,o)=>n+countImages(o),0));
+const find=(s,id)=>s.objects.find(x=>x.id===id);
+const bird=find(staged.film.scenes[0],'flockA');
+if(bird?.kind!=='group'||!Array.isArray(bird.x)||new Set(bird.x.map(p=>p.value)).size<10)
+ throw Error('Path-driven flock must move across independently rendered frames');
+const tree=find(staged.film.scenes[1],'oakB');
+if(!Array.isArray(tree?.rotation)||new Set(tree.rotation.map(p=>p.value)).size<10)
+ throw Error('Nested artwork tree must animate with reusable sway behavior');
 if(perShot.some(n=>n<9))throw Error('Expected a layered illustrated frame with imported transparent sprite parts');
 if(Object.keys(staged.film.assets||{}).length<18)throw Error('Raster asset staging was skipped');
 call(process.execPath,[cli,'validate',staged.path]);

@@ -354,7 +354,16 @@
             "y": 244,
             "width": 238,
             "height": 105,
-            "opacity": 0.61
+            "opacity": 0.61,
+            "behaviors": [
+              {
+                "kind": "float",
+                "axis": "y",
+                "amplitude": 8,
+                "cycles": 1.5,
+                "phase": 0.1
+              }
+            ]
           },
           {
             "id": "cloudB",
@@ -375,6 +384,95 @@
             "width": 210,
             "height": 92,
             "opacity": 0.35
+          },
+          {
+            "kind": "group",
+            "id": "flockA",
+            "x": 46,
+            "y": 440,
+            "behaviors": [
+              {
+                "kind": "path",
+                "points": [
+                  [
+                    0,
+                    0
+                  ],
+                  [
+                    85,
+                    -24
+                  ],
+                  [
+                    180,
+                    -5
+                  ],
+                  [
+                    284,
+                    -46
+                  ],
+                  [
+                    390,
+                    -14
+                  ]
+                ],
+                "start": 0,
+                "end": 1,
+                "ease": "smooth"
+              },
+              {
+                "kind": "float",
+                "axis": "y",
+                "amplitude": 5.5,
+                "cycles": 3,
+                "phase": 0,
+                "start": 0,
+                "end": 1
+              }
+            ],
+            "children": [
+              {
+                "kind": "path",
+                "id": "bird_wing_A",
+                "points": [
+                  [
+                    -16,
+                    2
+                  ],
+                  [
+                    0,
+                    -5
+                  ],
+                  [
+                    16,
+                    2
+                  ]
+                ],
+                "stroke": 3,
+                "color": "#264656"
+              },
+              {
+                "kind": "path",
+                "id": "bird_wing_B",
+                "x": -27,
+                "y": 13,
+                "points": [
+                  [
+                    -11,
+                    1
+                  ],
+                  [
+                    0,
+                    -3
+                  ],
+                  [
+                    11,
+                    1
+                  ]
+                ],
+                "stroke": 2.4,
+                "color": "#375d67"
+              }
+            ]
           },
           {
             "kind": "instance",
@@ -415,7 +513,15 @@
             "symbol": "oak",
             "x": 392,
             "y": 521,
-            "scale": 0.68
+            "scale": 0.68,
+            "behaviors": [
+              {
+                "kind": "sway",
+                "degrees": 1.5,
+                "cycles": 1.2,
+                "phase": 0.3
+              }
+            ]
           },
           {
             "kind": "instance",
@@ -433,7 +539,16 @@
               }
             ],
             "y": 781,
-            "scale": 0.64
+            "scale": 0.64,
+            "behaviors": [
+              {
+                "kind": "float",
+                "axis": "y",
+                "amplitude": 3,
+                "cycles": 3.3,
+                "phase": 0.25
+              }
+            ]
           },
           {
             "id": "masthead",
@@ -532,7 +647,16 @@
             "y": 267,
             "width": 225,
             "height": 96,
-            "opacity": 0.4
+            "opacity": 0.4,
+            "behaviors": [
+              {
+                "kind": "float",
+                "axis": "y",
+                "amplitude": 7,
+                "cycles": 1.3,
+                "phase": 0.2
+              }
+            ]
           },
           {
             "id": "tower",
@@ -569,7 +693,15 @@
             "symbol": "oak",
             "x": 423,
             "y": 602,
-            "scale": 0.51
+            "scale": 0.51,
+            "behaviors": [
+              {
+                "kind": "sway",
+                "degrees": 1.7,
+                "cycles": 1.4,
+                "phase": 0.4
+              }
+            ]
           },
           {
             "id": "marketStall",
@@ -594,6 +726,14 @@
                 "t": 1,
                 "value": 1,
                 "ease": "smooth"
+              }
+            ],
+            "behaviors": [
+              {
+                "kind": "pulse",
+                "amount": 0.018,
+                "cycles": 1.1,
+                "phase": 0.2
               }
             ]
           },
@@ -632,7 +772,16 @@
             ],
             "y": 824,
             "scale": 0.55,
-            "rotation": 3
+            "rotation": 3,
+            "behaviors": [
+              {
+                "kind": "float",
+                "axis": "y",
+                "amplitude": 2.4,
+                "cycles": 3.1,
+                "phase": 0.3
+              }
+            ]
           },
           {
             "id": "townLabel",
