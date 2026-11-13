@@ -7,7 +7,10 @@ import {createHash} from 'node:crypto';
 import {writeFile,mkdir} from 'node:fs/promises';
 import {join,resolve} from 'node:path';
 import {fileURLToPath} from 'node:url';
-const ROOT=resolve(fileURLToPath(new URL('..',import.meta.url))),base=join(ROOT,'out','village-becomes-city-draft');
+const ROOT=resolve(fileURLToPath(new URL('..',import.meta.url)));
+const slug=process.argv[2]||'village-becomes-city';
+if(!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug)||slug.length>64)throw Error('Expected safe output slug');
+const base=join(ROOT,'out',slug+'-draft');
 function exec(cmd,args){
  const p=spawnSync(cmd,args,{encoding:'utf8',timeout:90000,maxBuffer:3*1024*1024});
  if(p.status!==0)throw Error(cmd+': '+(p.stderr||p.error?.message||'').slice(-1500));

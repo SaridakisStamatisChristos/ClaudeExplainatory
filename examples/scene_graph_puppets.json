@@ -1,0 +1,1154 @@
+{
+  "schema_version": 2,
+  "mode": "editorial_illustrated",
+  "title": "Articulated Village",
+  "handle": "@claudeexplainatory",
+  "voice": "af_heart",
+  "accent": "#E4B765",
+  "caption": "An original local two-scene character animation with independently articulated moving figures and named illustration symbols.",
+  "hashtags": [
+    "#animation",
+    "#history"
+  ],
+  "scenes": [
+    {
+      "template": "scene_graph",
+      "say": "A village grows as its builders work.",
+      "highlight": "builders",
+      "illustrative": true,
+      "sfx": "none",
+      "props": {
+        "background": "#1b3645",
+        "style": {
+          "name": "cartoon"
+        },
+        "camera": {
+          "x": [
+            {
+              "t": 0,
+              "value": 0,
+              "ease": "smooth"
+            },
+            {
+              "t": 0.85,
+              "value": 14
+            }
+          ],
+          "y": [
+            {
+              "t": 0,
+              "value": 0,
+              "ease": "smooth"
+            },
+            {
+              "t": 0.85,
+              "value": 10
+            }
+          ],
+          "zoom": [
+            {
+              "t": 0,
+              "value": 1,
+              "ease": "smooth"
+            },
+            {
+              "t": 0.85,
+              "value": 1.045
+            }
+          ]
+        },
+        "objects": [
+          {
+            "id": "atmosphere",
+            "kind": "glow",
+            "x": 420,
+            "y": 145,
+            "radius": 220,
+            "color": "#E5B786",
+            "opacity": 0.23
+          },
+          {
+            "id": "skyglow",
+            "kind": "circle",
+            "x": [
+              {
+                "t": 0,
+                "value": 420,
+                "ease": "smooth"
+              },
+              {
+                "t": 0.85,
+                "value": 446
+              }
+            ],
+            "y": [
+              {
+                "t": 0,
+                "value": 140,
+                "ease": "smooth"
+              },
+              {
+                "t": 0.85,
+                "value": 115
+              }
+            ],
+            "radius": 60,
+            "color": "#f1c886",
+            "opacity": [
+              {
+                "t": 0,
+                "value": 0.35,
+                "ease": "smooth"
+              },
+              {
+                "t": 0.85,
+                "value": 0.85
+              }
+            ]
+          },
+          {
+            "id": "horizon",
+            "kind": "rect",
+            "x": 0,
+            "y": 693,
+            "width": 540,
+            "height": 267,
+            "color": "#6c805a"
+          },
+          {
+            "id": "cottage_gable",
+            "kind": "polygon",
+            "x": 91,
+            "y": 576,
+            "points": [
+              [
+                0,
+                0
+              ],
+              [
+                64,
+                -46
+              ],
+              [
+                129,
+                0
+              ]
+            ],
+            "color": "#B97555",
+            "opacity": [
+              {
+                "t": 0,
+                "value": 0,
+                "ease": "hold"
+              },
+              {
+                "t": 0.31,
+                "value": 0,
+                "ease": "smooth"
+              },
+              {
+                "t": 0.69,
+                "value": 1
+              }
+            ]
+          },
+          {
+            "id": "village_label",
+            "kind": "text",
+            "x": 42,
+            "y": 273,
+            "text": "A settlement begins",
+            "size": 32,
+            "color": "#f0dfb9",
+            "face": "serif",
+            "bold": true
+          },
+          {
+            "id": "cottage_base",
+            "kind": "rect",
+            "x": 93,
+            "y": 579,
+            "width": 125,
+            "height": 118,
+            "color": "#dfb98a",
+            "scale": [
+              {
+                "t": 0,
+                "value": 0.12,
+                "ease": "smooth"
+              },
+              {
+                "t": 0.64,
+                "value": 1
+              }
+            ],
+            "opacity": [
+              {
+                "t": 0,
+                "value": 0.1,
+                "ease": "smooth"
+              },
+              {
+                "t": 0.58,
+                "value": 1
+              }
+            ]
+          },
+          {
+            "id": "cottage_roof",
+            "kind": "path",
+            "x": 91,
+            "y": 576,
+            "points": [
+              [
+                0,
+                0
+              ],
+              [
+                64,
+                -46
+              ],
+              [
+                129,
+                0
+              ]
+            ],
+            "stroke": 13,
+            "color": "#a76451",
+            "reveal": [
+              {
+                "t": 0,
+                "value": 0,
+                "ease": "hold"
+              },
+              {
+                "t": 0.38,
+                "value": 0,
+                "ease": "smooth"
+              },
+              {
+                "t": 0.9,
+                "value": 1
+              }
+            ]
+          },
+          {
+            "id": "cottage_door",
+            "kind": "rect",
+            "x": 137,
+            "y": 633,
+            "width": 31,
+            "height": 64,
+            "color": "#2d2524",
+            "opacity": [
+              {
+                "t": 0,
+                "value": 0,
+                "ease": "smooth"
+              },
+              {
+                "t": 0.85,
+                "value": 1
+              }
+            ]
+          },
+          {
+            "id": "new_home",
+            "kind": "rect",
+            "x": 299,
+            "y": 606,
+            "width": 110,
+            "height": 91,
+            "color": "#c9b59b",
+            "scale": [
+              {
+                "t": 0,
+                "value": 0.06,
+                "ease": "smooth"
+              },
+              {
+                "t": 0.85,
+                "value": 1
+              }
+            ],
+            "opacity": [
+              {
+                "t": 0,
+                "value": 0,
+                "ease": "smooth"
+              },
+              {
+                "t": 0.85,
+                "value": 1
+              }
+            ]
+          },
+          {
+            "id": "new_roof",
+            "kind": "path",
+            "x": 297,
+            "y": 604,
+            "points": [
+              [
+                0,
+                0
+              ],
+              [
+                58,
+                -41
+              ],
+              [
+                114,
+                0
+              ]
+            ],
+            "stroke": 12,
+            "color": "#9b5847",
+            "reveal": [
+              {
+                "t": 0,
+                "value": 0,
+                "ease": "hold"
+              },
+              {
+                "t": 0.38,
+                "value": 0,
+                "ease": "smooth"
+              },
+              {
+                "t": 0.9,
+                "value": 1
+              }
+            ]
+          },
+          {
+            "kind": "puppet",
+            "id": "walking_builder",
+            "x": [
+              {
+                "t": 0,
+                "value": 45,
+                "ease": "smooth"
+              },
+              {
+                "t": 0.85,
+                "value": 346
+              }
+            ],
+            "y": 729,
+            "height": 170,
+            "skin": "#E5AD8C",
+            "shirt": "#ebb669",
+            "trousers": "#425b79",
+            "hair": "#3a2830",
+            "shoes": "#2d2524",
+            "expression": "happy",
+            "outfit": "villager",
+            "facing": "right",
+            "walk": {
+              "start": 0,
+              "end": 0.87,
+              "cycles": 3.6,
+              "strength": 0.75
+            }
+          },
+          {
+            "kind": "instance",
+            "id": "fresh_cottage",
+            "symbol": "cottage",
+            "x": 264,
+            "y": 595,
+            "scale": [
+              {
+                "t": 0,
+                "value": 0.04,
+                "ease": "smooth"
+              },
+              {
+                "t": 0.84,
+                "value": 0.95
+              }
+            ],
+            "opacity": [
+              {
+                "t": 0,
+                "value": 0,
+                "ease": "smooth"
+              },
+              {
+                "t": 0.84,
+                "value": 1
+              }
+            ]
+          },
+          {
+            "kind": "instance",
+            "id": "first_oak",
+            "symbol": "oak_tree",
+            "x": 462,
+            "y": 707,
+            "scale": 0.62
+          }
+        ]
+      }
+    },
+    {
+      "template": "scene_graph",
+      "say": "Travelers arrive and the market comes alive.",
+      "highlight": "market",
+      "illustrative": true,
+      "sfx": "none",
+      "props": {
+        "background": "#233f53",
+        "style": {
+          "name": "cartoon"
+        },
+        "camera": {
+          "x": [
+            {
+              "t": 0,
+              "value": 0,
+              "ease": "smooth"
+            },
+            {
+              "t": 0.85,
+              "value": 24
+            }
+          ],
+          "y": [
+            {
+              "t": 0,
+              "value": 0,
+              "ease": "smooth"
+            },
+            {
+              "t": 0.85,
+              "value": 8
+            }
+          ],
+          "zoom": [
+            {
+              "t": 0,
+              "value": 1,
+              "ease": "smooth"
+            },
+            {
+              "t": 0.85,
+              "value": 1.045
+            }
+          ]
+        },
+        "objects": [
+          {
+            "kind": "instance",
+            "id": "left_oak",
+            "symbol": "oak_tree",
+            "x": 48,
+            "y": 705,
+            "scale": 0.72
+          },
+          {
+            "id": "glow",
+            "kind": "circle",
+            "x": [
+              {
+                "t": 0,
+                "value": 445,
+                "ease": "smooth"
+              },
+              {
+                "t": 0.85,
+                "value": 471
+              }
+            ],
+            "y": [
+              {
+                "t": 0,
+                "value": 112,
+                "ease": "smooth"
+              },
+              {
+                "t": 0.85,
+                "value": 99
+              }
+            ],
+            "radius": 58,
+            "color": "#f5c984"
+          },
+          {
+            "id": "land",
+            "kind": "rect",
+            "x": 0,
+            "y": 696,
+            "width": 540,
+            "height": 264,
+            "color": "#63805e"
+          },
+          {
+            "id": "road",
+            "kind": "path",
+            "x": 17,
+            "y": 780,
+            "points": [
+              [
+                0,
+                0
+              ],
+              [
+                140,
+                -46
+              ],
+              [
+                286,
+                -53
+              ],
+              [
+                510,
+                -10
+              ]
+            ],
+            "stroke": 33,
+            "color": "#e4c89b",
+            "reveal": [
+              {
+                "t": 0,
+                "value": 0,
+                "ease": "smooth"
+              },
+              {
+                "t": 0.85,
+                "value": 1
+              }
+            ]
+          },
+          {
+            "id": "town_label",
+            "kind": "text",
+            "x": 45,
+            "y": 285,
+            "text": "The town comes alive",
+            "size": 31,
+            "color": "#f0dfb9",
+            "face": "serif",
+            "bold": true
+          },
+          {
+            "id": "left_house",
+            "kind": "rect",
+            "x": 43,
+            "y": 582,
+            "width": 105,
+            "height": 115,
+            "color": "#dfb98a"
+          },
+          {
+            "id": "left_roof",
+            "kind": "path",
+            "x": 42,
+            "y": 582,
+            "points": [
+              [
+                0,
+                0
+              ],
+              [
+                52,
+                -44
+              ],
+              [
+                108,
+                0
+              ]
+            ],
+            "stroke": 13,
+            "color": "#a76451"
+          },
+          {
+            "id": "tower",
+            "kind": "rect",
+            "x": 242,
+            "y": 475,
+            "width": 96,
+            "height": 220,
+            "color": "#e0cfb5",
+            "scale": [
+              {
+                "t": 0,
+                "value": 0.03,
+                "ease": "smooth"
+              },
+              {
+                "t": 0.85,
+                "value": 1
+              }
+            ],
+            "opacity": [
+              {
+                "t": 0,
+                "value": 0,
+                "ease": "smooth"
+              },
+              {
+                "t": 0.85,
+                "value": 1
+              }
+            ]
+          },
+          {
+            "id": "tower_roof",
+            "kind": "path",
+            "x": 239,
+            "y": 469,
+            "points": [
+              [
+                0,
+                0
+              ],
+              [
+                49,
+                -67
+              ],
+              [
+                102,
+                0
+              ]
+            ],
+            "stroke": 16,
+            "color": "#a25642",
+            "reveal": [
+              {
+                "t": 0,
+                "value": 0,
+                "ease": "hold"
+              },
+              {
+                "t": 0.38,
+                "value": 0,
+                "ease": "smooth"
+              },
+              {
+                "t": 0.9,
+                "value": 1
+              }
+            ]
+          },
+          {
+            "id": "right_house",
+            "kind": "rect",
+            "x": 388,
+            "y": 615,
+            "width": 135,
+            "height": 84,
+            "color": "#cdb398",
+            "scale": [
+              {
+                "t": 0,
+                "value": 0.02,
+                "ease": "smooth"
+              },
+              {
+                "t": 0.85,
+                "value": 1
+              }
+            ],
+            "opacity": [
+              {
+                "t": 0,
+                "value": 0.1,
+                "ease": "smooth"
+              },
+              {
+                "t": 0.85,
+                "value": 1
+              }
+            ]
+          },
+          {
+            "id": "right_roof",
+            "kind": "path",
+            "x": 384,
+            "y": 612,
+            "points": [
+              [
+                0,
+                0
+              ],
+              [
+                72,
+                -47
+              ],
+              [
+                139,
+                0
+              ]
+            ],
+            "stroke": 12,
+            "color": "#a85a48",
+            "reveal": [
+              {
+                "t": 0,
+                "value": 0,
+                "ease": "hold"
+              },
+              {
+                "t": 0.38,
+                "value": 0,
+                "ease": "smooth"
+              },
+              {
+                "t": 0.9,
+                "value": 1
+              }
+            ]
+          },
+          {
+            "kind": "puppet",
+            "id": "vendor",
+            "x": [
+              {
+                "t": 0,
+                "value": 46,
+                "ease": "smooth"
+              },
+              {
+                "t": 0.85,
+                "value": 293
+              }
+            ],
+            "y": 767,
+            "height": 156,
+            "skin": "#E5AD8C",
+            "shirt": "#d6a459",
+            "trousers": "#334d70",
+            "hair": "#2d2524",
+            "shoes": "#2d2524",
+            "expression": "happy",
+            "outfit": "merchant",
+            "facing": "right",
+            "walk": {
+              "start": 0,
+              "end": 0.87,
+              "cycles": 2.8,
+              "strength": 0.75
+            },
+            "wave": {
+              "start": 0.3,
+              "end": 0.85,
+              "cycles": 2,
+              "arm": "right"
+            }
+          },
+          {
+            "kind": "puppet",
+            "id": "visitor",
+            "x": [
+              {
+                "t": 0,
+                "value": 486,
+                "ease": "smooth"
+              },
+              {
+                "t": 0.85,
+                "value": 344
+              }
+            ],
+            "y": 780,
+            "height": 166,
+            "skin": "#d9a17d",
+            "shirt": "#789eaa",
+            "trousers": "#273747",
+            "hair": "#4c3027",
+            "shoes": "#2d2524",
+            "expression": "curious",
+            "outfit": "scholar",
+            "facing": "left",
+            "walk": {
+              "start": 0,
+              "end": 0.87,
+              "cycles": 2.1,
+              "strength": 0.55
+            }
+          },
+          {
+            "id": "market_stall",
+            "kind": "group",
+            "x": [
+              {
+                "t": 0,
+                "value": 185,
+                "ease": "smooth"
+              },
+              {
+                "t": 0.85,
+                "value": 154
+              }
+            ],
+            "y": 650,
+            "scale": [
+              {
+                "t": 0,
+                "value": 0.18,
+                "ease": "smooth"
+              },
+              {
+                "t": 0.77,
+                "value": 1
+              }
+            ],
+            "opacity": [
+              {
+                "t": 0,
+                "value": 0.08,
+                "ease": "smooth"
+              },
+              {
+                "t": 0.77,
+                "value": 1
+              }
+            ],
+            "children": [
+              {
+                "id": "post_left",
+                "kind": "rect",
+                "x": 0,
+                "y": 0,
+                "width": 10,
+                "height": 115,
+                "color": "#CBA377"
+              },
+              {
+                "id": "post_right",
+                "kind": "rect",
+                "x": 117,
+                "y": 0,
+                "width": 10,
+                "height": 115,
+                "color": "#CBA377"
+              },
+              {
+                "id": "counter",
+                "kind": "rect",
+                "x": -8,
+                "y": 81,
+                "width": 144,
+                "height": 31,
+                "color": "#8E5943"
+              },
+              {
+                "id": "canopy",
+                "kind": "polygon",
+                "x": -17,
+                "y": -7,
+                "points": [
+                  [
+                    0,
+                    0
+                  ],
+                  [
+                    80,
+                    -39
+                  ],
+                  [
+                    163,
+                    0
+                  ],
+                  [
+                    142,
+                    16
+                  ],
+                  [
+                    16,
+                    16
+                  ]
+                ],
+                "color": "#E6AD69"
+              },
+              {
+                "id": "canopy_trim",
+                "kind": "path",
+                "x": -17,
+                "y": 9,
+                "points": [
+                  [
+                    0,
+                    0
+                  ],
+                  [
+                    159,
+                    0
+                  ]
+                ],
+                "stroke": 4,
+                "color": "#F3D6A0"
+              },
+              {
+                "id": "apple1",
+                "kind": "circle",
+                "x": 44,
+                "y": 83,
+                "radius": 9,
+                "color": "#C85C50"
+              },
+              {
+                "id": "apple2",
+                "kind": "circle",
+                "x": 64,
+                "y": 81,
+                "radius": 10,
+                "color": "#D8754D"
+              },
+              {
+                "id": "apple3",
+                "kind": "circle",
+                "x": 85,
+                "y": 84,
+                "radius": 8,
+                "color": "#D5B062"
+              },
+              {
+                "id": "flag_rig",
+                "kind": "group",
+                "x": 73,
+                "y": -34,
+                "rotation": [
+                  {
+                    "t": 0,
+                    "value": -9,
+                    "ease": "smooth"
+                  },
+                  {
+                    "t": 0.5,
+                    "value": 8
+                  },
+                  {
+                    "t": 1,
+                    "value": -3
+                  }
+                ],
+                "children": [
+                  {
+                    "id": "flag",
+                    "kind": "polygon",
+                    "x": 0,
+                    "y": 0,
+                    "points": [
+                      [
+                        0,
+                        0
+                      ],
+                      [
+                        46,
+                        8
+                      ],
+                      [
+                        0,
+                        23
+                      ]
+                    ],
+                    "color": "#F6E5B5"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "kind": "instance",
+            "id": "distant_cottage",
+            "symbol": "cottage",
+            "x": 367,
+            "y": 603,
+            "scale": 0.8,
+            "opacity": [
+              {
+                "t": 0,
+                "value": 0.4,
+                "ease": "smooth"
+              },
+              {
+                "t": 0.6,
+                "value": 1
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "scene_transition": {
+    "kind": "fade",
+    "duration": 0.26,
+    "color": "#1C2937"
+  },
+  "scene_symbols": {
+    "cottage": [
+      {
+        "id": "wall",
+        "kind": "rect",
+        "x": 0,
+        "y": 0,
+        "width": 100,
+        "height": 92,
+        "color": "#DFC19A"
+      },
+      {
+        "id": "gable",
+        "kind": "polygon",
+        "x": -8,
+        "y": 2,
+        "points": [
+          [
+            0,
+            0
+          ],
+          [
+            59,
+            -48
+          ],
+          [
+            116,
+            0
+          ]
+        ],
+        "color": "#B8664A"
+      },
+      {
+        "id": "gableTrim",
+        "kind": "path",
+        "x": -8,
+        "y": 2,
+        "points": [
+          [
+            0,
+            0
+          ],
+          [
+            59,
+            -48
+          ],
+          [
+            116,
+            0
+          ]
+        ],
+        "stroke": 4,
+        "color": "#F5D8AA"
+      },
+      {
+        "id": "door",
+        "kind": "rect",
+        "x": 42,
+        "y": 46,
+        "width": 25,
+        "height": 46,
+        "color": "#514232"
+      },
+      {
+        "id": "window",
+        "kind": "rect",
+        "x": 12,
+        "y": 37,
+        "width": 18,
+        "height": 20,
+        "color": "#86ACB6"
+      },
+      {
+        "id": "frame",
+        "kind": "path",
+        "x": 12,
+        "y": 37,
+        "points": [
+          [
+            0,
+            10
+          ],
+          [
+            18,
+            10
+          ]
+        ],
+        "stroke": 2,
+        "color": "#FFF0CF"
+      }
+    ],
+    "oak_tree": [
+      {
+        "id": "trunk",
+        "kind": "rect",
+        "x": -10,
+        "y": -92,
+        "width": 20,
+        "height": 94,
+        "color": "#715543"
+      },
+      {
+        "id": "branchLeft",
+        "kind": "path",
+        "x": 0,
+        "y": -75,
+        "points": [
+          [
+            0,
+            0
+          ],
+          [
+            -29,
+            -34
+          ]
+        ],
+        "stroke": 9,
+        "color": "#715543"
+      },
+      {
+        "id": "branchRight",
+        "kind": "path",
+        "x": 0,
+        "y": -64,
+        "points": [
+          [
+            0,
+            0
+          ],
+          [
+            23,
+            -32
+          ]
+        ],
+        "stroke": 8,
+        "color": "#715543"
+      },
+      {
+        "id": "leavesLeft",
+        "kind": "circle",
+        "x": -29,
+        "y": -116,
+        "radius": 35,
+        "color": "#47745C"
+      },
+      {
+        "id": "leavesRight",
+        "kind": "circle",
+        "x": 26,
+        "y": -124,
+        "radius": 39,
+        "color": "#4C805E"
+      },
+      {
+        "id": "leavesTop",
+        "kind": "circle",
+        "x": 0,
+        "y": -153,
+        "radius": 45,
+        "color": "#638F6A"
+      },
+      {
+        "id": "sunspot",
+        "kind": "glow",
+        "x": -13,
+        "y": -145,
+        "radius": 50,
+        "color": "#A3C58B",
+        "opacity": 0.25
+      }
+    ]
+  }
+}

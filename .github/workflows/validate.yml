@@ -24,10 +24,12 @@ jobs:
       - run: npm ci --no-audit --no-fund && npm run build
         working-directory: .aethermotion-engine
       - run: npm test
-      - run: node --check src/motion/bridge.mjs && node --check src/motion/contract.mjs && node --check src/motion/director.mjs && node --check bin/direct-graph.mjs && node --check bin/reel.mjs
+      - run: node --check src/motion/puppet.mjs && node --check src/motion/bridge.mjs && node --check src/motion/contract.mjs && node --check src/motion/director.mjs && node --check bin/direct-graph.mjs && node --check bin/reel.mjs
       - run: npm run explain -- check examples/scene_graph_village.json --target 15
       - name: Real independent-object animation and pixel reproducibility
         run: npm run test:scene-graph
+      - name: Real articulated character motion and pixel reproducibility
+        run: npm run test:puppets
         env:
           AETHERMOTION_CLI: ${{ github.workspace }}/.aethermotion-engine/dist/cli/main.js
       - uses: actions/upload-artifact@v4
@@ -37,6 +39,8 @@ jobs:
           path: |
             .reel-work/scene-graph-smoke/scene-graph.mp4
             .reel-work/scene-graph-smoke/frames/*.png
+            .reel-work/puppet-rig-smoke/puppet-rig.mp4
+            .reel-work/puppet-rig-smoke/frames/*.png
           retention-days: 7
           if-no-files-found: warn
 
@@ -48,7 +52,7 @@ jobs:
         with:
           node-version: 22
       - run: npm test
-      - run: node --check src/motion/bridge.mjs && node --check src/motion/contract.mjs
+      - run: node --check src/motion/puppet.mjs && node --check src/motion/bridge.mjs && node --check src/motion/contract.mjs
       - run: node --check bin/reel.mjs && node --check src/spec.mjs && node --check src/composition.mjs && node --check src/editorial/assets.mjs && node --check src/editorial/layout.mjs && node --check src/editorial/diagram.mjs && node --check src/editorial/bars.mjs
       - run: python3 -m py_compile tools/*.py
       - run: sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg
@@ -150,6 +154,17 @@ jobs:
           npm run explain -- check examples/scene_graph_village.json --target 15
           npm run explain -- render examples/scene_graph_village.json --draft --target 15
           node tools/scene_graph_real_verify.mjs
+      - name: Genuine narrator plus articulated puppet scene
+        id: puppet
+        if: steps.audio.outcome == 'success'
+        continue-on-error: true
+        timeout-minutes: 6
+        env:
+          AETHERMOTION_CLI: ${{ github.workspace }}/.aethermotion-engine/dist/cli/main.js
+        run: |
+          npm run explain -- check examples/scene_graph_puppets.json --target 15
+          npm run explain -- render examples/scene_graph_puppets.json --draft --target 15
+          node tools/scene_graph_real_verify.mjs articulated-village
       - name: Publish truthful acceptance classification
         if: always()
         run: |
@@ -169,6 +184,11 @@ jobs:
           else
             echo 'Scene graph and real narrator: NOT_PASSED_OR_SKIPPED' >> out/real-model-smoke/CI_STATUS.txt
           fi
+          if test -f out/articulated-village-draft/scene-graph-acceptance.json; then
+            echo 'Articulated puppet and real narrator: PASS_MACHINE_CHECKS' >> out/real-model-smoke/CI_STATUS.txt
+          else
+            echo 'Articulated puppet and real narrator: NOT_PASSED_OR_SKIPPED' >> out/real-model-smoke/CI_STATUS.txt
+          fi
           cat out/real-model-smoke/CI_STATUS.txt >> "$GITHUB_STEP_SUMMARY"
           echo 'Human visual and speech-intelligibility review remains separate.' >> "$GITHUB_STEP_SUMMARY"
       - uses: actions/upload-artifact@v4
@@ -179,5 +199,6 @@ jobs:
             out/real-model-smoke/*
             out/what-a-river-connects-draft/*
             out/village-becomes-city-draft/*
+            out/articulated-village-draft/*
           if-no-files-found: ignore
           retention-days: 7

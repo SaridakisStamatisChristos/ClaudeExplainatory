@@ -80,6 +80,8 @@ function validateObject(obj,path,errors,assetRoot,ids,stats,depth=1,symbols=null
   if(obj.bold!==undefined&&typeof obj.bold!=='boolean')errors.push(path+'.bold: expected boolean');
  }
  if(obj.kind==='puppet'){
+  stats.total+=48; // conservative bound for expanded articulated character parts
+  if(stats.total>256)errors.push(path+': scene graph puppet budget exceeded');
   for(const k of ['skin','shirt','trousers','hair','shoes'])if(!color(obj[k]))errors.push(path+'.'+k+': expected #RRGGBB');
   if(!span(obj.height,40,500))errors.push(path+'.height: expected 40–500');
   if(obj.expression!==undefined&&!['neutral','happy','curious','concerned'].includes(obj.expression))errors.push(path+'.expression: unsupported expression');
