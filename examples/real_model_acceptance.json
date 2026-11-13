@@ -31,6 +31,46 @@
       }
     },
     {
+      "template": "diagram_reveal",
+      "say": "A river links a village and a city.",
+      "highlight": "river",
+      "illustrative": true,
+      "sfx": "none",
+      "props": {
+        "heading": "A path for ideas",
+        "nodes": [
+          {
+            "id": "village",
+            "label": "Village",
+            "x": 0.08,
+            "y": 0.24
+          },
+          {
+            "id": "market",
+            "label": "Market",
+            "x": 0.82,
+            "y": 0.32
+          },
+          {
+            "id": "city",
+            "label": "City",
+            "x": 0.46,
+            "y": 0.85
+          }
+        ],
+        "links": [
+          {
+            "from": "village",
+            "to": "market"
+          },
+          {
+            "from": "market",
+            "to": "city"
+          }
+        ]
+      }
+    },
+    {
       "template": "editorial_text_card",
       "say": "Ideas travel across the water.",
       "highlight": "Ideas",
