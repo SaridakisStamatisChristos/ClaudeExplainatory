@@ -10,3 +10,6 @@ assets/references/*
 !assets/references/.gitkeep
 assets/music/*
 !assets/music/.gitkeep
+
+# Reproducible original art renders; preserve editable SVG masters only.
+assets/generated/

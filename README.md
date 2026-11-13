@@ -192,3 +192,18 @@ Run `npm run explain -- check examples/scene_graph_puppets.json --target 15` the
 The enhanced demo `examples/scene_graph_puppets.json` uses three articulated puppet performers whose body parts are compiled to nested, independently animated shapes. Characters can walk (cyclic hip and knee motion) or wave (shoulder and forearm motion) as the camera moves. Costume options: villager, merchant and scholar. Scenery adds slow-moving cloud groups and layered polygon hills behind the actors; draw order explicitly keeps characters in the foreground. This is local procedural illustration—**not** photorealistic AI video synthesis or measured facial lip-sync.
 
 Run `npm run explain -- check examples/scene_graph_puppets.json --target 15` and `npm run explain -- render examples/scene_graph_puppets.json --draft --target 15`. For reproducible offline rig tests, build the pinned sibling AetherMotion and run `npm run test:puppets`. The test produces a short MP4 and checks individual articulation tracks, unique nested object IDs, audio streams and frame determinism. The real-model CI renders a separate version with Kokoro speech and Whisper alignment. Sample test and speech results should be reviewed in the latest green Actions run before treating them as accepted.
+
+## Editable illustration source pack (first reusable sprite pipeline)
+
+A reproducible **authored art → transparent PNG → independently animated image layers → H.264 video** workflow now complements the basic primitive scene graph. The original artwork lives as editable SVG source files under `assets/artwork/medieval/` with a manifest, license statement, exact dimensions and checksums for generated files. The output is deliberately local and contains **no image-generating model calls**: `rsvg-convert` rasterizes the source once, AetherMotion animates the PNG layers every frame. You can add additional authored art packs later by extending the manifest and builder, without changing the frame painter.
+
+Install the one new system dependency on Linux Mint or Ubuntu:
+
+```bash
+sudo apt install -y librsvg2-bin
+npm run assets:build
+npm run explain -- check examples/illustrated_village.json --target 15
+npm run explain -- render examples/illustrated_village.json --draft --target 15
+```
+
+The script uses the same **full-frame scene graph**, named cottage/tree/traveler symbols and local PNG sprites with independent limb pivot rotations, movement, cloud drift and fades. Source is preserved, generated PNGs are ignored by Git, and the rasterizer verifies its own output dimensions and digest. The build step is explicit so users can modify a single SVG and regenerate artwork deterministically. Tests: `npm test` (after `assets:build`) and `npm run test:illustrated` with the pinned AetherMotion CLI. This first pack depicts a painterly medieval editorial village; it does **not** yet generate arbitrary new worlds or replace sprite illustration with neural image-to-video.

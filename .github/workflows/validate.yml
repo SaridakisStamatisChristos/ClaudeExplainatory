@@ -23,11 +23,13 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-      - run: sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg
+      - run: sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg librsvg2-bin
       - run: npm ci --no-audit --no-fund && npm run build
         working-directory: .aethermotion-engine
+      - run: sudo apt-get update -qq && sudo apt-get install -y -qq librsvg2-bin
+      - run: npm run assets:build
       - run: npm test
-      - run: node --check src/motion/puppet.mjs && node --check src/motion/bridge.mjs && node --check src/motion/contract.mjs && node --check src/motion/director.mjs && node --check bin/direct-graph.mjs && node --check bin/reel.mjs
+      - run: node --check tools/build_art_pack.mjs && node --check src/motion/puppet.mjs && node --check src/motion/bridge.mjs && node --check src/motion/contract.mjs && node --check src/motion/director.mjs && node --check bin/direct-graph.mjs && node --check bin/reel.mjs
       - run: npm run explain -- check examples/scene_graph_village.json --target 15
       - name: Real independent-object animation and pixel reproducibility
         env:
@@ -37,6 +39,17 @@ jobs:
         env:
           AETHERMOTION_CLI: ${{ github.workspace }}/.aethermotion-engine/dist/cli/main.js
         run: npm run test:puppets
+      - name: Reusable sprite artwork and frame-different illustration render
+        env:
+          AETHERMOTION_CLI: ${{ github.workspace }}/.aethermotion-engine/dist/cli/main.js
+        run: npm run test:illustrated
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: illustrated-artwork-png
+          path: assets/generated/medieval/*
+          retention-days: 7
+          if-no-files-found: warn
       - uses: actions/upload-artifact@v4
         if: always()
         with:
@@ -46,6 +59,8 @@ jobs:
             .reel-work/scene-graph-smoke/frames/*.png
             .reel-work/puppet-rig-smoke/puppet-rig.mp4
             .reel-work/puppet-rig-smoke/frames/*.png
+            .reel-work/illustrated-smoke/illustrated.mp4
+            .reel-work/illustrated-smoke/frames/*.png
           retention-days: 7
           if-no-files-found: warn
 
@@ -56,8 +71,9 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
+      - run: npm run assets:build
       - run: npm test
-      - run: node --check src/motion/puppet.mjs && node --check src/motion/bridge.mjs && node --check src/motion/contract.mjs
+      - run: node --check tools/build_art_pack.mjs && node --check src/motion/puppet.mjs && node --check src/motion/bridge.mjs && node --check src/motion/contract.mjs
       - run: node --check bin/reel.mjs && node --check src/spec.mjs && node --check src/composition.mjs && node --check src/editorial/assets.mjs && node --check src/editorial/layout.mjs && node --check src/editorial/diagram.mjs && node --check src/editorial/bars.mjs
       - run: python3 -m py_compile tools/*.py
       - run: sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg
@@ -120,7 +136,8 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-      - run: sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg espeak-ng
+      - run: sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg espeak-ng librsvg2-bin
+      - run: npm run assets:build
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
@@ -170,6 +187,17 @@ jobs:
           npm run explain -- check examples/scene_graph_puppets.json --target 15
           npm run explain -- render examples/scene_graph_puppets.json --draft --target 15
           node tools/scene_graph_real_verify.mjs articulated-village
+      - name: Genuine voice plus illustrated sprite animation
+        id: illustration
+        if: steps.audio.outcome == 'success'
+        continue-on-error: true
+        timeout-minutes: 6
+        env:
+          AETHERMOTION_CLI: ${{ github.workspace }}/.aethermotion-engine/dist/cli/main.js
+        run: |
+          npm run explain -- check examples/illustrated_village.json --target 15
+          npm run explain -- render examples/illustrated_village.json --draft --target 15
+          node tools/scene_graph_real_verify.mjs illustrated-village
       - name: Publish truthful acceptance classification
         if: always()
         run: |
@@ -194,6 +222,11 @@ jobs:
           else
             echo 'Articulated puppet and real narrator: NOT_PASSED_OR_SKIPPED' >> out/real-model-smoke/CI_STATUS.txt
           fi
+          if test -f out/illustrated-village-draft/scene-graph-acceptance.json; then
+            echo 'Illustrated sprite animation and real narrator: PASS_MACHINE_CHECKS' >> out/real-model-smoke/CI_STATUS.txt
+          else
+            echo 'Illustrated sprite animation and real narrator: NOT_PASSED_OR_SKIPPED' >> out/real-model-smoke/CI_STATUS.txt
+          fi
           cat out/real-model-smoke/CI_STATUS.txt >> "$GITHUB_STEP_SUMMARY"
           echo 'Human visual and speech-intelligibility review remains separate.' >> "$GITHUB_STEP_SUMMARY"
       - uses: actions/upload-artifact@v4
@@ -205,5 +238,6 @@ jobs:
             out/what-a-river-connects-draft/*
             out/village-becomes-city-draft/*
             out/articulated-village-draft/*
+            out/illustrated-village-draft/*
           if-no-files-found: ignore
           retention-days: 7
