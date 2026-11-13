@@ -1,5 +1,6 @@
 import { readFile } from 'node:fs/promises';
 import { DEFAULT_ASSET_ROOT, validateMediaDescriptor } from './editorial/assets.mjs';
+import { validateSceneGraphProps } from './motion/contract.mjs';
 
 export const TEMPLATES = Object.freeze(['caption_screen', 'counter', 'app_screen', 'callout', 'object_3d', 'compare']);
 export const SFX = Object.freeze(['whoosh', 'pop', 'tick', 'stamp', 'ding', 'swipe', 'none']);
@@ -55,9 +56,10 @@ function validateProps(scene, i, errors) {
   }
 }
 
-export const EDITORIAL_TEMPLATES = Object.freeze(['editorial_split','editorial_text_card','illustration_motion','video_card','diagram_reveal','kinetic_bars']);
+export const EDITORIAL_TEMPLATES = Object.freeze(['editorial_split','editorial_text_card','illustration_motion','video_card','diagram_reveal','kinetic_bars','scene_graph']);
 function validateEditorialProps(scene,i,errors,assetRoot) {
   const p='scenes['+i+'].props',v=scene.props;
+  if(scene.template==='scene_graph')return validateSceneGraphProps(v,p,errors,assetRoot);
   if(!isRecord(v)){errors.push(p+': expected object');return;}
   if(scene.template==='kinetic_bars'){
     exactKeys(v,['heading','kicker','note','unit','tone','bars'],p,errors);
@@ -194,6 +196,8 @@ export function checkScript(script, config = DEFAULTS, { targetSeconds = DEFAULT
       if (editorial && EDITORIAL_TEMPLATES.includes(s.template)) validateEditorialProps(s,i,errors,assetRoot);
     });
   }
+  if(editorial&&Array.isArray(script.scenes)&&script.scenes.some(s=>s?.template==='scene_graph')&&script.scenes.some(s=>s?.template!=='scene_graph'))
+    errors.push('scenes: scene_graph requires a graph-only script until mixed-rendering is supported');
   const totalWords = Array.isArray(script.scenes) ? script.scenes.reduce((n, s) => n + (isNonempty(s?.say) ? wordCount(s.say) : 0), 0) : 0;
   const seconds = totalWords / ESTIMATED_WORDS_PER_SECOND;
   const lowerSeconds = targetSeconds * 0.8;
