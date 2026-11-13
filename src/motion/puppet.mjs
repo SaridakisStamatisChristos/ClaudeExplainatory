@@ -92,7 +92,6 @@ export function buildPuppetGroup(o,frames){
  if(kind!=='puppet')throw Error('Expected puppet object');
  const relativeScale=(typeof pose.scale==='number'?pose.scale:1)*(height/160);
  const correctedScale=Array.isArray(pose.scale)?pose.scale.map(k=>({...k,value:k.value*(height/160)})):relativeScale;
- const direction=facing==='left'?-1:1;
  const outerScale=typeof correctedScale==='number'?correctedScale:correctedScale;
  // AetherMotion supports positive scale, not negative mirroring; facing is expressed
  // via asymmetric facial/hair accessory placement rather than flipping the whole rig.
@@ -106,7 +105,7 @@ export function buildPuppetGroup(o,frames){
  const body=group('moving_body',0,0,[
    p('scarf',[[-17,-104],[17,-104],[24,-88],[0,-86]],'#DEB57C'),
    p('tunic',[[-20,-103],[18,-103],[29,-58],[19,-52],[-23,-52],[-30,-58]],shirt),
-   p('shadow_panel',[[14,-101],[18,-102],[29,-58],[18,-53],[7,-56]],'#000000'),
+   p('shadow_panel',[[14,-101],[18,-102],[29,-58],[18,-53],[7,-56]],'#000000',{opacity:.12}),
    p('belt',[[-24,-60],[23,-60],[20,-54],[-22,-54]],'#6D4C43'),
    rect('buckle',-4,-61,8,7,'#DCC48D'),
    p('collar',[[-14,-103],[-4,-113],[4,-113],[15,-103],[0,-94]],'#F0D8B7'),

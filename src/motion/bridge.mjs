@@ -21,7 +21,9 @@ function compileObject(obj,frames,mult,assets,imageSources,sceneIndex,path,symbo
   // Generated puppet is a deterministic hierarchical AetherMotion group; it never
   // runs a per-frame JS painter and uses no external image generation.
   const puppet=buildPuppetGroup(obj,frames);
-  return compileObject(puppet,frames,mult,assets,imageSources,sceneIndex,path,symbols,mangle);
+  const compiled=compileObject(puppet,frames,mult,assets,imageSources,sceneIndex,path,symbols,true);
+  if(!mangle)compiled.id=obj.id; // Preserve author ID; namespace every nested drawable.
+  return compiled;
  }
  if(obj.kind==='instance'){
   const definition=symbols[obj.symbol];
