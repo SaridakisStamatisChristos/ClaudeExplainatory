@@ -21,6 +21,7 @@ jobs:
       - run: node_modules/.bin/hyperframes tts --help && node_modules/.bin/hyperframes transcribe --help
       - run: npm run test:hyperframes
       - run: npm run test:editorial
+      - run: npm run test:diagram
       - run: npm run test:draft
       - uses: actions/upload-artifact@v4
         if: always()
@@ -29,6 +30,7 @@ jobs:
           path: |
             .reel-work/editorial-smoke/frames/*.png
             .reel-work/editorial-draft-smoke/output/still-*.png
+            .reel-work/diagram-smoke/frames/*.png
           if-no-files-found: ignore
           retention-days: 7
       - uses: actions/upload-artifact@v4

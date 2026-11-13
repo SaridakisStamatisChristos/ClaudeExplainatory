@@ -78,6 +78,27 @@ else:
         voice_cache=list((root/'.cache'/'voices').glob('*/timing.json'))
         assert len(voice_cache)==len(script['scenes']), f'Wrong synthetic TTS cache count: {len(voice_cache)}'
         assert all(json.loads(p.read_text())['provider']=='hyperframes-kokoro' for p in voice_cache)
+        # Regression: --draft must not synthesize narration for later scenes.
+        long_script=json.loads((root/'examples'/'dummy.json').read_text())
+        long_script['title']='Bounded draft acceptance'
+        long_script['scenes']=[]
+        for index in range(8):
+            original=json.loads((root/'examples'/'dummy.json').read_text())['scenes'][index%3]
+            original['say']=f'Scene number {index+1} travels toward the open ocean.'
+            original['highlight']='Scene'
+            original['sfx']='none'
+            long_script['scenes'].append(original)
+        (root/'examples'/'long-draft.json').write_text(json.dumps(long_script))
+        call('node','bin/reel.mjs','render','examples/long-draft.json','--draft',cwd=root)
+        after=list((root/'.cache'/'voices').glob('*/timing.json'))
+        assert len(after)==len(script['scenes'])+4, 'Draft rendered narration beyond ten seconds'
+        html=(root/'.reel-work'/'bounded-draft-acceptance-draft'/'index.html').read_text()
+        assert html.count('data-track-index="0"')==4, 'Draft composition includes unrendered scenes'
+        assert 'Scene number 5' not in html and 'Scene number 8' not in html
+        cropped=root/'out'/'bounded-draft-acceptance-draft'/'instagram.mp4'
+        assert cropped.exists() and dimensions(cropped)==(540,960)
+        print('PASS: draft <=10s, later speech never synthesized, composition includes only needed scenes')
+
         print('PASS: native HyperFrames TTS/transcribe interface mocked; FFmpeg export verified with synthetic tone (not genuine Kokoro/Whisper)')
 
 if __name__=='__main__':

@@ -58,7 +58,7 @@ npm run explain -- voice-sample
 npm run explain -- voice-select af_heart
 ~~~
 
-Schema v2 must explicitly set schema_version:2 and mode:editorial_illustrated. Templates: editorial_split, illustration_motion, editorial_text_card, video_card (last name retained only for compatibility; artwork remains full-canvas). The original six v1 scene types are supported for existing scripts.
+Schema v2 must explicitly set schema_version:2 and mode:editorial_illustrated. Templates: editorial_split, illustration_motion, editorial_text_card, video_card (compatibility name, no fake player), and diagram_reveal (procedural vector nodes and lines, animated through the video timeline). The original six v1 scene types are supported for existing scripts.
 
 Media is restricted to existing local PNG/JPEG/WebP files under assets/, and optional 2-5-layer parallax. MP4 clip inputs and independently animated characters are not yet implemented. Fake player chrome is prohibited.
 
@@ -99,3 +99,9 @@ node tools/real_video_verify.mjs
 The audio smoke test produces a short real Kokoro `af_heart` WAV, forces local Whisper `small.en` transcription, checks word alignment, measured duration, non-silent signal and verified warm cache. A local result is saved to `out/real-model-smoke/`. The video command creates a **maximum 10-second** real-model draft, with portrait and landscape MP4s under `out/what-a-river-connects-draft/`; the verifier checks actual streams, codecs, dimensions and duration.
 
 A separate GitHub Actions job attempts genuine audio and video acceptance on pushes to the production-acceptance branch. Model downloads or native dependencies may prevent execution on CI; such a result is **NOT PASSED**, even if the independent baseline CI job succeeds. Inspect the job logs, `CI_STATUS.txt`, audio evidence, and the `real-model-acceptance` artifact. A machine pass is not equivalent to human listening, visual sign-off, or verified offline rendering. Do not interpret a synthetic test tone as speech.
+
+## Deterministic procedural diagrams
+
+The `diagram_reveal` editorial-v2 scene adds fully local vector animation driven by JSON instead of new animation code for each video. Nodes use unique identifiers, short labels, and normalized x/y coordinates from 0 to 1; links reference pairs of existing nodes. Motion reveals the nodes and draws connections over the spoken scene duration. The validator rejects malformed coordinates, duplicate IDs, missing endpoints and unexpected properties.
+
+Run `npm run explain -- check examples/diagram_reveal.example.json --target 15` to validate the included example, and `npm run test:diagram` for a real 2-second HyperFrames animated-diagram video with determinism and visible-change checks (synthetic word timing; this does **not** constitute TTS acceptance). Actual illustrated character articulation is not yet implemented.

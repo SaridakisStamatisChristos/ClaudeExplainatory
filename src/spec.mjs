@@ -55,10 +55,49 @@ function validateProps(scene, i, errors) {
   }
 }
 
-export const EDITORIAL_TEMPLATES = Object.freeze(['editorial_split','editorial_text_card','illustration_motion','video_card']);
+export const EDITORIAL_TEMPLATES = Object.freeze(['editorial_split','editorial_text_card','illustration_motion','video_card','diagram_reveal']);
 function validateEditorialProps(scene,i,errors,assetRoot) {
   const p='scenes['+i+'].props',v=scene.props;
   if(!isRecord(v)){errors.push(p+': expected object');return;}
+  if(scene.template==='diagram_reveal'){
+    exactKeys(v,['heading','nodes','links'],p,errors);
+    if(!isNonempty(v.heading)||v.heading.length>70)
+      errors.push(p+'.heading: expected 1–70 characters');
+    if(!Array.isArray(v.nodes)||v.nodes.length<2||v.nodes.length>6){
+      errors.push(p+'.nodes: expected 2–6 diagram nodes');
+      return;
+    }
+    const ids=new Set();
+    v.nodes.forEach((node,j)=>{
+      const at=p+'.nodes['+j+']';
+      if(!isRecord(node)){errors.push(at+': expected object');return;}
+      exactKeys(node,['id','label','x','y'],at,errors);
+      if(typeof node.id!=='string'||!/^[a-z][a-z0-9_]{0,15}$/.test(node.id))
+        errors.push(at+'.id: expected safe identifier');
+      else if(ids.has(node.id))errors.push(at+'.id: duplicate node identifier');
+      else ids.add(node.id);
+      if(!isNonempty(node.label)||node.label.length>28||wordCount(node.label)>4)
+        errors.push(at+'.label: expected 1–28 characters and at most 4 words');
+      if(!numeric(node.x)||node.x<0||node.x>1||!numeric(node.y)||node.y<0||node.y>1)
+        errors.push(at+': x and y must be normalized numbers in [0, 1]');
+    });
+    if(!Array.isArray(v.links)||v.links.length<1||v.links.length>12){
+      errors.push(p+'.links: expected 1–12 connections');
+      return;
+    }
+    const pairs=new Set();
+    v.links.forEach((edge,j)=>{
+      const at=p+'.links['+j+']';
+      if(!isRecord(edge)){errors.push(at+': expected object');return;}
+      exactKeys(edge,['from','to'],at,errors);
+      if(!ids.has(edge.from)||!ids.has(edge.to)||edge.from===edge.to)
+        errors.push(at+': links must reference two distinct existing nodes');
+      const key=String(edge.from)+'->'+String(edge.to);
+      if(pairs.has(key))errors.push(at+': duplicate directed connection');
+      pairs.add(key);
+    });
+    return;
+  }
   if(scene.template==='video_card'){
     exactKeys(v,['media','label','player_chrome'],p,errors);
     if(v.label!==undefined&&(typeof v.label!=='string'||wordCount(v.label)>5))errors.push(p+'.label: expected at most 5 words');

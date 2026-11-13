@@ -1,0 +1,67 @@
+{
+  "schema_version": 2,
+  "mode": "editorial_illustrated",
+  "title": "Diagram: Ideas Across Rivers",
+  "handle": "@claudeexplainatory",
+  "voice": "af_heart",
+  "accent": "#B18A42",
+  "caption": "A local, declarative example of diagram animation.",
+  "hashtags": [
+    "#learning",
+    "#animation"
+  ],
+  "scenes": [
+    {
+      "template": "diagram_reveal",
+      "say": "Rivers join villages markets and cities.",
+      "highlight": "Rivers",
+      "illustrative": true,
+      "sfx": "none",
+      "props": {
+        "heading": "Waterways connect people",
+        "nodes": [
+          {
+            "id": "village",
+            "label": "Village",
+            "x": 0.1,
+            "y": 0.24
+          },
+          {
+            "id": "market",
+            "label": "Market",
+            "x": 0.85,
+            "y": 0.27
+          },
+          {
+            "id": "city",
+            "label": "City",
+            "x": 0.5,
+            "y": 0.84
+          }
+        ],
+        "links": [
+          {
+            "from": "village",
+            "to": "market"
+          },
+          {
+            "from": "market",
+            "to": "city"
+          }
+        ]
+      }
+    },
+    {
+      "template": "editorial_text_card",
+      "say": "Each connection carries a new idea.",
+      "highlight": "connection",
+      "illustrative": false,
+      "sfx": "none",
+      "props": {
+        "kicker": "THE IDEA",
+        "text": "A journey can carry knowledge",
+        "emphasis": "carry knowledge"
+      }
+    }
+  ]
+}

@@ -11,7 +11,7 @@ const folder=join(root,'out','what-a-river-connects-draft');
 const proof=join(root,'out','real-model-smoke','evidence.json');
 function probe(file){
   const r=spawnSync('ffprobe',['-v','error','-show_entries',
-    'format=duration:stream=codec_name,codec_type,width,height','-of','json',file],
+    'format=duration:stream=codec_name,codec_type,width,height,sample_rate','-of','json',file],
     {encoding:'utf8',timeout:30000});
   if(r.status!==0)throw Error('ffprobe failed: '+(r.stderr||r.error?.message));
   return JSON.parse(r.stdout);
@@ -29,7 +29,7 @@ try{
     const a=p.streams.find(s=>s.codec_type==='audio');
     if(!v||!a||v.width!==width||v.height!==height)
       throw Error('Incorrect MP4 streams or dimensions: '+name);
-    if(v.codec_name!=='h264'||a.codec_name!=='aac')
+    if(v.codec_name!=='h264'||a.codec_name!=='aac'||Number(a.sample_rate)!==48000)
       throw Error('Incorrect MP4 codecs: '+name);
     if(!(duration>0&&duration<=10.12))
       throw Error('MP4 must be a draft <=10s: '+name+' ('+duration+')');
