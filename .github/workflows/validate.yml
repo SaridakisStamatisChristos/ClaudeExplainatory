@@ -71,6 +71,7 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
+      - run: sudo apt-get update -qq && sudo apt-get install -y -qq librsvg2-bin
       - run: npm run assets:build
       - run: npm test
       - run: node --check tools/build_art_pack.mjs && node --check src/motion/puppet.mjs && node --check src/motion/bridge.mjs && node --check src/motion/contract.mjs
