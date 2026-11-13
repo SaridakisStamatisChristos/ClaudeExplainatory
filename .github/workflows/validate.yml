@@ -27,11 +27,13 @@ jobs:
       - run: node --check src/motion/puppet.mjs && node --check src/motion/bridge.mjs && node --check src/motion/contract.mjs && node --check src/motion/director.mjs && node --check bin/direct-graph.mjs && node --check bin/reel.mjs
       - run: npm run explain -- check examples/scene_graph_village.json --target 15
       - name: Real independent-object animation and pixel reproducibility
-        run: npm run test:scene-graph
-      - name: Real articulated character motion and pixel reproducibility
-        run: npm run test:puppets
         env:
           AETHERMOTION_CLI: ${{ github.workspace }}/.aethermotion-engine/dist/cli/main.js
+        run: npm run test:scene-graph
+      - name: Real articulated character motion and pixel reproducibility
+        env:
+          AETHERMOTION_CLI: ${{ github.workspace }}/.aethermotion-engine/dist/cli/main.js
+        run: npm run test:puppets
       - uses: actions/upload-artifact@v4
         if: always()
         with:
