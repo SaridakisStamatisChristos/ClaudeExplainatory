@@ -4,7 +4,7 @@
 
 Before this integration, each new style needed a new template (`kinetic_bars`, `diagram_reveal`, etc.). Those remain supported. The new `scene_graph` backend delegates all **general object painting and integer-frame interpolation** to the independent AetherMotion repository rather than copying its painter. This integration owns only the interpretation of ClaudeExplainatory's editorial-v2 script format, asset preflights, narration-to-frame timing, speech synthesis/transcription, publishing and acceptance tests.
 
-AetherMotion source pinned: `8d9ebee4acd531ee263a9bbd264b66369f776c52` (MIT license), loaded externally through `AETHERMOTION_CLI`. No source vendoring, submodules or modifications to that other repository.
+AetherMotion source pinned: `1805f161ff9a0904306a0864ff0938f75cd70aad` (MIT license), loaded externally through `AETHERMOTION_CLI`. No source vendoring, submodules or modifications to that other repository.
 
 ## Source script contract
 

@@ -160,7 +160,7 @@ export function checkScript(script, config = DEFAULTS, { targetSeconds = DEFAULT
   if (!isRecord(script)) return { ok: false, errors: ['script: expected JSON object'], warnings, estimatedSeconds: 0, targetSeconds };
   const editorial=script.schema_version===2 && script.mode==='editorial_illustrated';
   const templates=editorial ? [...TEMPLATES,...EDITORIAL_TEMPLATES] : TEMPLATES;
-  exactKeys(script,editorial?['schema_version','mode','title','handle','voice','accent','caption','hashtags','scenes']:['title','handle','voice','accent','caption','hashtags','scenes'],'script',errors);
+  exactKeys(script,editorial?['schema_version','mode','title','handle','voice','accent','caption','hashtags','scenes','scene_transition']:['title','handle','voice','accent','caption','hashtags','scenes'],'script',errors);
   if(Object.hasOwn(script,'schema_version') && script.schema_version!==2)errors.push('schema_version: expected integer 2');
   if(script.schema_version===2 && script.mode!=='editorial_illustrated')errors.push('mode: expected editorial_illustrated');
   if(Object.hasOwn(script,'mode') && script.schema_version!==2)errors.push('mode: requires schema_version 2');
@@ -200,6 +200,21 @@ export function checkScript(script, config = DEFAULTS, { targetSeconds = DEFAULT
     errors.push('scenes: scene_graph effects are not yet supported; use sfx none');
   if(editorial&&Array.isArray(script.scenes)&&script.scenes.some(s=>s?.template==='scene_graph')&&script.scenes.some(s=>s?.template!=='scene_graph'))
     errors.push('scenes: scene_graph requires a graph-only script until mixed-rendering is supported');
+  if(script.scene_transition!==undefined){
+    const t=script.scene_transition,p='scene_transition';
+    if(!editorial||!Array.isArray(script.scenes)||script.scenes.length<2||
+       script.scenes.some(s=>s?.template!=='scene_graph'))
+      errors.push('scene_transition: requires at least two scene_graph scenes');
+    if(!isRecord(t))errors.push(p+': expected object');
+    else{
+      exactKeys(t,['kind','duration','color'],p,errors);
+      if(t.kind!=='fade')errors.push(p+'.kind: expected fade');
+      if(!numeric(t.duration)||t.duration<.10||t.duration>.80)
+        errors.push(p+'.duration: expected 0.10–0.80 seconds');
+      if(typeof t.color!=='string'||!/^#[\da-fA-F]{6}$/.test(t.color))
+        errors.push(p+'.color: expected #RRGGBB');
+    }
+  }
   const totalWords = Array.isArray(script.scenes) ? script.scenes.reduce((n, s) => n + (isNonempty(s?.say) ? wordCount(s.say) : 0), 0) : 0;
   const seconds = totalWords / ESTIMATED_WORDS_PER_SECOND;
   const lowerSeconds = targetSeconds * 0.8;

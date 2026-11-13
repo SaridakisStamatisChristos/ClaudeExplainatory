@@ -14,7 +14,7 @@ function scalar(v,frames,mult=1,path='track'){
    throw Error(path+': normalized keyframes collapse onto the same source frame; use fewer keys');
  return keys;
 }
-function compileObject(obj,frames,mult){
+function compileObject(obj,frames,mult,assets,imageSources,sceneIndex,path){
  const dest={...obj};
  for(const key of ['x','y','height','width','radius','stroke','size','scale','rotation','opacity','phase','stride','gesture','mouth','reveal']){
   if(obj[key]===undefined)continue;
@@ -23,7 +23,14 @@ function compileObject(obj,frames,mult){
   dest[key]=['x','y','scale','rotation','opacity','phase','stride','gesture','mouth','reveal'].includes(key)
     ?scalar(obj[key],frames,factor,'object '+obj.id+'.'+key):obj[key]*factor;
  }
- if(obj.kind==='path')dest.points=obj.points.map(([x,y])=>[x*mult,y*mult]);
+ if(obj.kind==='path'||obj.kind==='polygon')dest.points=obj.points.map(([x,y])=>[x*mult,y*mult]);
+ if(obj.kind==='group')dest.children=obj.children.map((child,j)=>compileObject(child,frames,mult,assets,imageSources,sceneIndex,path+'_'+j));
+ if(obj.kind==='image'){
+  const id='image_'+sceneIndex+'_'+path;
+  dest.asset=id;delete dest.src;
+  const file='images/'+id+extname(obj.src).toLowerCase();
+  assets[id]=file;imageSources.set(file,obj.src);
+ }
  return dest;
 }
 export function compileMotionFilm(script,timing,{draft=true}={}){
@@ -37,17 +44,16 @@ export function compileMotionFilm(script,timing,{draft=true}={}){
   if(!Number.isInteger(frames)||frames<2)throw Error('scene '+i+': invalid frame count');
   const p=scene.props;
   const camera=p.camera?Object.fromEntries(Object.entries(p.camera).map(([k,v])=>[k,scalar(v,frames,k==='zoom'?1:mult,'camera.'+k)])):undefined;
-  const objects=p.objects.map((obj,j)=>{
-   const out=compileObject(obj,frames,mult);
-   if(obj.kind==='image'){
-    const id='image_'+i+'_'+j;
-    out.asset=id;delete out.src;
-    const file='images/'+id+extname(obj.src).toLowerCase();
-    assets[id]=file;imageSources.set(file,obj.src);
-   }
-   return out;
-  });
-  scenes.push({id:'shot_'+i,frames,background:p.background,...(p.style?{style:{...p.style,...(p.style.penWidth?{penWidth:p.style.penWidth*mult}:{})}}:{}),...(camera?{camera}:{}),objects});
+  const objects=p.objects.map((obj,j)=>compileObject(obj,frames,mult,assets,imageSources,i,String(j)));
+  const transition=script.scene_transition;
+  let fade;
+  if(transition){
+   const n=Math.max(2,Math.round(transition.duration*MOTION_FPS));
+   const incoming=i>0?n:0,outgoing=i<script.scenes.length-1?n:0;
+   if(incoming+outgoing>frames)throw Error('scene '+i+': transitions exceed available narration-timed frames');
+   if(incoming||outgoing)fade={color:transition.color,...(incoming?{inFrames:incoming}:{}),...(outgoing?{outFrames:outgoing}:{})};
+  }
+  scenes.push({id:'shot_'+i,frames,background:p.background,...(p.style?{style:{...p.style,...(p.style.penWidth?{penWidth:p.style.penWidth*mult}:{})}}:{}),...(camera?{camera}:{}),...(fade?{fade}:{}),objects});
   const speechFrames=Math.ceil(t.audioDuration*MOTION_FPS);
   if(speechFrames>frames)throw Error('scene '+i+': narration exceeds scene duration');
   audio.push({file:'audio/speech_'+i+'.wav',startFrame:current,endFrame:current+Math.max(1,speechFrames),role:'narration',caption:scene.say});

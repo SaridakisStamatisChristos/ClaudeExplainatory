@@ -15,7 +15,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           repository: SaridakisStamatisChristos/AetherMotion
-          ref: 8d9ebee4acd531ee263a9bbd264b66369f776c52
+          ref: 1805f161ff9a0904306a0864ff0938f75cd70aad
           path: .aethermotion-engine
       - uses: actions/setup-node@v4
         with:
@@ -135,7 +135,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           repository: SaridakisStamatisChristos/AetherMotion
-          ref: 8d9ebee4acd531ee263a9bbd264b66369f776c52
+          ref: 1805f161ff9a0904306a0864ff0938f75cd70aad
           path: .aethermotion-engine
       - run: npm ci --no-audit --no-fund && npm run build
         working-directory: .aethermotion-engine

@@ -50,3 +50,30 @@ test('keyframe collisions become a clear explicit error before rendering',()=>{
  assert.equal(checkScript(altered).ok,true);
  assert.throws(()=>compileMotionFilm(altered,timing),/collapse onto the same source frame/);
 });
+
+test('nested grouped artwork and native fade-through-color compile without changing frame count',()=>{
+  const r=checkScript(example,undefined,{targetSeconds:15});
+  assert.equal(r.ok,true,r.errors.join('; '));
+  const {film}=compileMotionFilm(example,timing);
+  assert.equal(film.durationFrames,147);
+  assert.deepEqual(film.scenes[0].fade,{color:'#1C2937',outFrames:8});
+  assert.deepEqual(film.scenes[1].fade,{color:'#1C2937',inFrames:8});
+  const group=film.scenes[1].objects.find(o=>o.id==='market_stall');
+  assert.equal(group.kind,'group');
+  assert.ok(group.children.some(o=>o.kind==='polygon'));
+  assert.ok(group.children.some(o=>o.kind==='group'));
+  assert.ok(film.scenes[0].objects.some(o=>o.kind==='glow'));
+});
+test('nested identifiers, bad polygons, excessive depth and mismatched transition are rejected',()=>{
+  const dupe=structuredClone(example);
+  dupe.scenes[1].props.objects.at(-1).children[1].id=dupe.scenes[1].props.objects.at(-1).children[0].id;
+  assert.match(checkScript(dupe).errors.join(' '),/duplicate identifier/);
+  const poly=structuredClone(example);
+  poly.scenes[1].props.objects.at(-1).children[3].points=[[0,0],[2,2]];
+  assert.match(checkScript(poly).errors.join(' '),/3–64 finite coordinate pairs/);
+  const invalid=structuredClone(example);
+  invalid.scene_transition.kind='crossfade';
+  assert.match(checkScript(invalid).errors.join(' '),/expected fade/);
+  const short=structuredClone(example);
+  assert.throws(()=>compileMotionFilm(short,[{duration:.2,audioDuration:.1},{duration:2.6,audioDuration:2}]),/transitions exceed/);
+});

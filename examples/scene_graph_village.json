@@ -59,6 +59,15 @@
         },
         "objects": [
           {
+            "id": "atmosphere",
+            "kind": "glow",
+            "x": 420,
+            "y": 145,
+            "radius": 220,
+            "color": "#E5B786",
+            "opacity": 0.23
+          },
+          {
             "id": "skyglow",
             "kind": "circle",
             "x": [
@@ -105,6 +114,43 @@
             "width": 540,
             "height": 267,
             "color": "#6c805a"
+          },
+          {
+            "id": "cottage_gable",
+            "kind": "polygon",
+            "x": 91,
+            "y": 576,
+            "points": [
+              [
+                0,
+                0
+              ],
+              [
+                64,
+                -46
+              ],
+              [
+                129,
+                0
+              ]
+            ],
+            "color": "#B97555",
+            "opacity": [
+              {
+                "t": 0,
+                "value": 0,
+                "ease": "hold"
+              },
+              {
+                "t": 0.31,
+                "value": 0,
+                "ease": "smooth"
+              },
+              {
+                "t": 0.69,
+                "value": 1
+              }
+            ]
           },
           {
             "id": "village_label",
@@ -760,9 +806,196 @@
                 "value": 0.6
               }
             ]
+          },
+          {
+            "id": "market_stall",
+            "kind": "group",
+            "x": [
+              {
+                "t": 0,
+                "value": 185,
+                "ease": "smooth"
+              },
+              {
+                "t": 0.85,
+                "value": 154
+              }
+            ],
+            "y": 650,
+            "scale": [
+              {
+                "t": 0,
+                "value": 0.18,
+                "ease": "smooth"
+              },
+              {
+                "t": 0.77,
+                "value": 1
+              }
+            ],
+            "opacity": [
+              {
+                "t": 0,
+                "value": 0.08,
+                "ease": "smooth"
+              },
+              {
+                "t": 0.77,
+                "value": 1
+              }
+            ],
+            "children": [
+              {
+                "id": "post_left",
+                "kind": "rect",
+                "x": 0,
+                "y": 0,
+                "width": 10,
+                "height": 115,
+                "color": "#CBA377"
+              },
+              {
+                "id": "post_right",
+                "kind": "rect",
+                "x": 117,
+                "y": 0,
+                "width": 10,
+                "height": 115,
+                "color": "#CBA377"
+              },
+              {
+                "id": "counter",
+                "kind": "rect",
+                "x": -8,
+                "y": 81,
+                "width": 144,
+                "height": 31,
+                "color": "#8E5943"
+              },
+              {
+                "id": "canopy",
+                "kind": "polygon",
+                "x": -17,
+                "y": -7,
+                "points": [
+                  [
+                    0,
+                    0
+                  ],
+                  [
+                    80,
+                    -39
+                  ],
+                  [
+                    163,
+                    0
+                  ],
+                  [
+                    142,
+                    16
+                  ],
+                  [
+                    16,
+                    16
+                  ]
+                ],
+                "color": "#E6AD69"
+              },
+              {
+                "id": "canopy_trim",
+                "kind": "path",
+                "x": -17,
+                "y": 9,
+                "points": [
+                  [
+                    0,
+                    0
+                  ],
+                  [
+                    159,
+                    0
+                  ]
+                ],
+                "stroke": 4,
+                "color": "#F3D6A0"
+              },
+              {
+                "id": "apple1",
+                "kind": "circle",
+                "x": 44,
+                "y": 83,
+                "radius": 9,
+                "color": "#C85C50"
+              },
+              {
+                "id": "apple2",
+                "kind": "circle",
+                "x": 64,
+                "y": 81,
+                "radius": 10,
+                "color": "#D8754D"
+              },
+              {
+                "id": "apple3",
+                "kind": "circle",
+                "x": 85,
+                "y": 84,
+                "radius": 8,
+                "color": "#D5B062"
+              },
+              {
+                "id": "flag_rig",
+                "kind": "group",
+                "x": 73,
+                "y": -34,
+                "rotation": [
+                  {
+                    "t": 0,
+                    "value": -9,
+                    "ease": "smooth"
+                  },
+                  {
+                    "t": 0.5,
+                    "value": 8
+                  },
+                  {
+                    "t": 1,
+                    "value": -3
+                  }
+                ],
+                "children": [
+                  {
+                    "id": "flag",
+                    "kind": "polygon",
+                    "x": 0,
+                    "y": 0,
+                    "points": [
+                      [
+                        0,
+                        0
+                      ],
+                      [
+                        46,
+                        8
+                      ],
+                      [
+                        0,
+                        23
+                      ]
+                    ],
+                    "color": "#F6E5B5"
+                  }
+                ]
+              }
+            ]
           }
         ]
       }
     }
-  ]
+  ],
+  "scene_transition": {
+    "kind": "fade",
+    "duration": 0.26,
+    "color": "#1C2937"
+  }
 }

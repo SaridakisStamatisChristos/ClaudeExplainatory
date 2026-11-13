@@ -128,7 +128,7 @@ The source JSON uses **540×960 portrait authoring coordinates**. Animated prope
 cd ..
 git clone https://github.com/SaridakisStamatisChristos/AetherMotion.git
 cd AetherMotion
-git checkout 8d9ebee4acd531ee263a9bbd264b66369f776c52
+git checkout 1805f161ff9a0904306a0864ff0938f75cd70aad
 npm ci
 npm run build
 cd ../ClaudeExplainatory
