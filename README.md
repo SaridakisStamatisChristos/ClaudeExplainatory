@@ -147,3 +147,28 @@ For safety and clarity, a script using `scene_graph` must presently contain **on
 The `real-model-acceptance` CI job additionally renders the village-to-city example with actual HyperFrames Kokoro speech and Whisper alignment. It calls the pinned AetherMotion CPU renderer for every frame and uses FFmpeg to loudness-normalize, mux and export both sizes. The `scene-graph-acceptance.json` evidence (in the archived outputs) verifies H.264 30-fps portrait, AAC 48-kHz sound, bounded duration and **changing decoded frames**. Audio is genuinely narrated in this job, unlike the separate synthetic-speech geometry test. The 10-second draft limit remains enforced. Word-level transcription timings are checked, while the AetherMotion backend currently displays each phrase as a whole caption rather than karaoke word highlights.
 
 The graph-only runtime deliberately rejects SFX other than `none`; music and template mixing are planned integrations. Imported pictures require actual local PNG/JPEG assets; image generation is not supplied by AetherMotion.
+
+## Optional AI director: Gemini writes actions, not 30 images per second
+
+To generate a **new animated-world JSON script from your own topic**, set a supported Gemini model and an API key. This is strictly opt-in: the local renderer does not require Gemini, and these credentials are not stored in the JSON. The director requests JSON from Gemini with a configured token budget, validates every field locally, and makes at most two bounded repair attempts. An invalid answer is **not rendered**.
+
+```bash
+export GEMINI_API_KEY="YOUR_PRIVATE_KEY"
+export GEMINI_MODEL="YOUR_AVAILABLE_GEMINI_MODEL"
+
+npm run direct:graph -- "A medieval town grows as travelers arrive" \
+    out/town-generated.json --tokens 8192 --retries 1
+
+npm run explain -- check out/town-generated.json --target 15
+npm run explain -- render out/town-generated.json --draft --target 15
+```
+
+The director supports `--model MODEL`, `--tokens 2048..32768`, and `--retries 0..2`, reports provider token usage when returned, and refuses to overwrite an existing output file. The generated script uses normalized timeline positions (`t=0` to `t=1`) so AetherMotion independently generates **each frame** from the object paths, gestures, building growth, and camera curves. You are charged for model generation according to your provider plan, **not** for per-frame animation. Live Gemini provider access and cost have not been independently tested in CI; CI uses a deterministic fake transport to validate request construction and error handling.
+
+### Demonstrated actual results
+
+- [Pin-verifiable real 147-frame scene graph render](https://github.com/SaridakisStamatisChristos/ClaudeExplainatory/actions/runs/43431447690/artifacts/14038908011): independent-object animation and deterministic frame extraction with synthetic speech.
+- [Genuine narrated 4.01-second scene graph](https://github.com/SaridakisStamatisChristos/ClaudeExplainatory/actions/runs/43431965655/artifacts/14038983780): real Kokoro/Whisper speech, AetherMotion actor/building movement, 120 frames and H.264/AAC portrait/landscape exports.
+- [Complete scene graph authoring reference](docs/SCENE_GRAPH_RUNTIME.md).
+
+**Known limitations:** visuals are currently composed from procedural shapes, stylized actors and user-supplied local images—not arbitrary high-detail AI-generated characters or complex image-to-video motion. Scenes are cut sequentially; polished transitions, character lip-sync and arbitrary mixed legacy templates remain future work. A successful software render does not itself guarantee engaging cinematic aesthetics.
