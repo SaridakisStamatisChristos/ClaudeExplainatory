@@ -66,10 +66,10 @@ test('nested grouped artwork and native fade-through-color compile without chang
 });
 test('nested identifiers, bad polygons, excessive depth and mismatched transition are rejected',()=>{
   const dupe=structuredClone(example);
-  dupe.scenes[1].props.objects.at(-1).children[1].id=dupe.scenes[1].props.objects.at(-1).children[0].id;
+  dupe.scenes[1].props.objects.find(o=>o.id==='market_stall').children[1].id=dupe.scenes[1].props.objects.find(o=>o.id==='market_stall').children[0].id;
   assert.match(checkScript(dupe).errors.join(' '),/duplicate identifier/);
   const poly=structuredClone(example);
-  poly.scenes[1].props.objects.at(-1).children[3].points=[[0,0],[2,2]];
+  poly.scenes[1].props.objects.find(o=>o.id==='market_stall').children[3].points=[[0,0],[2,2]];
   assert.match(checkScript(poly).errors.join(' '),/3–64 finite coordinate pairs/);
   const invalid=structuredClone(example);
   invalid.scene_transition.kind='crossfade';
