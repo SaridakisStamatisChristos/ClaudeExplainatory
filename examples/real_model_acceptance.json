@@ -1,0 +1,46 @@
+{
+  "schema_version": 2,
+  "mode": "editorial_illustrated",
+  "title": "What a River Connects",
+  "handle": "@claudeexplainatory",
+  "voice": "af_heart",
+  "accent": "#B18A42",
+  "caption": "Original illustrated river study with genuine local narration.",
+  "hashtags": [
+    "#education",
+    "#rivers"
+  ],
+  "scenes": [
+    {
+      "template": "editorial_split",
+      "say": "A river brings people together.",
+      "highlight": "river",
+      "illustrative": true,
+      "sfx": "none",
+      "props": {
+        "media": {
+          "kind": "image",
+          "src": "assets/editorial/demo-landscape.png",
+          "fit": "cover",
+          "motion": "pan_left"
+        },
+        "kicker": "CONNECTION",
+        "text": "A river brings communities together",
+        "emphasis": "brings communities together",
+        "player_chrome": false
+      }
+    },
+    {
+      "template": "editorial_text_card",
+      "say": "Ideas travel across the water.",
+      "highlight": "Ideas",
+      "illustrative": false,
+      "sfx": "none",
+      "props": {
+        "kicker": "EXCHANGE",
+        "text": "Ideas travel when people move",
+        "emphasis": "Ideas travel"
+      }
+    }
+  ]
+}

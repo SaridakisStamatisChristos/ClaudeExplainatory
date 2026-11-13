@@ -83,3 +83,18 @@ Unit tests mock speech/transcription and verify schema, strict word alignment, a
 - [Migration from ClaudeCreate](docs/MIGRATION_FROM_CLAUDECREATE.md)
 
 ClaudeCreate is unaffected.
+
+## Genuine model acceptance (not a mock)
+
+The deterministic CI suite uses simulated audio and is separate from real speech acceptance. With Node 22+, `ffmpeg`, `ffprobe`, `espeak-ng`, and `npm install` completed, run:
+
+~~~bash
+npm run test:real-audio
+npm run explain -- check examples/real_model_acceptance.json --target 15
+npm run explain -- render examples/real_model_acceptance.json --draft --target 15
+node tools/real_video_verify.mjs
+~~~
+
+The audio smoke test produces a short real Kokoro `af_heart` WAV, forces local Whisper `small.en` transcription, checks word alignment, measured duration, non-silent signal and verified warm cache. A local result is saved to `out/real-model-smoke/`. The video command creates a **maximum 10-second** real-model draft, with portrait and landscape MP4s under `out/what-a-river-connects-draft/`; the verifier checks actual streams, codecs, dimensions and duration.
+
+A separate GitHub Actions job attempts genuine audio and video acceptance on pushes to the production-acceptance branch. Model downloads or native dependencies may prevent execution on CI; such a result is **NOT PASSED**, even if the independent baseline CI job succeeds. Inspect the job logs, `CI_STATUS.txt`, audio evidence, and the `real-model-acceptance` artifact. A machine pass is not equivalent to human listening, visual sign-off, or verified offline rendering. Do not interpret a synthetic test tone as speech.

@@ -38,3 +38,58 @@ jobs:
           path: .reel-work/editorial-draft-smoke/output/*
           if-no-files-found: ignore
           retention-days: 7
+
+  real-model-acceptance:
+    # Genuine local models are a separate acceptance gate from synthetic CI.
+    if: github.event_name == 'push' && github.ref == 'refs/heads/feature/production-acceptance-v0.3'
+    runs-on: ubuntu-latest
+    timeout-minutes: 19
+    env:
+      HF_DISABLE_TELEMETRY: '1'
+      DO_NOT_TRACK: '1'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg espeak-ng
+      - run: npm install --no-audit --no-fund
+      - name: Genuine Kokoro and Whisper word-alignment check
+        id: audio
+        continue-on-error: true
+        timeout-minutes: 12
+        run: npm run test:real-audio
+      - name: Real narrated short MP4 render
+        id: video
+        if: steps.audio.outcome == 'success'
+        continue-on-error: true
+        timeout-minutes: 5
+        run: |
+          npm run explain -- check examples/real_model_acceptance.json --target 15
+          npm run explain -- render examples/real_model_acceptance.json --draft --target 15
+          node tools/real_video_verify.mjs
+      - name: Publish truthful acceptance classification
+        if: always()
+        run: |
+          mkdir -p out/real-model-smoke
+          if test -f out/real-model-smoke/evidence.json; then
+            echo 'Kokoro/Whisper: PASS_REAL_MODELS' > out/real-model-smoke/CI_STATUS.txt
+          else
+            echo 'Kokoro/Whisper: NOT_PASSED (inspect job logs)' > out/real-model-smoke/CI_STATUS.txt
+          fi
+          if test -f out/what-a-river-connects-draft/video-acceptance.json; then
+            echo 'Narrated MP4: PASS_MACHINE_CHECKS' >> out/real-model-smoke/CI_STATUS.txt
+          else
+            echo 'Narrated MP4: NOT_PASSED_OR_SKIPPED' >> out/real-model-smoke/CI_STATUS.txt
+          fi
+          cat out/real-model-smoke/CI_STATUS.txt >> "$GITHUB_STEP_SUMMARY"
+          echo 'Human visual and speech-intelligibility review remains separate.' >> "$GITHUB_STEP_SUMMARY"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: real-model-acceptance
+          path: |
+            out/real-model-smoke/*
+            out/what-a-river-connects-draft/*
+          if-no-files-found: ignore
+          retention-days: 7

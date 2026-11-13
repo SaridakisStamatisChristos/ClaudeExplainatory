@@ -19,7 +19,8 @@
     "test:editorial": "node tools/editorial_hyperframes_smoke.mjs",
     "test:draft": "node tools/editorial_draft_smoke.mjs",
     "doctor": "node bin/reel.mjs doctor",
-    "style-scan": "python3 tools/style_scan.py assets/references"
+    "style-scan": "python3 tools/style_scan.py assets/references",
+    "test:real-audio": "node tools/real_audio_smoke.mjs"
   },
   "dependencies": {
     "gsap": "^3.14.2",
