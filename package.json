@@ -23,7 +23,8 @@
     "test:real-audio": "node tools/real_audio_smoke.mjs",
     "test:diagram": "node tools/diagram_hyperframes_smoke.mjs",
     "test:bars": "node tools/kinetic_bars_smoke.mjs",
-    "test:scene-graph": "node tools/scene_graph_smoke.mjs"
+    "test:scene-graph": "node tools/scene_graph_smoke.mjs",
+    "direct:graph": "node bin/direct-graph.mjs"
   },
   "dependencies": {
     "gsap": "^3.14.2",

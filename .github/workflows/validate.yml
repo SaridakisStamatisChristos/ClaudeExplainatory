@@ -24,7 +24,7 @@ jobs:
       - run: npm ci --no-audit --no-fund && npm run build
         working-directory: .aethermotion-engine
       - run: npm test
-      - run: node --check src/motion/bridge.mjs && node --check src/motion/contract.mjs && node --check bin/reel.mjs
+      - run: node --check src/motion/bridge.mjs && node --check src/motion/contract.mjs && node --check src/motion/director.mjs && node --check bin/direct-graph.mjs && node --check bin/reel.mjs
       - run: npm run explain -- check examples/scene_graph_village.json --target 15
       - name: Real independent-object animation and pixel reproducibility
         run: npm run test:scene-graph
