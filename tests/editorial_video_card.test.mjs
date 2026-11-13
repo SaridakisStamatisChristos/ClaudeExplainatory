@@ -6,8 +6,9 @@ import { buildHTML } from '../src/composition.mjs';
 
 const example=JSON.parse(await readFile(new URL('../examples/editorial_stage_c.json',import.meta.url),'utf8'));
 const timing=example.scenes.map((s,i)=>({start:i*2.2,duration:2.2,audioDuration:2,words:s.say.split(/\s+/).map((word,j)=>({word,start:j*.24,end:(j+1)*.24}))}));
-test('all eleven templates exist; existing editorial scenes validate with explicit v2',()=>{
-  assert.equal(EDITORIAL_TEMPLATES.length,5);
+test('all twelve templates exist; existing editorial scenes validate with explicit v2',()=>{
+  assert.equal(EDITORIAL_TEMPLATES.length,6);
+  assert.ok(EDITORIAL_TEMPLATES.includes('kinetic_bars'));
   assert.equal(checkScript(example,undefined,{targetSeconds:15}).ok,true,checkScript(example).errors.join('; '));
 });
 test('video_card rejects unsupported MP4 and malformed props',()=>{
