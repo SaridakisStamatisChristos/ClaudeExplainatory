@@ -13,7 +13,7 @@ jobs:
         with:
           node-version: 22
       - run: npm test
-      - run: node --check bin/reel.mjs && node --check src/spec.mjs && node --check src/composition.mjs && node --check src/editorial/assets.mjs && node --check src/editorial/layout.mjs && node --check src/editorial/diagram.mjs
+      - run: node --check bin/reel.mjs && node --check src/spec.mjs && node --check src/composition.mjs && node --check src/editorial/assets.mjs && node --check src/editorial/layout.mjs && node --check src/editorial/diagram.mjs && node --check src/editorial/bars.mjs
       - run: python3 -m py_compile tools/*.py
       - run: sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg
       - run: npm run test:integration
@@ -22,6 +22,7 @@ jobs:
       - run: npm run test:hyperframes
       - run: npm run test:editorial
       - run: npm run test:diagram
+      - run: npm run test:bars
       - run: npm run test:draft
       - uses: actions/upload-artifact@v4
         if: always()
@@ -41,6 +42,16 @@ jobs:
             .reel-work/diagram-smoke/diagram.mp4
             .reel-work/diagram-smoke/frames/early.png
             .reel-work/diagram-smoke/frames/late.png
+          if-no-files-found: warn
+          retention-days: 7
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: kinetic-bars-mp4
+          path: |
+            .reel-work/bars-smoke/kinetic-bars.mp4
+            .reel-work/bars-smoke/frames/early.png
+            .reel-work/bars-smoke/frames/late.png
           if-no-files-found: warn
           retention-days: 7
       - uses: actions/upload-artifact@v4

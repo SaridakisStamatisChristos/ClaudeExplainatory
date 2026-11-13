@@ -179,3 +179,7 @@ Measured results on the CI runner: **6.13 seconds** effective render duration, p
 **Next:** Improve illustration diversity and animation vocabulary with per-object controls, strengthen longer-duration reel stability, investigate genuinely offline production, and assess typography/character articulation. Do not mark full 15/30/60 second delivery or character animation as complete without real evidence. The larger renders still need owner authorization.
 
 **Preservation note:** these acceptance artifacts expire after seven days unless downloaded or separately retained. The source code, acceptance scripts, tests and checkpoint are preserved in the branch.
+
+### New kinetic-bars engine checkpoint (2026-11-13)
+
+Developed `src/editorial/bars.mjs`, a strictly validated `kinetic_bars` full-canvas JSON template with staggered GSAP bar growth, synchronized number interpolation, light/parchment tones, no player chrome or remote model calls. Added sample and unit tests, real HyperFrames 2-second chart smoke and `kinetic-bars-mp4` CI artifact. Expanded real-model acceptance to four visual scenes. All numeric content in examples is explicitly illustrative. Actual CI and rendered evidence must be evaluated independently; do not classify the new feature as verified until tests and video review pass.

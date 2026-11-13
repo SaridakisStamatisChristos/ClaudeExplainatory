@@ -105,3 +105,9 @@ A separate GitHub Actions job attempts genuine audio and video acceptance on pus
 The `diagram_reveal` editorial-v2 scene adds fully local vector animation driven by JSON instead of new animation code for each video. Nodes use unique identifiers, short labels, and normalized x/y coordinates from 0 to 1; links reference pairs of existing nodes. Motion reveals the nodes and draws connections over the spoken scene duration. The validator rejects malformed coordinates, duplicate IDs, missing endpoints and unexpected properties.
 
 Run `npm run explain -- check examples/diagram_reveal.example.json --target 15` to validate the included example, and `npm run test:diagram` for a real 2-second HyperFrames animated-diagram video with determinism and visible-change checks (synthetic word timing; this does **not** constitute TTS acceptance). Actual illustrated character articulation is not yet implemented.
+
+## JSON-controlled kinetic charts
+
+`kinetic_bars` adds a genuinely animated, full-canvas chart, driven entirely by JSON. Bar lengths and numerical counters move on independent staggered GSAP tracks; a subtle light gradient crosses the entire illustration. Choose `tone` (`midnight` or `parchment`), `unit` (`percent` or `score`), `heading`, optional `kicker` and `note`, and 2–5 `bars` with a short `label` and an integer `value` in [0, 100]. The strict validator rejects invalid ranges, duplicate labels, unsupported tones and unexpected fields. Label fabricated example numbers as illustrative.
+
+Use `npm run explain -- check examples/kinetic_bars.example.json --target 15`, then `npm run test:bars` to generate and check an actual 2-second 540x960 HyperFrames MP4 (synthetic timing, not TTS). The real Kokoro + Whisper acceptance example now includes four distinct scenes: original river illustration, animated vector diagram, moving data chart and final editorial title.

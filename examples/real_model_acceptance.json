@@ -71,6 +71,34 @@
       }
     },
     {
+      "template": "kinetic_bars",
+      "say": "Their connections grow over time.",
+      "highlight": "grow",
+      "illustrative": true,
+      "sfx": "none",
+      "props": {
+        "heading": "Connections grow",
+        "kicker": "ILLUSTRATIVE INDEX",
+        "unit": "score",
+        "tone": "midnight",
+        "note": "Illustrative scores, not measured observations.",
+        "bars": [
+          {
+            "label": "Village",
+            "value": 28
+          },
+          {
+            "label": "Market",
+            "value": 57
+          },
+          {
+            "label": "City",
+            "value": 86
+          }
+        ]
+      }
+    },
+    {
       "template": "editorial_text_card",
       "say": "Ideas travel across the water.",
       "highlight": "Ideas",
