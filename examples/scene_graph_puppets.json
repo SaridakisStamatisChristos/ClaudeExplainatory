@@ -59,6 +59,133 @@
         },
         "objects": [
           {
+            "id": "sky_cloud_0",
+            "kind": "group",
+            "x": [
+              {
+                "t": 0,
+                "value": 14,
+                "ease": "smooth"
+              },
+              {
+                "t": 1,
+                "value": 36
+              }
+            ],
+            "y": 410,
+            "opacity": 0.34,
+            "children": [
+              {
+                "id": "sky_cloud_0_a",
+                "kind": "circle",
+                "x": 0,
+                "y": 0,
+                "radius": 26,
+                "color": "#B9CCCD"
+              },
+              {
+                "id": "sky_cloud_0_b",
+                "kind": "circle",
+                "x": 27,
+                "y": -11,
+                "radius": 36,
+                "color": "#C5D2D0"
+              },
+              {
+                "id": "sky_cloud_0_c",
+                "kind": "circle",
+                "x": 57,
+                "y": 0,
+                "radius": 27,
+                "color": "#B9CCCD"
+              }
+            ]
+          },
+          {
+            "id": "far_hills_0",
+            "kind": "polygon",
+            "points": [
+              [
+                0,
+                605
+              ],
+              [
+                80,
+                557
+              ],
+              [
+                154,
+                589
+              ],
+              [
+                247,
+                525
+              ],
+              [
+                328,
+                570
+              ],
+              [
+                417,
+                528
+              ],
+              [
+                540,
+                587
+              ],
+              [
+                540,
+                713
+              ],
+              [
+                0,
+                713
+              ]
+            ],
+            "color": "#345961",
+            "opacity": 0.67
+          },
+          {
+            "id": "mid_hills_0",
+            "kind": "polygon",
+            "points": [
+              [
+                0,
+                681
+              ],
+              [
+                104,
+                621
+              ],
+              [
+                211,
+                655
+              ],
+              [
+                291,
+                601
+              ],
+              [
+                407,
+                640
+              ],
+              [
+                540,
+                610
+              ],
+              [
+                540,
+                723
+              ],
+              [
+                0,
+                723
+              ]
+            ],
+            "color": "#517768",
+            "opacity": 0.63
+          },
+          {
             "id": "atmosphere",
             "kind": "glow",
             "x": 420,
@@ -322,37 +449,6 @@
             ]
           },
           {
-            "kind": "puppet",
-            "id": "walking_builder",
-            "x": [
-              {
-                "t": 0,
-                "value": 45,
-                "ease": "smooth"
-              },
-              {
-                "t": 0.85,
-                "value": 346
-              }
-            ],
-            "y": 729,
-            "height": 170,
-            "skin": "#E5AD8C",
-            "shirt": "#ebb669",
-            "trousers": "#425b79",
-            "hair": "#3a2830",
-            "shoes": "#2d2524",
-            "expression": "happy",
-            "outfit": "villager",
-            "facing": "right",
-            "walk": {
-              "start": 0,
-              "end": 0.87,
-              "cycles": 3.6,
-              "strength": 0.75
-            }
-          },
-          {
             "kind": "instance",
             "id": "fresh_cottage",
             "symbol": "cottage",
@@ -388,6 +484,37 @@
             "x": 462,
             "y": 707,
             "scale": 0.62
+          },
+          {
+            "kind": "puppet",
+            "id": "walking_builder",
+            "x": [
+              {
+                "t": 0,
+                "value": 45,
+                "ease": "smooth"
+              },
+              {
+                "t": 0.85,
+                "value": 346
+              }
+            ],
+            "y": 729,
+            "height": 170,
+            "skin": "#E5AD8C",
+            "shirt": "#ebb669",
+            "trousers": "#425b79",
+            "hair": "#3a2830",
+            "shoes": "#2d2524",
+            "expression": "happy",
+            "outfit": "villager",
+            "facing": "right",
+            "walk": {
+              "start": 0,
+              "end": 0.87,
+              "cycles": 3.6,
+              "strength": 0.75
+            }
           }
         ]
       }
@@ -439,6 +566,133 @@
           ]
         },
         "objects": [
+          {
+            "id": "sky_cloud_1",
+            "kind": "group",
+            "x": [
+              {
+                "t": 0,
+                "value": 42,
+                "ease": "smooth"
+              },
+              {
+                "t": 1,
+                "value": 64
+              }
+            ],
+            "y": 386,
+            "opacity": 0.34,
+            "children": [
+              {
+                "id": "sky_cloud_1_a",
+                "kind": "circle",
+                "x": 0,
+                "y": 0,
+                "radius": 26,
+                "color": "#B9CCCD"
+              },
+              {
+                "id": "sky_cloud_1_b",
+                "kind": "circle",
+                "x": 27,
+                "y": -11,
+                "radius": 36,
+                "color": "#C5D2D0"
+              },
+              {
+                "id": "sky_cloud_1_c",
+                "kind": "circle",
+                "x": 57,
+                "y": 0,
+                "radius": 27,
+                "color": "#B9CCCD"
+              }
+            ]
+          },
+          {
+            "id": "far_hills_1",
+            "kind": "polygon",
+            "points": [
+              [
+                0,
+                605
+              ],
+              [
+                80,
+                557
+              ],
+              [
+                154,
+                589
+              ],
+              [
+                247,
+                525
+              ],
+              [
+                328,
+                570
+              ],
+              [
+                417,
+                528
+              ],
+              [
+                540,
+                587
+              ],
+              [
+                540,
+                713
+              ],
+              [
+                0,
+                713
+              ]
+            ],
+            "color": "#415E63",
+            "opacity": 0.67
+          },
+          {
+            "id": "mid_hills_1",
+            "kind": "polygon",
+            "points": [
+              [
+                0,
+                681
+              ],
+              [
+                104,
+                621
+              ],
+              [
+                211,
+                655
+              ],
+              [
+                291,
+                601
+              ],
+              [
+                407,
+                640
+              ],
+              [
+                540,
+                610
+              ],
+              [
+                540,
+                723
+              ],
+              [
+                0,
+                723
+              ]
+            ],
+            "color": "#56745E",
+            "opacity": 0.63
+          },
           {
             "kind": "instance",
             "id": "left_oak",
@@ -702,74 +956,6 @@
             ]
           },
           {
-            "kind": "puppet",
-            "id": "vendor",
-            "x": [
-              {
-                "t": 0,
-                "value": 46,
-                "ease": "smooth"
-              },
-              {
-                "t": 0.85,
-                "value": 293
-              }
-            ],
-            "y": 767,
-            "height": 156,
-            "skin": "#E5AD8C",
-            "shirt": "#d6a459",
-            "trousers": "#334d70",
-            "hair": "#2d2524",
-            "shoes": "#2d2524",
-            "expression": "happy",
-            "outfit": "merchant",
-            "facing": "right",
-            "walk": {
-              "start": 0,
-              "end": 0.87,
-              "cycles": 2.8,
-              "strength": 0.75
-            },
-            "wave": {
-              "start": 0.3,
-              "end": 0.85,
-              "cycles": 2,
-              "arm": "right"
-            }
-          },
-          {
-            "kind": "puppet",
-            "id": "visitor",
-            "x": [
-              {
-                "t": 0,
-                "value": 486,
-                "ease": "smooth"
-              },
-              {
-                "t": 0.85,
-                "value": 344
-              }
-            ],
-            "y": 780,
-            "height": 166,
-            "skin": "#d9a17d",
-            "shirt": "#789eaa",
-            "trousers": "#273747",
-            "hair": "#4c3027",
-            "shoes": "#2d2524",
-            "expression": "curious",
-            "outfit": "scholar",
-            "facing": "left",
-            "walk": {
-              "start": 0,
-              "end": 0.87,
-              "cycles": 2.1,
-              "strength": 0.55
-            }
-          },
-          {
             "id": "market_stall",
             "kind": "group",
             "x": [
@@ -969,6 +1155,74 @@
                 "value": 1
               }
             ]
+          },
+          {
+            "kind": "puppet",
+            "id": "vendor",
+            "x": [
+              {
+                "t": 0,
+                "value": 46,
+                "ease": "smooth"
+              },
+              {
+                "t": 0.85,
+                "value": 293
+              }
+            ],
+            "y": 767,
+            "height": 156,
+            "skin": "#E5AD8C",
+            "shirt": "#d6a459",
+            "trousers": "#334d70",
+            "hair": "#2d2524",
+            "shoes": "#2d2524",
+            "expression": "happy",
+            "outfit": "merchant",
+            "facing": "right",
+            "walk": {
+              "start": 0,
+              "end": 0.87,
+              "cycles": 2.8,
+              "strength": 0.75
+            },
+            "wave": {
+              "start": 0.3,
+              "end": 0.85,
+              "cycles": 2,
+              "arm": "right"
+            }
+          },
+          {
+            "kind": "puppet",
+            "id": "visitor",
+            "x": [
+              {
+                "t": 0,
+                "value": 486,
+                "ease": "smooth"
+              },
+              {
+                "t": 0.85,
+                "value": 344
+              }
+            ],
+            "y": 780,
+            "height": 166,
+            "skin": "#d9a17d",
+            "shirt": "#789eaa",
+            "trousers": "#273747",
+            "hair": "#4c3027",
+            "shoes": "#2d2524",
+            "expression": "curious",
+            "outfit": "scholar",
+            "facing": "left",
+            "walk": {
+              "start": 0,
+              "end": 0.87,
+              "cycles": 2.1,
+              "strength": 0.55
+            }
           }
         ]
       }
