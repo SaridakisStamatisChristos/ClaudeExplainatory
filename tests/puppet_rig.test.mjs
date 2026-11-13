@@ -65,3 +65,16 @@ test('puppet cycles adapt to shot length but the source script stays unchanged',
  assert.notEqual(a.scenes[0].objects.find(o=>o.id==='walking_builder').children[1].rotation.at(-1).frame,
    b.scenes[0].objects.find(o=>o.id==='walking_builder').children[1].rotation.at(-1).frame);
 });
+
+test('articulated figures remain foreground and illustrated scenery moves independently',()=>{
+ for(const scene of example.scenes){
+  const figures=scene.props.objects.filter(x=>x.kind==='puppet');
+  assert.ok(figures.length>0);
+  assert.deepEqual(scene.props.objects.slice(-figures.length).map(x=>x.id),figures.map(x=>x.id));
+  assert.ok(scene.props.objects.some(x=>x.kind==='polygon'&&x.id.startsWith('far_hills_')));
+  assert.ok(scene.props.objects.some(x=>x.kind==='group'&&x.id.startsWith('sky_cloud_')));
+ }
+ const film=compileMotionFilm(example,timings).film;
+ assert.equal(film.durationFrames,147);
+ assert.ok(film.scenes[0].objects.at(-1).id==='walking_builder');
+});

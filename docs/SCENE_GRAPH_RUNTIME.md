@@ -117,3 +117,22 @@ For scene changes, add to a multi-shot `scene_graph` script:
 This uses native camera-independent fade overlays. Between adjacent scenes, the outgoing shot becomes fully covered by the color and the incoming shot emerges through the **same** color. Total film frame count, speech starts and audio coverage are unchanged. Durations outside 0.10–0.80 seconds or too long relative to an individual narration shot are rejected.
 
 Verified by [run 43451954677](https://github.com/SaridakisStamatisChristos/ClaudeExplainatory/actions/runs/43451954677): 60/60 unit checks; 147-frame scene graph at 30 FPS with moving groups, actors and asset instances; explicit transition-frame review of frames 58, 63, 68, 69, 74, 80 (full-color handoff at frames 68→69); and genuine local Kokoro/Whisper narrated exports (120 frames, 4.014 seconds, AAC 48 kHz, portrait and landscape). Artwork still consists of authored procedural primitives rather than arbitrary AI-generated animation from a single photograph. More advanced asset generation and character rigs remain open.
+
+## Articulated characters (puppet v0.1)
+
+A puppet is a **declarative compiler primitive**, not a new frame renderer. `src/motion/puppet.mjs` assembles a multi-part character out of nested native AetherMotion groups with separate rotating limbs, head, trunk, forearms, boots, garment polygons and facial details. It compiles action requests into deterministic sampled keyframe tracks bounded by the scene's actual frame count; the AetherMotion painter remains the only graphical backend. Its design is stylized editorial cartoons, not anatomically faithful inverse kinematics or accurate speech animation.
+
+```json
+{
+  "id": "worker", "kind": "puppet", "x": 85, "y": 735, "height": 166,
+  "skin": "#E5AD8C", "shirt": "#D9A75E", "trousers": "#425B79",
+  "hair": "#3A2830", "shoes": "#292F39",
+  "facing": "right", "outfit": "villager", "expression": "happy",
+  "walk": {"start": 0, "end": 0.85, "cycles": 3.5, "strength": 0.8},
+  "wave": {"start": 0.40, "end": 0.80, "cycles": 2, "arm": "right"}
+}
+```
+
+The artist supplies basic position/color and action intent. `start/end` use normalized scene progress; `cycles` controls a gait or wave count and `strength` bounds the gait angle. Articulation keys are baked at compilation, retimed to the actual narration length. Every generated part receives a unique deterministic internal ID, even when many puppets share the scene. `height` controls character scale while the ground position remains the root origin. This prototype currently offers three outfits (villager, merchant, scholar) and four mouth/eye expressions, but is not genuine lip sync. The richer test demo intentionally places 2D landscape layers behind the figures; object ordering is painter's-order, not automatic depth estimation.
+
+The complete ongoing rig and narrated example is `examples/scene_graph_puppets.json`. Full validation, deterministic frame generation and local-real-model acceptance run in GitHub CI. Avoid classifying a synthetic-tone test as narrated speech.
