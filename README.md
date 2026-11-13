@@ -58,7 +58,7 @@ npm run explain -- voice-sample
 npm run explain -- voice-select af_heart
 ~~~
 
-Schema v2 must explicitly set schema_version:2 and mode:editorial_illustrated. Templates: editorial_split, illustration_motion, editorial_text_card, video_card (compatibility name, no fake player), and diagram_reveal (procedural vector nodes and lines, animated through the video timeline). The original six v1 scene types are supported for existing scripts.
+Schema v2 must explicitly set schema_version:2 and mode:editorial_illustrated. Templates: editorial_split, illustration_motion, editorial_text_card, video_card (compatibility name, no fake player), diagram_reveal (animated vector nodes and connections), and kinetic_bars (staggered animated bars and values). The original six v1 scene types are supported for existing scripts.
 
 Media is restricted to existing local PNG/JPEG/WebP files under assets/, and optional 2-5-layer parallax. MP4 clip inputs and independently animated characters are not yet implemented. Fake player chrome is prohibited.
 
@@ -72,7 +72,7 @@ npm run test:editorial
 npm run test:draft
 ~~~
 
-Unit tests mock speech/transcription and verify schema, strict word alignment, and audio cache. The FFmpeg integration test uses a mock HyperFrames CLI that emits synthetic tones. Video smoke tests use the real HyperFrames renderer with synthetic audio/timing. **Passing these tests does NOT prove an actual Kokoro + Whisper production run**; real model synthesis, word match, disconnected rendering and visual approval remain outstanding.
+Unit tests mock speech/transcription and verify schema, strict word alignment, and audio cache. The FFmpeg integration test uses a mock HyperFrames CLI that emits synthetic tones. Video smoke tests use the real HyperFrames renderer with synthetic audio/timing. **Passing synthetic tests alone does NOT prove actual Kokoro + Whisper production.** Genuine Kokoro/Whisper acceptance and a four-scene narrated MP4 were independently machine-verified on 13 November 2026 (see checkpoint below). A fully disconnected render and human listening/visual sign-off remain outstanding.
 
 ## Documentation
 
@@ -96,7 +96,7 @@ npm run explain -- render examples/real_model_acceptance.json --draft --target 1
 node tools/real_video_verify.mjs
 ~~~
 
-The audio smoke test produces a short real Kokoro `af_heart` WAV, forces local Whisper `small.en` transcription, checks word alignment, measured duration, non-silent signal and verified warm cache. A local result is saved to `out/real-model-smoke/`. The video command creates a **maximum 10-second** real-model draft, with portrait and landscape MP4s under `out/what-a-river-connects-draft/`; the verifier checks actual streams, codecs, dimensions and duration.
+The audio smoke test produces a short real Kokoro `af_heart` WAV, forces local Whisper `small` transcription, checks word alignment, measured duration, non-silent signal and verified warm cache. A local result is saved to `out/real-model-smoke/`. The video command creates a **maximum 10-second** real-model draft, with portrait and landscape MP4s under `out/what-a-river-connects-draft/`; the verifier checks actual streams, codecs, dimensions and duration.
 
 A separate GitHub Actions job attempts genuine audio and video acceptance on pushes to the production-acceptance branch. Model downloads or native dependencies may prevent execution on CI; such a result is **NOT PASSED**, even if the independent baseline CI job succeeds. Inspect the job logs, `CI_STATUS.txt`, audio evidence, and the `real-model-acceptance` artifact. A machine pass is not equivalent to human listening, visual sign-off, or verified offline rendering. Do not interpret a synthetic test tone as speech.
 
@@ -111,3 +111,7 @@ Run `npm run explain -- check examples/diagram_reveal.example.json --target 15` 
 `kinetic_bars` adds a genuinely animated, full-canvas chart, driven entirely by JSON. Bar lengths and numerical counters move on independent staggered GSAP tracks; a subtle light gradient crosses the entire illustration. Choose `tone` (`midnight` or `parchment`), `unit` (`percent` or `score`), `heading`, optional `kicker` and `note`, and 2–5 `bars` with a short `label` and an integer `value` in [0, 100]. The strict validator rejects invalid ranges, duplicate labels, unsupported tones and unexpected fields. Label fabricated example numbers as illustrative.
 
 Use `npm run explain -- check examples/kinetic_bars.example.json --target 15`, then `npm run test:bars` to generate and check an actual 2-second 540x960 HyperFrames MP4 (synthetic timing, not TTS). The real Kokoro + Whisper acceptance example now includes four distinct scenes: original river illustration, animated vector diagram, moving data chart and final editorial title.
+
+### Latest verified video checkpoint — 13 November 2026
+
+At source commit `648e4e2918960b2d4450b52542c05791c88d042f` the [validation run](https://github.com/SaridakisStamatisChristos/ClaudeExplainatory/actions/runs/43428630212) passed the entire baseline static, 47-unit-test and short-render suite, including a **real HyperFrames two-second kinetic chart MP4** and frame-determinism checks. The [four-scene narrated run](https://github.com/SaridakisStamatisChristos/ClaudeExplainatory/actions/runs/43428527901) separately passed the Kokoro/Whisper and narrated video acceptance steps; it exported **8.152-second** H.264+AAC 48-kHz portrait (540×960) and landscape (960×540) videos. Its source differs from the current commit only in the later correction of an obsolete template-count test. The [narrated artifact](https://github.com/SaridakisStamatisChristos/ClaudeExplainatory/actions/runs/43428527901/artifacts/14038494562) and [kinetic chart artifact](https://github.com/SaridakisStamatisChristos/ClaudeExplainatory/actions/runs/43428630212/artifacts/14038770274) are temporary (retention seven days). Machine pass does not establish human speech-intelligibility, animation polish or fully disconnected operation.
