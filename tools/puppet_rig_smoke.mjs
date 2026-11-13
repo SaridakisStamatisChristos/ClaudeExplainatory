@@ -30,8 +30,10 @@ const staged=await stageMotionFilm(script,timings,work,{draft:true});
 const scene0=staged.film.scenes[0].objects.find(o=>o.id==='walking_builder');
 if(scene0?.kind!=='group')throw Error('Puppet must compile to native nested group');
 const collect=(node,ids=[])=>{ids.push(node.id);for(const c of node.children||[])collect(c,ids);return ids};
-const all=staged.film.scenes.flatMap(s=>s.objects.flatMap(o=>collect(o)));
-if(new Set(all).size!==all.length)throw Error('Puppet rig parts must have isolated unique IDs');
+for(const shot of staged.film.scenes){
+ const ids=shot.objects.flatMap(o=>collect(o));
+ if(new Set(ids).size!==ids.length)throw Error('Puppet rig parts must have isolated unique IDs within shot '+shot.id);
+}
 const body=scene0.children.find(o=>o.kind==='group'&&o.children?.some(c=>c.kind==='group'&&c.children?.some(q=>q.kind==='circle')));
 if(!body)throw Error('No articulated body/head hierarchy compiled');
 call(process.execPath,[cli,'validate',staged.path]);

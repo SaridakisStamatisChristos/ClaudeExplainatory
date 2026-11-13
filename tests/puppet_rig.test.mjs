@@ -62,6 +62,6 @@ test('puppet cycles adapt to shot length but the source script stays unchanged',
  assert.equal(a.scenes[0].frames,69);
  assert.equal(b.scenes[0].frames,96);
  assert.equal(JSON.stringify(example),before);
- assert.notEqual(a.scenes[0].objects.find(o=>o.id==='walking_builder').children[1].rotation.length,
-   b.scenes[0].objects.find(o=>o.id==='walking_builder').children[1].rotation.length);
+ assert.notEqual(a.scenes[0].objects.find(o=>o.id==='walking_builder').children[1].rotation.at(-1).frame,
+   b.scenes[0].objects.find(o=>o.id==='walking_builder').children[1].rotation.at(-1).frame);
 });
