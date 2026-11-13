@@ -11,6 +11,7 @@ import { synthesizeSpeech } from '../src/audio/hyperframes.mjs';
 const ROOT=resolve(dirname(fileURLToPath(import.meta.url)),'..');
 const CLI=join(ROOT,'node_modules','.bin','hyperframes');
 const PYTHON=existsSync(join(ROOT,'.venv','bin','python'))?join(ROOT,'.venv','bin','python'):'python3';
+const KOKORO_PYTHON=process.env.HYPERFRAMES_PYTHON || (existsSync(join(ROOT,'.venv','bin','python')) ? join(ROOT,'.venv','bin','python') : null);
 const CFG=join(ROOT,'config.json');
 const flags=new Set(), args=[];
 let targetSeconds=DEFAULT_TARGET_SECONDS, argumentError='';
@@ -31,7 +32,7 @@ const draft=flags.has('--draft');
 function fail(message) { console.error(`ERROR: ${message}`); process.exitCode=1; }
 async function run(executable,argv,{cwd=ROOT,quiet=true}={}) {
   return new Promise((resolve,reject)=>{
-    const child=spawn(executable,argv,{cwd,stdio:['ignore','pipe','pipe'],env:{...process.env,HF_DISABLE_TELEMETRY:'1',DO_NOT_TRACK:'1'}});
+    const child=spawn(executable,argv,{cwd,stdio:['ignore','pipe','pipe'],env:{...process.env,...(KOKORO_PYTHON?{HYPERFRAMES_PYTHON:KOKORO_PYTHON}:{}),HF_DISABLE_TELEMETRY:'1',DO_NOT_TRACK:'1',ORT_DISABLE_TELEMETRY:'1'}});
     let out='',err='';
     child.stdout.on('data',b=>{out+=b.toString();if(out.length>4_000_000) out=out.slice(-4_000_000);});
     child.stderr.on('data',b=>{err+=b.toString();if(err.length>4_000_000) err=err.slice(-4_000_000);});

@@ -12,7 +12,7 @@ HyperFrames supplies local Kokoro voice synthesis, local Whisper transcription f
 - Word timing: HyperFrames transcribe (local Whisper; every word must match the script)
 - Video: HyperFrames + GSAP
 - Audio mixing, normalization and exports: FFmpeg
-- Python 3: standard-library-only for generating optional sound effects and one CI test; **no Python packages or virtual environment needed**
+- Python 3: standard-library sound effects, plus an **isolated** `.venv` with `kokoro-onnx` and `soundfile` required by HyperFrames itself
 
 Models are downloaded by HyperFrames on first use and then cached. No API key needed. Fully disconnected production has not yet been independently tested.
 
@@ -22,10 +22,11 @@ Install Node.js **22+** with your preferred Node version manager when the distri
 
 ~~~bash
 sudo apt update
-sudo apt install -y git ffmpeg python3 espeak-ng
+sudo apt install -y git ffmpeg python3 python3-venv espeak-ng
 git clone https://github.com/SaridakisStamatisChristos/ClaudeExplainatory.git
 cd ClaudeExplainatory
 npm install --no-audit --no-fund
+bash tools/setup_kokoro_runtime.sh
 npm run doctor
 ~~~
 
@@ -36,7 +37,7 @@ npx hyperframes browser ensure
 npx hyperframes tts --list
 ~~~
 
-**No pip, Python venv, or separate Kokoro clone.** HyperFrames handles local model installation on the first narration/transcription run.
+**No separate Kokoro application or duplicate speech stack.** HyperFrames invokes `kokoro-onnx` from the project `.venv`, installed once using the setup script; the CLI still owns speech synthesis, and Whisper remains its local transcription engine.
 
 ## Make a video
 
@@ -86,7 +87,7 @@ ClaudeCreate is unaffected.
 
 ## Genuine model acceptance (not a mock)
 
-The deterministic CI suite uses simulated audio and is separate from real speech acceptance. With Node 22+, `ffmpeg`, `ffprobe`, `espeak-ng`, and `npm install` completed, run:
+The deterministic CI suite uses simulated audio and is separate from real speech acceptance. With Node 22+, `ffmpeg`, `ffprobe`, `espeak-ng`, and `npm install` completed, and `bash tools/setup_kokoro_runtime.sh` run once, execute:
 
 ~~~bash
 npm run test:real-audio

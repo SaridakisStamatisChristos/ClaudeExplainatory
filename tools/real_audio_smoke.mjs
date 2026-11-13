@@ -10,13 +10,14 @@ import {synthesizeSpeech} from '../src/audio/hyperframes.mjs';
 const root=resolve(dirname(fileURLToPath(import.meta.url)),'..');
 const cli=join(root,'node_modules','.bin','hyperframes');
 const folder=join(root,'out','real-model-smoke');
+const runtimePython=process.env.HYPERFRAMES_PYTHON || (existsSync(join(root,'.venv','bin','python')) ? join(root,'.venv','bin','python') : null);
 const say='A river brings people together.';
 if(!existsSync(cli))throw Error('BLOCKED: Run npm install to obtain HyperFrames');
 
 async function run(command,args,{cwd=root}={}){
   return new Promise((resolve,reject)=>{
     const child=spawn(command,args,{cwd,stdio:['ignore','pipe','pipe'],
-      env:{...process.env,HF_DISABLE_TELEMETRY:'1',DO_NOT_TRACK:'1'}});
+      env:{...process.env,...(runtimePython?{HYPERFRAMES_PYTHON:runtimePython}:{}),HF_DISABLE_TELEMETRY:'1',DO_NOT_TRACK:'1',ORT_DISABLE_TELEMETRY:'1'}});
     let out='',err='';
     child.stdout.on('data',b=>{out=(out+b.toString()).slice(-200000);});
     child.stderr.on('data',b=>{err=(err+b.toString()).slice(-200000);});

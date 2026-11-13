@@ -53,6 +53,11 @@ jobs:
         with:
           node-version: 22
       - run: sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg espeak-ng
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: bash tools/setup_kokoro_runtime.sh
+      - run: echo "HYPERFRAMES_PYTHON=$GITHUB_WORKSPACE/.venv/bin/python" >> "$GITHUB_ENV"
       - run: npm install --no-audit --no-fund
       - name: Genuine Kokoro and Whisper word-alignment check
         id: audio

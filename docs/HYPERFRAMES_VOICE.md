@@ -1,16 +1,17 @@
 # Native HyperFrames Kokoro + transcription
 
-HyperFrames includes Kokoro-82M TTS and local Whisper transcription. ClaudeExplainatory uses those directly, eliminating the redundant Python kokoro and faster-whisper packages, tools/tts.py and requirements.txt.
+HyperFrames includes Kokoro-82M TTS and local Whisper transcription. ClaudeExplainatory uses those directly, eliminating the redundant project-level speech pipeline (tools/tts.py and requirements.txt). HyperFrames itself **requires** an isolated Python `kokoro-onnx` and `soundfile` runtime for its Kokoro command, as confirmed by actual CI execution. This is a dependency of the *single* HyperFrames engine, not a second TTS implementation.
 
 ## Install
 
 ~~~bash
-sudo apt install -y ffmpeg python3 espeak-ng
+sudo apt install -y ffmpeg python3 python3-venv espeak-ng
 npm install
+bash tools/setup_kokoro_runtime.sh
 npx hyperframes tts --list
 ~~~
 
-Python3 remains for stdlib sound-effect synthesis and mock CI only. No pip or venv.
+Python3 remains for stdlib sound-effect synthesis and mock CI. For genuine Kokoro synthesis, use the isolated `.venv` created by `setup_kokoro_runtime.sh`; CLI runners automatically use `.venv/bin/python` through `HYPERFRAMES_PYTHON`, unless that environment variable was explicitly set.
 
 ## Commands used by the app
 
