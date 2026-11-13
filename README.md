@@ -23,7 +23,7 @@ Install Node.js **22+** with your preferred Node version manager when the distri
 ~~~bash
 sudo apt update
 sudo apt install -y git ffmpeg python3 python3-venv espeak-ng
-git clone https://github.com/SaridakisStamatisChristos/ClaudeExplainatory.git
+git clone --branch feature/production-acceptance-v0.3 https://github.com/SaridakisStamatisChristos/ClaudeExplainatory.git
 cd ClaudeExplainatory
 npm install --no-audit --no-fund
 bash tools/setup_kokoro_runtime.sh
@@ -60,7 +60,7 @@ npm run explain -- voice-select af_heart
 
 Schema v2 must explicitly set schema_version:2 and mode:editorial_illustrated. Templates: editorial_split, illustration_motion, editorial_text_card, video_card (compatibility name, no fake player), diagram_reveal (animated vector nodes and connections), and kinetic_bars (staggered animated bars and values). The original six v1 scene types are supported for existing scripts.
 
-Media is restricted to existing local PNG/JPEG/WebP files under assets/, and optional 2-5-layer parallax. MP4 clip inputs and independently animated characters are not yet implemented. Fake player chrome is prohibited.
+Legacy illustrated scene media accepts existing local PNG/JPEG/WebP files under assets/, plus optional 2–5-layer parallax. The opt-in `scene_graph` backend also accepts local PNG/JPEG image objects and independently animated procedural characters via AetherMotion. MP4 clip inputs and realistic character rigs are not supported. Fake player chrome is prohibited.
 
 ## Tests
 
@@ -172,3 +172,11 @@ The director supports `--model MODEL`, `--tokens 2048..32768`, and `--retries 0.
 - [Complete scene graph authoring reference](docs/SCENE_GRAPH_RUNTIME.md).
 
 **Known limitations:** visuals are currently composed from procedural shapes, stylized actors and user-supplied local images—not arbitrary high-detail AI-generated characters or complex image-to-video motion. Scenes are cut sequentially; polished transitions, character lip-sync and arbitrary mixed legacy templates remain future work. A successful software render does not itself guarantee engaging cinematic aesthetics.
+
+### Hierarchical animation, reusable symbols and scene transitions — verified 13 November 2026
+
+The current script supports **nested** `group` objects, filled `polygon` objects, radial `glow` effects, and a top-level named `scene_symbols` catalog. Define a reusable graphic as an array of local-coordinate drawable parts, then place it as `{"kind":"instance","id":"unique","symbol":"catalog_name","x":250,"y":600,"scale":0.9}`. The compiler expands these instances into isolated native AetherMotion groups, namespaces all child IDs, and preserves transform keyframes for independently moving versions of the same artwork. Symbols can include nested groups and assets but cannot reference other symbols (no recursion).
+
+A global `scene_transition` such as `{"kind":"fade","duration":0.26,"color":"#1C2937"}` connects adjacent scenes through one consistent color without changing video duration or narrator timing. The underlying renderer applies these fades **after the camera**, so the overlay covers the entire portrait even during camera movement. These are fade-through-color transitions, **not** cross-dissolves of two simultaneous scenes.
+
+The village demo at `examples/scene_graph_village.json` uses reusable cottage/tree instances in multiple shots, nested market-stall geometry, changing light, walking actors and a transition. Reproduce it with the AetherMotion setup above, then `npm run explain -- render examples/scene_graph_village.json --draft --target 15`. [Verified CI run 43451954677](https://github.com/SaridakisStamatisChristos/ClaudeExplainatory/actions/runs/43451954677) passed **60 Node unit tests**, 147-frame synthetic-audio graphics verification, and a separate genuine Kokoro/Whisper **120-frame narrated** video in both sizes. Artifacts: [scene-graph 147-frame test](https://github.com/SaridakisStamatisChristos/ClaudeExplainatory/actions/runs/43451954677/artifacts/14050622185) and [narrated MP4s](https://github.com/SaridakisStamatisChristos/ClaudeExplainatory/actions/runs/43451954677/artifacts/14052705364). Both are retained for seven days. This is tested procedural 2D animation, not yet realistic illustration-to-video or studio-grade character acting.
