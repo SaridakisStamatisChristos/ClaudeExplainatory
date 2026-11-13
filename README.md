@@ -1,80 +1,85 @@
-# ClaudeExplainatory — Local Illustrated Explainer Video Studio
+# ClaudeExplainatory
 
-**A standalone application for full-canvas animated educational explainer reels.** This project contains the editorial video functionality formerly developed on ClaudeCreate's experimental v0.2 branch. It does **not** require installing or running ClaudeCreate.
+Local-first illustrated explainer video maker. The picture **is the whole video**, with pan/zoom, layered parallax, editorial typography and captions, not a simulated player inside the video.
 
-The illustration **is the video**: original/local artwork fills the entire vertical frame, with animation, editorial text and timed subtitles layered over it. No fake embedded video player, border, play button, progress indicator or nested interface.
+ClaudeExplainatory works independently of ClaudeCreate. No paid model/API calls required.
 
-## Features
+## One audio/video engine: HyperFrames
 
-- Original or appropriately licensed local PNG/JPEG/WebP art, deterministic pan/zoom, optional 2–5 transparent parallax layers
-- Four visual scene templates: `editorial_split`, `illustration_motion`, `editorial_text_card`, `video_card` (legacy name, **full canvas**)
-- Explicit versioned JSON schema with strict validation, safe local media staging, text escaping, and predictable rendering
-- Local Kokoro narration with word timestamps, HyperFrames + GSAP, FFmpeg audio mixing and measured two-pass loudness
-- Vertical Instagram MP4, landscape YouTube MP4, captions, thumbnail stills, credits
-- All six original classic templates remain supported for existing scripts, but the editorial ones are the focus
-- Free, local rendering after initial setup; no paid APIs or cloud rendering
+HyperFrames supplies local Kokoro voice synthesis, local Whisper transcription for word-level captions, and video rendering. We call that existing CLI instead of maintaining another Python Kokoro and faster-whisper package.
 
-## Install — Linux Mint / Ubuntu
+- Narration: HyperFrames TTS (Kokoro, entirely on-device)
+- Word timing: HyperFrames transcribe (local Whisper; every word must match the script)
+- Video: HyperFrames + GSAP
+- Audio mixing, normalization and exports: FFmpeg
+- Python 3: standard-library-only for generating optional sound effects and one CI test; **no Python packages or virtual environment needed**
 
-Prerequisites: **Node.js 22+**, Python **3.11/3.12**, FFmpeg / FFprobe, a Chromium browser supported by HyperFrames, and `espeak-ng`. Install the base packages:
+Models are downloaded by HyperFrames on first use and then cached. No API key needed. Fully disconnected production has not yet been independently tested.
 
-```bash
+## Install on Linux Mint or Ubuntu
+
+Install Node.js **22+** with your preferred Node version manager when the distribution's package is older. Install the other dependencies:
+
+~~~bash
 sudo apt update
-sudo apt install -y git curl ffmpeg espeak-ng libsndfile1 python3 python3-venv python3-pip build-essential
-```
-
-If your OS packages provide an older Node version, install Node 22+ from an appropriate Node version manager. If `python3` isn't 3.11/3.12, create the virtual environment using `python3.12 -m venv .venv` after installing it.
-
-```bash
+sudo apt install -y git ffmpeg python3 espeak-ng
 git clone https://github.com/SaridakisStamatisChristos/ClaudeExplainatory.git
 cd ClaudeExplainatory
 npm install --no-audit --no-fund
-python3 -m venv .venv
-source .venv/bin/activate
-python -m pip install --upgrade pip
-python -m pip install -r requirements.txt
 npm run doctor
-```
+~~~
 
-HyperFrames may require a one-time compatible-browser installation. Kokoro / faster-whisper model files may download on first use; production is designed to work locally after dependencies are cached, but a fully disconnected end-to-end test is still pending.
+If HyperFrames needs a rendering browser, install it once:
 
-## Create an illustrated explainer
+~~~bash
+npx hyperframes browser ensure
+npx hyperframes tts --list
+~~~
 
-The repository includes original demonstration artwork at `assets/editorial/demo-landscape.png` and a transparent foreground at `assets/editorial/demo-trees.png`. Start with `examples/editorial_v2.example.json`. It uses `"schema_version":2` and `"mode":"editorial_illustrated"`.
+**No pip, Python venv, or separate Kokoro clone.** HyperFrames handles local model installation on the first narration/transcription run.
 
-```bash
-npm test
+## Make a video
+
+Start with the validated full-canvas script in examples/editorial_v2.example.json and our original example artwork under assets/editorial/.
+
+~~~bash
 npm run explain -- check examples/editorial_v2.example.json --target 15
 npm run explain -- preview examples/editorial_v2.example.json --draft --target 15
 npm run explain -- render examples/editorial_v2.example.json --draft --target 15
-```
+~~~
 
-The `preview` and `render` commands synthesize **real** Kokoro audio and require a working local model installation. `--draft` renders 540×960 and clips the rendered length at 10 seconds. The `--target` option sets checker expectations (15, 30 or 60 seconds), not a guaranteed final audio duration. `npm run reel` is a compatibility alias.
+The first check uses no model. Preview generates word-synced still frames. Render uses Kokoro narration and creates a short portrait Instagram MP4 and landscape YouTube MP4, thumbnails, caption text and credits. Drafts are at most 10 seconds at 540x960. Full 1080x1920 production requires owner approval before extended rendering. The --target 15/30/60 flag sets warning expectations, not exact spoken duration.
 
-The original six classic templates work with unversioned v1 scripts. The new illustrated templates require explicit v2, preserve the maximum **16-word narration per scene**, and accept only local paths under `assets/`. No remote assets, arbitrary HTML/JS/CSS from JSON, missing files, or media path traversal. `player_chrome:true` is intentionally invalid; the video is full-screen. Local MP4 *input* clips are not yet supported pending deterministic seeking tests.
+Voice options:
 
-## Testing and status
+~~~bash
+npm run explain -- voice-sample
+npm run explain -- voice-select af_heart
+~~~
 
-```bash
+Schema v2 must explicitly set schema_version:2 and mode:editorial_illustrated. Templates: editorial_split, illustration_motion, editorial_text_card, video_card (last name retained only for compatibility; artwork remains full-canvas). The original six v1 scene types are supported for existing scripts.
+
+Media is restricted to existing local PNG/JPEG/WebP files under assets/, and optional 2-5-layer parallax. MP4 clip inputs and independently animated characters are not yet implemented. Fake player chrome is prohibited.
+
+## Tests
+
+~~~bash
 npm test
 npm run test:integration
 npm run test:hyperframes
 npm run test:editorial
 npm run test:draft
-```
+~~~
 
-The editorial HyperFrames smoke test is a real **2-second video capture** at 540×960 using synthetic word metadata. The draft smoke renders an **8.4-second video**, runs FFmpeg/FFprobe and creates both orientations using a **synthetic test tone**, **not Kokoro speech**. The other synthetic integration test uses a dummy renderer. CI status is not proof of a fully narrated Kokoro production reel.
-
-**Outstanding gates:** actual Kokoro + end-to-end word alignment, fully disconnected production and independent aesthetic approval. Do not render >10 seconds at draft resolution without owner approval.
+Unit tests mock speech/transcription and verify schema, strict word alignment, and audio cache. The FFmpeg integration test uses a mock HyperFrames CLI that emits synthetic tones. Video smoke tests use the real HyperFrames renderer with synthetic audio/timing. **Passing these tests does NOT prove an actual Kokoro + Whisper production run**; real model synthesis, word match, disconnected rendering and visual approval remain outstanding.
 
 ## Documentation
 
-- [Editorial JSON spec](docs/EDITORIAL_ILLUSTRATED_V0_2_SPEC.md)
-- [Correct full-canvas visual direction](docs/EDITORIAL_FULL_CANVAS_V0_2.md)
-- [Script schema and backward compatibility](docs/SCRIPT_SPEC.md)
-- [Rendering architecture](docs/ARCHITECTURE.md)
-- [Acceptance matrix](docs/EDITORIAL_V0_2_ACCEPTANCE.md)
-- [Free Claude Chat script prompt](prompts/CLAUDE_EDITORIAL_REEL_MASTER.md)
-- [Project split history](docs/MIGRATION_FROM_CLAUDECREATE.md)
+- [Native HyperFrames speech integration](docs/HYPERFRAMES_VOICE.md)
+- [Full-canvas artistic direction](docs/EDITORIAL_FULL_CANVAS_V0_2.md)
+- [Editor JSON specification](docs/EDITORIAL_ILLUSTRATED_V0_2_SPEC.md)
+- [Architecture](docs/ARCHITECTURE.md)
+- [Claude Chat script prompt](prompts/CLAUDE_EDITORIAL_REEL_MASTER.md)
+- [Migration from ClaudeCreate](docs/MIGRATION_FROM_CLAUDECREATE.md)
 
-The original general-purpose ClaudeCreate repository remains separate. No runtime dependency on ClaudeCreate is needed here.
+ClaudeCreate is unaffected.

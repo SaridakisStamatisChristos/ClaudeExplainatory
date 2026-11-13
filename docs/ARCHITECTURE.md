@@ -1,36 +1,30 @@
-# Architecture and verification
+# ClaudeExplainatory Architecture
 
-**CLI:** `bin/reel.mjs` parses commands and delegates strict script validation to `src/spec.mjs` and HyperFrames composition creation to `src/composition.mjs`.
+## Speech: one native HyperFrames engine
 
-**Speech:** `tools/tts.py` uses the open-source Kokoro KPipeline to generate local 24 kHz mono WAV speech. Word timing comes from Kokoro's predicted token timestamps where complete. If incomplete, locally-installed faster-whisper generates word-level alignment; missing aligned words stop production with a clear error rather than fabricating word times. Speech segments are SHA-256 cached by voice/text/version.
+Speech is generated using the installed HyperFrames local Kokoro TTS, not a second Python Kokoro library. Precise word timing comes from HyperFrames' local whisper.cpp transcription. The source adapter is src/audio/hyperframes.mjs.
 
-**Video:** Each template is a timed HTML clip with a registered paused GSAP timeline. A single caption component builds word spans, reveals them at exact timestamps and colors the matching highlight. 3D scenes use a local `three.module.js` copy with deterministic time-based animation and a CSS fallback if WebGL fails. No CDN resources are referenced. The generated HyperFrames project resides in `.reel-work` and is not a server app.
+1. SHA-256 of exact script text, voice ID and adapter version keys an isolated directory under .cache/voices/.
+2. HyperFrames TTS creates narration.wav inside the directory.
+3. HyperFrames transcribe writes word-level transcript.json into the same isolated directory, using English small.en or multilingual large-v3 selected by Kokoro voice prefix.
+4. FFprobe measures WAV duration.
+5. The adapter checks ordered transcription match for EVERY scripted word, timing chronology, finite timestamps and WAV bounds. On missing words or invalid data, rendering stops. No fabricated caption timings.
+6. Only fully aligned audio metadata is cached in timing.json. Voice samples and normal renders use exactly the same pipeline.
 
-**Audio:** FFmpeg places each voice/sfx file using sample-aligned per-scene delays, optionally includes a provided music track, and runs measured two-pass `loudnorm` with −14 LUFS / −1.5 dBTP target. The normalized track is muxed into vertical MP4; a blurred, darkened landscape reframe is created by FFmpeg. Thumbnails and caption are extracted/written afterwards.
+On first use Kokoro and Whisper weights may download. No paid APIs or external TTS calls. Model-level end-to-end audio remains to be tested on a local machine.
 
-**Style:** `tools/style_scan.py` analyzes references offline at 4 fps, measures scene-cut counts, and emits up to two 5×5 contact sheets per reel. Font and position estimates need human review. No unsupported claims of automatic typography detection.
+## Visuals and outputs
 
-**Testing:** `node tools/hyperframes_smoke.mjs` runs a real 1-second local HyperFrames rendering smoke test (requires npm packages but not Kokoro). `python3 tools/smoke_test.py` runs the actual FFmpeg export pipeline against deterministic synthetic WAVs and a dummy renderer. This is not a genuine HyperFrames or Kokoro test. `node --test` exercises the JSON schema, six template emission, and escaping, without TTS models or network. Full integration must be tested on a machine with the HyperFrames CLI and Kokoro weights installed. Never interpret static green tests as proof a video was rendered. `--draft` bounds render to <=10s.
+src/spec.mjs checks strict unversioned v1 compatibility and explicit v2 editorial JSON. src/editorial/assets.mjs verifies local image paths, rejects traversal/URLs and stages local images. src/editorial/layout.mjs and src/composition.mjs render 1080x1920 full-canvas artwork, parallax, paper typography, GSAP deterministic camera movement and word-timed captions. There is no embedded player frame. The six older templates remain compatible. MP4 source seeking is not supported.
 
-**Current known limits:** Default Kokoro voice examples are English; other languages require compatible phonemization and may not align. Full rendering is CPU/GPU intensive. Actual cuts, style and WPM cannot be derived from references until videos are supplied. User-provided music licenses are the user's responsibility. Kokoro and faster-whisper download model assets once unless already cached; no paid inference API is used.
+HyperFrames renders frames to an MP4. FFmpeg layers narration, synthesized CC0 sound effects from the Python3 standard-library-only tools/synth_sfx.py, and optional licensed music. Two-pass loudnorm targets -14 LUFS and -1.5 dBTP. Output: portrait MP4, landscape MP4, thumbnail stills, caption text and credits. Draft is capped at 10 seconds, 540x960. No network needed for video output after setup.
 
+## Verification boundaries
 
-## Editorial illustrated v0.2 branch extension
+- npm test: JSON validation, media security, full canvas, word alignment, adapter cache and mocked HyperFrames CLI calls
+- npm run test:integration: real FFmpeg exports + mock HyperFrames TTS/transcribe/render, synthetic tone
+- npm run test:hyperframes and npm run test:editorial: real HyperFrames short frame capture, synthetic timing
+- npm run test:draft: real 8.4-second HyperFrames capture and portrait/landscape FFmpeg/FFprobe, synthetic tone
+- NOT yet verified: genuine Kokoro model speech + Whisper word-match end-to-end, disconnected production and human visual signoff
 
-The original CLI, Kokoro timing/alignment, GSAP/Three classic scene composition, FFmpeg audio, and output packaging remain in place. src/spec.mjs selects strict unversioned v1 or explicit schema_version:2 + mode:editorial_illustrated. The four editorial templates reuse the standard scene timing and caption word metadata.
-
-- src/editorial/assets.mjs verifies media paths against a single approved repository assets root, resolves real paths, checks file/size/extension constraints, and stages only referenced assets in a generated media directory under content-derived safe filenames. No JSON-provided HTML/CSS/JS is executed.
-- src/editorial/layout.mjs owns the warm paper palette, upper framed image/player, lower serif headline, layered illustration, video card, and escaped markup. The original dark six-template composition is unchanged.
-- src/composition.mjs integrates these v2 layouts into existing HyperFrames HTML, GSAP absolute-time scene animation, image motion, and caption words. Pan/zoom uses at least 9% image-scale overscan and a bounded horizontal motion; explicit layers move at depth-weighted rates. Player progress is time-based.
-- Local MP4 clip input is not enabled because deterministic browser frame seeking has not been demonstrated. video_card is an image-backed moving visual today.
-- assets/editorial contains project-generated, rights-cleared PNG illustrations: a river landscape and transparent foliage layer. There are no runtime CDN references.
-
-**Test levels are distinct:** npm test covers validation/escaping/security and composition markup. tools/editorial_hyperframes_smoke.mjs creates a genuine 2-second local HyperFrames draft and frame samples. tools/editorial_draft_smoke.mjs creates an actual 8.4-second 540×960 HyperFrames draft using synthetic timing, then FFmpeg two-pass-measured audio tone, 960×540 export, ffprobe, still images and captions/credits. These do NOT prove end-to-end genuine Kokoro narration, word alignment, caption visual signoff, or fully disconnected offline operation. The existing tools/smoke_test.py is a synthetic FFmpeg integration test with a dummy renderer; do not misreport it as a Kokoro video render.
-
-Do not run tests longer than 10 seconds at 540×960 or merge into main without explicit approval. GitHub CI artifacts provide visual material for human review.
-
-## Correction to v0.2 creative direction — full-canvas illustration
-
-The owner clarified that the supplied screenshot represents the **finished video itself**, not a player embedded inside a second video. The previous inset-player design is superseded. In all four v2 editorial templates, artwork/typography occupies the full 1080×1920 scene. A lower legibility gradient supports text and synchronized captions over the illustration. There are **no fake playback controls, inset player frames, handles or footers**. The legacy video_card name remains for schema compatibility but its visual is full-frame. Optional player_chrome must be omitted or false; true now fails validation. The original six v1 templates are unchanged.
-
-See [full-canvas correction and testing](EDITORIAL_FULL_CANVAS_V0_2.md). Prior embedded-player screenshots and their visual audits are historical engineering evidence, not approval of the corrected design.
+ClaudeExplainatory is standalone and does not modify ClaudeCreate.

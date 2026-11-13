@@ -40,7 +40,7 @@ def main(folder):
             name=f'{kind}_{variant}.wav'
             write(folder/name,effect(kind,variant))
             names.append(name)
-    (folder/'CREDITS.txt').write_text('Original electronic sounds synthesized algorithmically for ClaudeCreate.\n18 WAVs, 24 kHz, mono. Dedicated to the public domain under CC0-1.0.\nNo downloaded, copyrighted, or third-party samples used.\nFiles: '+', '.join(names)+'\n')
+    (folder/'CREDITS.txt').write_text('Original electronic sounds synthesized algorithmically for ClaudeExplainatory.\n18 WAVs, 24 kHz, mono. Dedicated to the public domain under CC0-1.0.\nNo downloaded, copyrighted, or third-party samples used.\nFiles: '+', '.join(names)+'\n')
     print(f'generated {len(names)} local CC0 effects')
 
 if __name__=='__main__':

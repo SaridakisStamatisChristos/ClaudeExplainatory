@@ -13,3 +13,7 @@ Transferred: original procedural landscape and transparent foreground, JSON v2 v
 **Verification:** Short HyperFrames and synthetic-audio exports may pass CI. Actual Kokoro end-to-end, offline-disconnected production and artist signoff remain separately unverified. MP4 source seeking is not enabled. No >10-second draft renders without approval.
 
 Original development checkpoint: https://github.com/SaridakisStamatisChristos/ClaudeCreate/commit/3715435bb9b26cfc64e933e1f564571bfdae2ce7
+
+## Native HyperFrames audio update
+
+The redundant Python Kokoro and faster-whisper dependencies were removed. Narration and speech timestamps now use the installed local HyperFrames CLI.
