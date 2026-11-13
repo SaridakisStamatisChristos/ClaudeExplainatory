@@ -8,6 +8,7 @@ import { DEFAULTS, loadScript, DEFAULT_TARGET_SECONDS, ALLOWED_TARGET_SECONDS } 
 import { writeComposition } from '../src/composition.mjs';
 import { synthesizeSpeech } from '../src/audio/hyperframes.mjs';
 import { sceneGraphOnly, stageMotionFilm } from '../src/motion/bridge.mjs';
+import { inspectTimebaseDrift, appendSingleVerifiedHold } from '../src/motion/timebase.mjs';
 
 const ROOT=resolve(dirname(fileURLToPath(import.meta.url)),'..');
 const CLI=join(ROOT,'node_modules','.bin','hyperframes');
@@ -163,9 +164,29 @@ async function renderSceneGraph(path,{previewOnly=false}={}){
   await mkdir(output,{recursive:true});
   const raw=join(work.folder,'aethermotion-raw.mp4');
   await rm(raw,{force:true});
-  await aetherMotion('validate',work.spec.path);
-  await aetherMotion('render',work.spec.path,raw);
-  await aetherMotion('verify',work.spec.path,raw);
+  let timebaseHoldFrames=0;
+  // FFmpeg may occasionally encode correct decoded-frame counts but produce an
+  // MP4 stream duration off by <1ms. AetherMotion's verifier intentionally rejects
+  // that file. Make a bounded last-scene hold adjustment and rerender; never skip
+  // its validator or accept an unverified source video.
+  for(let attempt=0;attempt<4;attempt++){
+    await aetherMotion('validate',work.spec.path);
+    try{
+      await aetherMotion('render',work.spec.path,raw);
+      await aetherMotion('verify',work.spec.path,raw);
+      break;
+    }catch(error){
+      const drift=inspectTimebaseDrift(error,work.spec.film);
+      if(!drift||attempt===3)throw error;
+      console.warn('AetherMotion verified frame timing mismatch: '+JSON.stringify(drift)+
+        '; retrying with one held terminal frame');
+      await rm(raw,{force:true});
+      work.spec.film=appendSingleVerifiedHold(work.spec.film,{draft});
+      work.total=work.spec.film.durationFrames/30;
+      timebaseHoldFrames++;
+      await writeFile(work.spec.path,JSON.stringify(work.spec.film,null,2)+'\\n');
+    }
+  }
   if(previewOnly){
     const folder=join(output,'preview');await mkdir(folder,{recursive:true});
     const count=Math.min(8,Math.max(6,work.active.scenes.length));
@@ -189,7 +210,8 @@ async function renderSceneGraph(path,{previewOnly=false}={}){
   await frame(instagram,work.total*.74,join(output,'thumb_b.png'));
   await writeFile(join(output,'caption.txt'),script.caption.trim()+'\\n\\n'+script.hashtags.join(' ')+'\\n');
   await writeFile(join(output,'CREDITS.txt'),
-    'Original scene-graph primitives rendered by AetherMotion; voice synthesized locally using HyperFrames/Kokoro and aligned with Whisper.\\n'+
+    'Original scene-graph primitives and local illustration layers rendered by AetherMotion; voice synthesized locally using HyperFrames/Kokoro and aligned with Whisper.\\n'+
+    'Frame-timing repair holds: '+timebaseHoldFrames+' (bounded and strictly reverified).\\n'+
     'Check licenses for any imported local artwork before publication.\\n');
   console.log('DONE: '+output+'\\nAetherMotion scene graph at 30 fps: '+work.spec.film.durationFrames+
     ' independently evaluated frames.\\nPortrait '+(draft?'540x960':'1080x1920')+
