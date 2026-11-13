@@ -1,18 +1,21 @@
 #!/usr/bin/env node
 import { spawn } from 'node:child_process';
 import { existsSync } from 'node:fs';
-import { copyFile, mkdir, readFile, readdir, writeFile } from 'node:fs/promises';
+import { copyFile, mkdir, readFile, readdir, rm, writeFile } from 'node:fs/promises';
 import { basename, dirname, extname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { DEFAULTS, loadScript, DEFAULT_TARGET_SECONDS, ALLOWED_TARGET_SECONDS } from '../src/spec.mjs';
 import { writeComposition } from '../src/composition.mjs';
 import { synthesizeSpeech } from '../src/audio/hyperframes.mjs';
+import { sceneGraphOnly, stageMotionFilm } from '../src/motion/bridge.mjs';
 
 const ROOT=resolve(dirname(fileURLToPath(import.meta.url)),'..');
 const CLI=join(ROOT,'node_modules','.bin','hyperframes');
 const PYTHON=existsSync(join(ROOT,'.venv','bin','python'))?join(ROOT,'.venv','bin','python'):'python3';
 const KOKORO_PYTHON=process.env.HYPERFRAMES_PYTHON || (existsSync(join(ROOT,'.venv','bin','python')) ? join(ROOT,'.venv','bin','python') : null);
 const CFG=join(ROOT,'config.json');
+const AETHER_CLI=resolve(process.env.AETHERMOTION_CLI || join(ROOT,'..','AetherMotion','dist','cli','main.js'));
+function requireMotionCLI(){if(!existsSync(AETHER_CLI))throw new Error('AetherMotion CLI is missing. Build AetherMotion locally and set AETHERMOTION_CLI to its dist/cli/main.js path.');}
 const flags=new Set(), args=[];
 let targetSeconds=DEFAULT_TARGET_SECONDS, argumentError='';
 const argv=process.argv.slice(2);
@@ -124,8 +127,78 @@ async function normalize(wav,output){
   return stats(measured.err).input_i;
 }
 async function frame(video,time,target){await run('ffmpeg',['-y','-hide_banner','-loglevel','error','-ss',time.toFixed(3),'-i',video,'-frames:v','1',target]);}
+// The motion backend reuses AetherMotion's verified scene graph renderer.
+// HyperFrames still supplies all real Kokoro/Whisper word timings; no second TTS.
+async function prepareMotion(script,{short=false}={}){
+  requireMotionCLI();
+  if(!sceneGraphOnly(script))throw new Error('scene_graph can only be used in scene-graph-only productions');
+  await assetsReady();
+  const folder=join(ROOT,'.reel-work',slug(script.title)+(draft?'-draft':'')+'-motion');
+  await mkdir(folder,{recursive:true});
+  const c=await config(),selected=script.voice||c.voice;
+  const timings=[];let frameCount=0;
+  for(const [i,scene] of script.scenes.entries()){
+    const narration=await voice(scene.say,selected);
+    const frames=Math.ceil((narration.duration+c.gap)*30);
+    if(short&&frameCount+frames>300){
+      if(frameCount===0)throw new Error('First scene is longer than the 10-second draft cap');
+      break;
+    }
+    timings.push({start:frameCount/30,duration:frames/30,audioDuration:narration.duration,
+      words:narration.words,wav:narration.wav});
+    frameCount+=frames;
+  }
+  const active={...script,scenes:script.scenes.slice(0,timings.length)};
+  const spec=await stageMotionFilm(active,timings,folder,{draft});
+  return {folder,timings,active,spec,total:frameCount/30,name:slug(script.title)};
+}
+async function aetherMotion(mode,spec,file){
+  requireMotionCLI();
+  await run(process.execPath,[AETHER_CLI,mode,spec,...(file?[file]:[]),
+    ...(mode==='render'?['--backend','native','--workers','2','--batch','2']:[])]);
+}
+async function renderSceneGraph(path,{previewOnly=false}={}){
+  const script=await load(path),work=await prepareMotion(script,{short:draft});
+  const output=join(ROOT,'out',work.name+(draft?'-draft':''));
+  await mkdir(output,{recursive:true});
+  const raw=join(work.folder,'aethermotion-raw.mp4');
+  await rm(raw,{force:true});
+  await aetherMotion('validate',work.spec.path);
+  await aetherMotion('render',work.spec.path,raw);
+  await aetherMotion('verify',work.spec.path,raw);
+  if(previewOnly){
+    const folder=join(output,'preview');await mkdir(folder,{recursive:true});
+    const count=Math.min(8,Math.max(6,work.active.scenes.length));
+    for(let i=0;i<count;i++)await frame(raw,Math.max(0,Math.min(work.total-.04,(i+.5)*work.total/count)),join(folder,'still-'+String(i).padStart(2,'0')+'.png'));
+    console.log('DONE: '+folder+' ('+count+' actual frame-indexed scene-graph stills)');
+    return;
+  }
+  const speech=join(work.folder,'extracted-audio.wav'),loud=join(work.folder,'normalized.m4a');
+  await run('ffmpeg',['-y','-hide_banner','-loglevel','error','-i',raw,'-map','0:a:0',
+    '-vn','-ar','48000','-ac','2','-c:a','pcm_s16le',speech]);
+  const lufs=await normalize(speech,loud);
+  const instagram=join(output,'instagram.mp4');
+  await run('ffmpeg',['-y','-hide_banner','-loglevel','error','-i',raw,'-i',loud,
+    '-map','0:v:0','-map','1:a:0','-c:v','copy','-c:a','copy','-t',work.total.toFixed(3),'-movflags','+faststart',instagram]);
+  const youtube=join(output,'youtube.mp4'),ww=draft?960:1920,hh=draft?540:1080;
+  const layout=`[0:v]split=2[x][y];[x]scale=${ww}:${hh}:force_original_aspect_ratio=increase,crop=${ww}:${hh},boxblur=25:8,eq=brightness=-0.22[bg];[y]scale=-2:${hh}[fg];[bg][fg]overlay=(W-w)/2:(H-h)/2[v]`;
+  await run('ffmpeg',['-y','-hide_banner','-loglevel','error','-i',instagram,'-filter_complex',layout,
+    '-map','[v]','-map','0:a:0','-c:v','libx264','-preset','veryfast','-crf','19',
+    '-c:a','copy','-movflags','+faststart',youtube]);
+  await frame(instagram,work.total*.25,join(output,'thumb_a.png'));
+  await frame(instagram,work.total*.74,join(output,'thumb_b.png'));
+  await writeFile(join(output,'caption.txt'),script.caption.trim()+'\\n\\n'+script.hashtags.join(' ')+'\\n');
+  await writeFile(join(output,'CREDITS.txt'),
+    'Original scene-graph primitives rendered by AetherMotion; voice synthesized locally using HyperFrames/Kokoro and aligned with Whisper.\\n'+
+    'Check licenses for any imported local artwork before publication.\\n');
+  console.log('DONE: '+output+'\\nAetherMotion scene graph at 30 fps: '+work.spec.film.durationFrames+
+    ' independently evaluated frames.\\nPortrait '+(draft?'540x960':'1080x1920')+
+    ' / landscape '+ww+'x'+hh+' / '+work.total.toFixed(2)+'s / '+lufs+' LUFS');
+}
 async function render(path){
-  const script=await load(path),work=await prepare(script,{short:draft});
+  const script=await load(path);
+  if(sceneGraphOnly(script))return renderSceneGraph(path);
+  const work=await prepare(script,{short:draft});
   const maximum=draft?Math.min(10,work.total):work.total;
   const output=join(ROOT,'out',work.name+(draft?'-draft':''));await mkdir(output,{recursive:true});
   const raw=join(work.folder,'silent.mp4'),audio=join(work.folder,'audio.wav'),loud=join(work.folder,'loud.m4a');
@@ -144,7 +217,9 @@ async function render(path){
   console.log(`DONE: ${output}\nInstagram: ${draft?'540x960':'1080x1920'} / YouTube: ${ww}x${hh} / ${maximum.toFixed(2)}s\nMeasured integrated loudness: ${lufs} LUFS`);
 }
 async function preview(path){
-  const script=await load(path),work=await prepare(script,{short:draft});
+  const script=await load(path);
+  if(sceneGraphOnly(script))return renderSceneGraph(path,{previewOnly:true});
+  const work=await prepare(script,{short:draft});
   const count=Math.min(8,Math.max(6,script.scenes.length));
   const at=Array.from({length:count},(_,i)=>Math.max(0,Math.min(work.total-.04,(i+.5)*work.total/count))).map(x=>x.toFixed(2)).join(',');
   const target=join(ROOT,'out',work.name+(draft?'-draft':''),'preview');await mkdir(target,{recursive:true});
