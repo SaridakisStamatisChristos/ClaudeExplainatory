@@ -157,3 +157,25 @@ node tools/real_video_verify.mjs
 **Artifact links:** real narrated video with source audio and machine evidence in [run 43425328542](https://github.com/SaridakisStamatisChristos/ClaudeExplainatory/actions/runs/43425328542); `editorial-stills` includes procedural diagram early/late/repeat frame evidence. Subsequent workflow versions also upload the 2-second `procedural-diagram-mp4` artifact. GitHub Actions artifact retention is currently seven days; durable release preservation must be separately authorized.
 
 **Next priority:** improve script-dependent scene-specific illustration diversity, object-level animations, captions/typography refinements, and real narrated end-to-end quality evaluation. Implement changes only when measurable and independently verifiable. Keep all work on `feature/production-acceptance-v0.3`; **never merge to `main` without authorization**.
+
+
+### Follow-on real narrated procedural-animation acceptance
+
+**Commit under test:** `70b069041d31ca790d906ac77728001201fa9bfe`  
+**Verified CI run:** [43426006880](https://github.com/SaridakisStamatisChristos/ClaudeExplainatory/actions/runs/43426006880) — both `static-and-short-renders` and `real-model-acceptance` jobs completed successfully, including real-model speech and video stages.
+
+The real acceptance JSON now drives **three distinct scenes**: an illustrated river landscape, a `diagram_reveal` node/connection animation (Village → Market → City), and an editorial text conclusion. Real Kokoro narration and real Whisper word timestamps were generated before HyperFrames and FFmpeg rendered the sequence.
+
+Measured results on the CI runner: **6.13 seconds** effective render duration, portrait **540×960**, landscape **960×540**, H.264 video, **AAC 48 kHz** audio, integrated loudness **−14.20 LUFS**. The actual downloaded portrait container reports approximately **6.147 seconds** including codec/container padding and 184 video frames. Automated tests on this commit and the immediately preceding workflow passed all **44 Node unit tests**, mocked FFmpeg integration, bounded draft-preparation, real HyperFrames rendering, procedural diagram animation and real spoken output verification.
+
+**Visual evidence:** six extracted portrait frames were inspected at 0.5, 1.9, 2.7, 3.5, 4.5, and 5.5 seconds. The network grows to reveal three independent nodes and the two connection lines; the scene is not a fake player UI. Human *listening* acceptance remains pending.
+
+**GitHub Actions artifacts in [run 43426006880](https://github.com/SaridakisStamatisChristos/ClaudeExplainatory/actions/runs/43426006880):**
+
+- `real-model-acceptance`: the genuine narrated portrait and landscape MP4s, first-scene WAV, transcript verification evidence and machine checks.
+- `procedural-diagram-mp4`: a separate actual 2-second H.264 vector animation with early/late still frames (synthetic narration timing; no speech).
+- `editorial-stills` and `editorial-short-mp4`: deterministic/synthetic regression proof.
+
+**Next:** Improve illustration diversity and animation vocabulary with per-object controls, strengthen longer-duration reel stability, investigate genuinely offline production, and assess typography/character articulation. Do not mark full 15/30/60 second delivery or character animation as complete without real evidence. The larger renders still need owner authorization.
+
+**Preservation note:** these acceptance artifacts expire after seven days unless downloaded or separately retained. The source code, acceptance scripts, tests and checkpoint are preserved in the branch.
