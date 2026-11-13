@@ -24,9 +24,9 @@ node_modules/.bin/hyperframes transcribe /absolute/cache/narration.wav \
 ffprobe -v error -show_entries format=duration -of json /absolute/cache/narration.wav
 ~~~
 
-Each scene has its own hash-keyed .cache/voices/<hash>/ working directory. HyperFrames writes transcript.json as an array of word entries with text/start/end. The adapter matches the original script words in order and refuses missing words, impossible timestamp ranges or unreadable WAV lengths. There is no timing approximation if ASR fails. The cache holds only validated metadata.
+Each scene has its own hash-keyed .cache/voices/<hash>/ working directory. HyperFrames writes transcript.json as an array of word entries with text/start/end. The adapter matches the original script words in order and refuses missing words, impossible timestamp ranges or unreadable WAV lengths. There is no timing approximation if ASR fails. The cache holds only validated metadata, including an SHA-256 audio fingerprint. A damaged WAV or mismatched cache entry triggers complete regeneration. Transcription word alignment is strict and reports inserted, missing or unexpected trailing speech; no timestamps are invented.
 
-American and British voices use English small.en; other supported Kokoro prefixes choose the corresponding language and multilingual large-v3. Model files may be downloaded on first use and can be large. Voice samples use the same adapter.
+American and British voices use English small.en; other supported Kokoro prefixes choose the corresponding language and multilingual large-v3. The multilingual small model is the local-first default instead of immediately downloading the multi-gigabyte large-v3 model. Model files may be downloaded on first use and can be large. Voice samples use the same adapter.
 
 The unit tests exercise the bridge with a simulated CLI, not model weights. Production Kokoro+Whisper integration still requires a genuine local model run; a green synthetic CI result must not be described as proof.
 

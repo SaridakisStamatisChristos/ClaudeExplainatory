@@ -33,7 +33,7 @@ test('bridge invokes local HyperFrames Kokoro then transcription; caches only va
      trace.push({executable,args,opts});
      if(args[0]==='tts'){
        const file=args[args.indexOf('--output')+1];
-       await writeFile(file,'mock wav');
+       await writeFile(file,Buffer.alloc(64,1));
        return {out:'generated'};
      }
      if(args[0]==='transcribe'){
@@ -68,9 +68,9 @@ test('no timing file cached when Whisper text does not align; multilingual model
  try{
    const exec=async(executable,args,{cwd}={})=>{
      calls.push(args);
-     if(args[0]==='tts'){await writeFile(args[args.indexOf('--output')+1],'mock wav');return {out:''};}
+     if(args[0]==='tts'){await writeFile(args[args.indexOf('--output')+1],Buffer.alloc(64,1));return {out:''};}
      if(args[0]==='transcribe'){
-       assert.equal(args[args.indexOf('--model')+1],'large-v3');
+       assert.equal(args[args.indexOf('--model')+1],'small');
        assert.equal(args[args.indexOf('--language')+1],'es');
        await writeFile(join(cwd,'transcript.json'),JSON.stringify([{text:'Hola',start:0,end:.25}]));
        return {out:''};
@@ -84,4 +84,58 @@ test('no timing file cached when Whisper text does not align; multilingual model
    await assert.rejects(readFile(timing),/ENOENT/);
    assert.equal(calls.length,3);
  }finally{await rm(root,{recursive:true,force:true});}
+});
+
+test('strict ASR alignment rejects inserted and trailing words instead of silently skipping them',()=>{
+  const inserted=[
+    {text:'one',start:0,end:.2},{text:'EXTRA',start:.2,end:.35},
+    {text:'two',start:.4,end:.6}
+  ];
+  assert.throws(()=>alignSpeech('one two',inserted,1),/does not match scripted word "two"/);
+  assert.throws(()=>alignSpeech('one',inserted,1),/unexpected extra word/);
+  assert.deepEqual(alignSpeech('Hello, world!',[
+    {text:'hello',start:0,end:.2},{text:'WORLD.',start:.25,end:.7}
+  ],1).map(x=>x.word),['Hello,','world!']);
+  assert.throws(()=>alignSpeech('word',[{text:'word',start:.2,end:.2}],1),/invalid word timestamp/);
+});
+
+test('corrupted cached audio cannot be reused with otherwise valid timing metadata',async()=>{
+  const root=await mkdtemp(join(tmpdir(),'explainatory-cache-integrity-'));
+  let tts=0,asr=0;
+  try {
+    const exec=async(executable,args,opts={})=>{
+      if(args[0]==='tts'){
+        tts++;
+        await writeFile(args[args.indexOf('--output')+1],Buffer.alloc(64,1));
+        return {out:''};
+      }
+      if(executable==='ffprobe')return {out:JSON.stringify({format:{duration:'.8'}})};
+      if(args[0]==='transcribe'){
+        asr++;
+        await writeFile(join(opts.cwd,'transcript.json'),JSON.stringify([
+          {text:'hello',start:0,end:.3},{text:'world',start:.4,end:.7}
+        ]));
+        return {out:''};
+      }
+      throw new Error('Unexpected call');
+    };
+    const options={root,cli:'/local/hyperframes',exec};
+    const first=await synthesizeSpeech('hello world','af_heart',options);
+    await synthesizeSpeech('hello world','af_heart',options);
+    assert.equal(tts,1);assert.equal(asr,1);
+    await writeFile(first.wav,Buffer.alloc(64,2));
+    const rebuilt=await synthesizeSpeech('hello world','af_heart',options);
+    assert.equal(tts,2);assert.equal(asr,2);
+    assert.equal(rebuilt.audioSha256,first.audioSha256);
+    assert.equal(rebuilt.adapterVersion,'hyperframes-kokoro-transcribe-v2');
+  }finally{await rm(root,{recursive:true,force:true});}
+});
+
+test('rejects a TTS command that exits successfully without producing a WAV',async()=>{
+  const root=await mkdtemp(join(tmpdir(),'explainatory-missing-wav-'));
+  try{
+    const exec=async()=>({out:''});
+    await assert.rejects(synthesizeSpeech('hello','af_heart',
+      {root,cli:'/local/hyperframes',exec}),/without creating narration.wav/);
+  }finally{await rm(root,{recursive:true,force:true});}
 });

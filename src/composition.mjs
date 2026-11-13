@@ -72,7 +72,10 @@ for(let i=0;i<data.scenes.length;i++){
  tl.fromTo(base+' .moving-grain',{x:-55},{x:55,duration:dur,ease:'none'},start);
  const speechWords=s.say.trim().split(/\\s+/);
  for(let w=0;w<speechWords.length;w++){
-   const tw=s.words?.[w]; const begin=Math.max(0,Math.min(s.audioDuration-.02,tw?.start??(w*s.audioDuration/speechWords.length)));
+   const tw=s.words?.[w];
+   // Timings must come from verified speech alignment; never fabricate a timestamp.
+   if(!tw||!Number.isFinite(tw.start))continue;
+   const begin=Math.max(0,Math.min(s.audioDuration-.02,tw.start));
    tl.set('#word-'+i+'-'+w,{opacity:1},start+begin);
  }
 

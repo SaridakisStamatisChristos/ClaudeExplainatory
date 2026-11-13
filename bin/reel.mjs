@@ -72,7 +72,8 @@ async function prepare(script,{short=false}={}) {
     if(short && frame/30>=10)break;
   }
   // Use the original scenes when the full timeline is needed; in draft, render will clip to 10 sec.
-  await writeComposition(folder,script,timing,{draft,baseDir:ROOT});
+  const activeScript=short?{...script,scenes:script.scenes.slice(0,timing.length)}:script;
+  await writeComposition(folder,activeScript,timing,{draft,baseDir:ROOT});
   return {folder,timing,total:frame/30,name};
 }
 function effectPath(kind,index){return join(ROOT,'assets','sfx',`${kind}_${(index%3)+1}.wav`);}
@@ -123,7 +124,7 @@ async function normalize(wav,output){
 }
 async function frame(video,time,target){await run('ffmpeg',['-y','-hide_banner','-loglevel','error','-ss',time.toFixed(3),'-i',video,'-frames:v','1',target]);}
 async function render(path){
-  const script=await load(path),work=await prepare(script);
+  const script=await load(path),work=await prepare(script,{short:draft});
   const maximum=draft?Math.min(10,work.total):work.total;
   const output=join(ROOT,'out',work.name+(draft?'-draft':''));await mkdir(output,{recursive:true});
   const raw=join(work.folder,'silent.mp4'),audio=join(work.folder,'audio.wav'),loud=join(work.folder,'loud.m4a');
@@ -142,7 +143,7 @@ async function render(path){
   console.log(`DONE: ${output}\nInstagram: ${draft?'540x960':'1080x1920'} / YouTube: ${ww}x${hh} / ${maximum.toFixed(2)}s\nMeasured integrated loudness: ${lufs} LUFS`);
 }
 async function preview(path){
-  const script=await load(path),work=await prepare(script);
+  const script=await load(path),work=await prepare(script,{short:draft});
   const count=Math.min(8,Math.max(6,script.scenes.length));
   const at=Array.from({length:count},(_,i)=>Math.max(0,Math.min(work.total-.04,(i+.5)*work.total/count))).map(x=>x.toFixed(2)).join(',');
   const target=join(ROOT,'out',work.name+(draft?'-draft':''),'preview');await mkdir(target,{recursive:true});
