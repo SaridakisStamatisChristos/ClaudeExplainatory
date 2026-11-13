@@ -23,6 +23,13 @@ Supported object kinds:
 * circle: id,kind,radius,color and optional x,y,scale,opacity,rotation
 * path: id,kind,points:[[x,y],[x,y]],stroke,color, optional x,y,reveal
 * text: id,kind,text,size,color, optional x,y,face:"serif"|"sans"|"mono",bold
+* puppet: id,kind,height (40..500),skin,shirt,trousers,hair,shoes (all #RRGGBB),
+  optional x,y,scale,opacity,rotation, expression:"happy"|"curious"|"neutral"|
+  "concerned",outfit:"villager"|"merchant"|"scholar",facing:"left"|"right";
+  walk:{"start":0,"end":0.8,"cycles":2.5,"strength":0.8}, optional
+  wave:{"start":0.35,"end":0.85,"cycles":2,"arm":"right"}.
+  Unlike simple actor, puppet compiles articulated multi-part limbs/head/torso
+  with gait and arm gesture keyframes and is better for foreground characters.
 * actor: id,kind,height,skin,shirt,trousers,hair,shoes (all #RRGGBB); optional
   x,y,phase,stride (0–30),gesture,mouth,expression:"happy"|"curious"|"neutral"|
   "concerned",facing:"left"|"right".

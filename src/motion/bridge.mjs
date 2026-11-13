@@ -4,6 +4,7 @@ import {copyFile,mkdir,writeFile} from 'node:fs/promises';
 import {createHash} from 'node:crypto';
 import {join,extname} from 'node:path';
 import {resolveLocalAsset} from '../editorial/assets.mjs';
+import {buildPuppetGroup} from './puppet.mjs';
 export const MOTION_FPS=30;
 export const sceneGraphOnly=script=>Array.isArray(script.scenes)&&script.scenes.length>0&&script.scenes.every(s=>s.template==='scene_graph');
 const spatial=new Set(['x','y','height','width','radius','stroke','size']);
@@ -16,6 +17,12 @@ function scalar(v,frames,mult=1,path='track'){
  return keys;
 }
 function compileObject(obj,frames,mult,assets,imageSources,sceneIndex,path,symbols={},mangle=false){
+ if(obj.kind==='puppet'){
+  // Generated puppet is a deterministic hierarchical AetherMotion group; it never
+  // runs a per-frame JS painter and uses no external image generation.
+  const puppet=buildPuppetGroup(obj,frames);
+  return compileObject(puppet,frames,mult,assets,imageSources,sceneIndex,path,symbols,mangle);
+ }
  if(obj.kind==='instance'){
   const definition=symbols[obj.symbol];
   if(!Array.isArray(definition))throw Error('Unknown symbol '+obj.symbol);

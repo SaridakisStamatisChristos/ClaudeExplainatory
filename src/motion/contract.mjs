@@ -30,7 +30,7 @@ const animated={
  phase:[-100000,100000], stride:[0,30], gesture:[-100000,100000], mouth:[-100000,100000]
 };
 const shapeFields={
- group:['children'],instance:['symbol'],polygon:['points','color'],glow:['radius','color'],
+ group:['children'],instance:['symbol'],puppet:['height','skin','shirt','trousers','hair','shoes','expression','outfit','facing','walk','wave'],polygon:['points','color'],glow:['radius','color'],
  rect:['width','height','color'],circle:['radius','color'],path:['points','stroke','color','reveal'],
  text:['text','size','color','face','bold'],image:['src','width','height'],
  actor:['height','skin','shirt','trousers','hair','shoes','expression','facing','phase','stride','gesture','mouth']
@@ -49,7 +49,7 @@ function validateObject(obj,path,errors,assetRoot,ids,stats,depth=1,symbols=null
    if(obj[k]!==undefined)track(obj[k],path+'.'+k,errors,...animated[k]);
  for(const k of ['width','height','radius','stroke','size'])
    if(obj[k]!==undefined&&!span(obj[k],.001,16384))errors.push(path+'.'+k+': expected positive finite dimension');
- const required={instance:['symbol'],group:['children'],polygon:['points'],glow:['radius'],rect:['width','height'],circle:['radius'],path:['points','stroke'],text:['text','size'],image:['src','width','height'],actor:['height','skin','shirt','trousers','hair','shoes']};
+ const required={puppet:['height','skin','shirt','trousers','hair','shoes'],instance:['symbol'],group:['children'],polygon:['points'],glow:['radius'],rect:['width','height'],circle:['radius'],path:['points','stroke'],text:['text','size'],image:['src','width','height'],actor:['height','skin','shirt','trousers','hair','shoes']};
  for(const k of required[obj.kind])if(obj[k]===undefined)errors.push(path+'.'+k+': required field');
  if(['rect','circle','path','text','polygon','glow'].includes(obj.kind)){
   if(!color(obj.color))errors.push(path+'.color: expected #RRGGBB');
@@ -78,6 +78,33 @@ function validateObject(obj,path,errors,assetRoot,ids,stats,depth=1,symbols=null
   if(!text(obj.text,200))errors.push(path+'.text: expected 1–200 characters');
   if(obj.face!==undefined&&!['serif','sans','mono'].includes(obj.face))errors.push(path+'.face: unsupported font family');
   if(obj.bold!==undefined&&typeof obj.bold!=='boolean')errors.push(path+'.bold: expected boolean');
+ }
+ if(obj.kind==='puppet'){
+  for(const k of ['skin','shirt','trousers','hair','shoes'])if(!color(obj[k]))errors.push(path+'.'+k+': expected #RRGGBB');
+  if(!span(obj.height,40,500))errors.push(path+'.height: expected 40–500');
+  if(obj.expression!==undefined&&!['neutral','happy','curious','concerned'].includes(obj.expression))errors.push(path+'.expression: unsupported expression');
+  if(obj.outfit!==undefined&&!['villager','merchant','scholar'].includes(obj.outfit))errors.push(path+'.outfit: expected villager, merchant or scholar');
+  if(obj.facing!==undefined&&!['left','right'].includes(obj.facing))errors.push(path+'.facing: expected left or right');
+  if(obj.walk!==undefined){
+   const q=obj.walk,a=path+'.walk';
+   if(!record(q))errors.push(a+': expected action object');
+   else{
+    exact(q,['start','end','cycles','strength'],a,errors);
+    if(!span(q.start,0,1)||!span(q.end,0,1)||q.end<=q.start)errors.push(a+': expected 0<=start<end<=1');
+    if(!span(q.cycles,.25,10))errors.push(a+'.cycles: expected 0.25–10');
+    if(!span(q.strength,0,1))errors.push(a+'.strength: expected 0–1');
+   }
+  }
+  if(obj.wave!==undefined){
+   const q=obj.wave,a=path+'.wave';
+   if(!record(q))errors.push(a+': expected action object');
+   else{
+    exact(q,['start','end','cycles','arm'],a,errors);
+    if(!span(q.start,0,1)||!span(q.end,0,1)||q.end<=q.start)errors.push(a+': expected 0<=start<end<=1');
+    if(!span(q.cycles,.5,8))errors.push(a+'.cycles: expected 0.5–8');
+    if(!['left','right'].includes(q.arm))errors.push(a+'.arm: expected left or right');
+   }
+  }
  }
  if(obj.kind==='actor'){
   for(const k of ['skin','shirt','trousers','hair','shoes'])if(!color(obj[k]))errors.push(path+'.'+k+': expected color');
