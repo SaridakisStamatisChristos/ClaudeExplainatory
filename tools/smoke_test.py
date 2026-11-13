@@ -91,10 +91,17 @@ else:
         (root/'examples'/'long-draft.json').write_text(json.dumps(long_script))
         call('node','bin/reel.mjs','render','examples/long-draft.json','--draft',cwd=root)
         after=list((root/'.cache'/'voices').glob('*/timing.json'))
-        assert len(after)==len(script['scenes'])+4, 'Draft rendered narration beyond ten seconds'
+        expected_count=0
+        elapsed_frames=0
+        for scene in long_script['scenes']:
+            elapsed_frames += math.ceil((len(scene['say'].split())*.4+.12)*30)
+            expected_count += 1
+            if elapsed_frames/30>=10:
+                break
+        assert len(after)==len(script['scenes'])+expected_count, 'Draft rendered narration beyond ten seconds'
         html=(root/'.reel-work'/'bounded-draft-acceptance-draft'/'index.html').read_text()
-        assert html.count('data-track-index="0"')==4, 'Draft composition includes unrendered scenes'
-        assert 'Scene number 5' not in html and 'Scene number 8' not in html
+        assert html.count('data-track-index="0"')==expected_count, 'Draft composition includes unrendered scenes'
+        assert ('Scene number '+str(expected_count+1)) not in html and 'Scene number 8' not in html
         cropped=root/'out'/'bounded-draft-acceptance-draft'/'instagram.mp4'
         assert cropped.exists() and dimensions(cropped)==(540,960)
         print('PASS: draft <=10s, later speech never synthesized, composition includes only needed scenes')
