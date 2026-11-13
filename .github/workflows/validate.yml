@@ -132,6 +132,24 @@ jobs:
           npm run explain -- check examples/real_model_acceptance.json --target 15
           npm run explain -- render examples/real_model_acceptance.json --draft --target 15
           node tools/real_video_verify.mjs
+      - uses: actions/checkout@v4
+        with:
+          repository: SaridakisStamatisChristos/AetherMotion
+          ref: 8d9ebee4acd531ee263a9bbd264b66369f776c52
+          path: .aethermotion-engine
+      - run: npm ci --no-audit --no-fund && npm run build
+        working-directory: .aethermotion-engine
+      - name: Genuine voiced scene graph and independent moving actors
+        id: motion
+        if: steps.audio.outcome == 'success'
+        continue-on-error: true
+        timeout-minutes: 6
+        env:
+          AETHERMOTION_CLI: ${{ github.workspace }}/.aethermotion-engine/dist/cli/main.js
+        run: |
+          npm run explain -- check examples/scene_graph_village.json --target 15
+          npm run explain -- render examples/scene_graph_village.json --draft --target 15
+          node tools/scene_graph_real_verify.mjs
       - name: Publish truthful acceptance classification
         if: always()
         run: |
@@ -146,6 +164,11 @@ jobs:
           else
             echo 'Narrated MP4: NOT_PASSED_OR_SKIPPED' >> out/real-model-smoke/CI_STATUS.txt
           fi
+          if test -f out/village-becomes-city-draft/scene-graph-acceptance.json; then
+            echo 'Scene graph and real narrator: PASS_REAL_MODELS_AND_MOVING_OBJECTS' >> out/real-model-smoke/CI_STATUS.txt
+          else
+            echo 'Scene graph and real narrator: NOT_PASSED_OR_SKIPPED' >> out/real-model-smoke/CI_STATUS.txt
+          fi
           cat out/real-model-smoke/CI_STATUS.txt >> "$GITHUB_STEP_SUMMARY"
           echo 'Human visual and speech-intelligibility review remains separate.' >> "$GITHUB_STEP_SUMMARY"
       - uses: actions/upload-artifact@v4
@@ -155,5 +178,6 @@ jobs:
           path: |
             out/real-model-smoke/*
             out/what-a-river-connects-draft/*
+            out/village-becomes-city-draft/*
           if-no-files-found: ignore
           retention-days: 7

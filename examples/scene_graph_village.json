@@ -172,11 +172,16 @@
             "reveal": [
               {
                 "t": 0,
-                "value": 0.05,
+                "value": 0,
+                "ease": "hold"
+              },
+              {
+                "t": 0.38,
+                "value": 0,
                 "ease": "smooth"
               },
               {
-                "t": 0.85,
+                "t": 0.9,
                 "value": 1
               }
             ]
@@ -257,10 +262,15 @@
               {
                 "t": 0,
                 "value": 0,
+                "ease": "hold"
+              },
+              {
+                "t": 0.38,
+                "value": 0,
                 "ease": "smooth"
               },
               {
-                "t": 0.85,
+                "t": 0.9,
                 "value": 1
               }
             ]
@@ -555,10 +565,15 @@
               {
                 "t": 0,
                 "value": 0,
+                "ease": "hold"
+              },
+              {
+                "t": 0.38,
+                "value": 0,
                 "ease": "smooth"
               },
               {
-                "t": 0.85,
+                "t": 0.9,
                 "value": 1
               }
             ]
@@ -619,10 +634,15 @@
               {
                 "t": 0,
                 "value": 0,
+                "ease": "hold"
+              },
+              {
+                "t": 0.38,
+                "value": 0,
                 "ease": "smooth"
               },
               {
-                "t": 0.85,
+                "t": 0.9,
                 "value": 1
               }
             ]

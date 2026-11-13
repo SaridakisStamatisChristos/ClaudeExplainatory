@@ -196,6 +196,8 @@ export function checkScript(script, config = DEFAULTS, { targetSeconds = DEFAULT
       if (editorial && EDITORIAL_TEMPLATES.includes(s.template)) validateEditorialProps(s,i,errors,assetRoot);
     });
   }
+  if(editorial&&Array.isArray(script.scenes)&&script.scenes.some(s=>s?.template==='scene_graph'&&s.sfx!=='none'))
+    errors.push('scenes: scene_graph effects are not yet supported; use sfx none');
   if(editorial&&Array.isArray(script.scenes)&&script.scenes.some(s=>s?.template==='scene_graph')&&script.scenes.some(s=>s?.template!=='scene_graph'))
     errors.push('scenes: scene_graph requires a graph-only script until mixed-rendering is supported');
   const totalWords = Array.isArray(script.scenes) ? script.scenes.reduce((n, s) => n + (isNonempty(s?.say) ? wordCount(s.say) : 0), 0) : 0;
