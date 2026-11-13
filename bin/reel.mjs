@@ -184,7 +184,7 @@ async function renderSceneGraph(path,{previewOnly=false}={}){
       work.spec.film=appendSingleVerifiedHold(work.spec.film,{draft});
       work.total=work.spec.film.durationFrames/30;
       timebaseHoldFrames++;
-      await writeFile(work.spec.path,JSON.stringify(work.spec.film,null,2)+'\\n');
+      await writeFile(work.spec.path,JSON.stringify(work.spec.film,null,2)+'\n');
     }
   }
   if(previewOnly){
