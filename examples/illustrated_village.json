@@ -1,0 +1,652 @@
+{
+  "schema_version": 2,
+  "mode": "editorial_illustrated",
+  "title": "Illustrated Village",
+  "handle": "@claudeexplainatory",
+  "voice": "af_heart",
+  "accent": "#E5C18D",
+  "caption": "Original illustrated animation with reusable transparent sprite layers, moving character parts and camera motion. Visuals are artwork rather than historical evidence.",
+  "hashtags": [
+    "#storytelling",
+    "#localanimation"
+  ],
+  "scene_transition": {
+    "kind": "fade",
+    "duration": 0.22,
+    "color": "#263B47"
+  },
+  "scene_symbols": {
+    "cottage": [
+      {
+        "id": "houseArt",
+        "kind": "image",
+        "src": "assets/generated/medieval/cottage.png",
+        "x": 0,
+        "y": 0,
+        "width": 218,
+        "height": 224
+      }
+    ],
+    "oak": [
+      {
+        "id": "oakArt",
+        "kind": "image",
+        "src": "assets/generated/medieval/oak.png",
+        "x": 0,
+        "y": 0,
+        "width": 202,
+        "height": 275
+      }
+    ],
+    "traveler": [
+      {
+        "id": "rearLeg",
+        "kind": "group",
+        "x": -17,
+        "y": -111,
+        "rotation": [
+          {
+            "t": 0,
+            "value": -13,
+            "ease": "smooth"
+          },
+          {
+            "t": 0.25,
+            "value": 12,
+            "ease": "smooth"
+          },
+          {
+            "t": 0.5,
+            "value": -12,
+            "ease": "smooth"
+          },
+          {
+            "t": 0.75,
+            "value": 12,
+            "ease": "smooth"
+          },
+          {
+            "t": 1,
+            "value": -13,
+            "ease": "smooth"
+          }
+        ],
+        "children": [
+          {
+            "id": "rearLegArt",
+            "kind": "image",
+            "src": "assets/generated/medieval/traveler-leg.png",
+            "x": -21,
+            "y": 0,
+            "width": 44,
+            "height": 115
+          }
+        ]
+      },
+      {
+        "id": "rearArm",
+        "kind": "group",
+        "x": -30,
+        "y": -206,
+        "rotation": [
+          {
+            "t": 0,
+            "value": -17,
+            "ease": "smooth"
+          },
+          {
+            "t": 0.25,
+            "value": 11,
+            "ease": "smooth"
+          },
+          {
+            "t": 0.5,
+            "value": -12,
+            "ease": "smooth"
+          },
+          {
+            "t": 0.75,
+            "value": 11,
+            "ease": "smooth"
+          },
+          {
+            "t": 1,
+            "value": -17,
+            "ease": "smooth"
+          }
+        ],
+        "children": [
+          {
+            "id": "rearArmArt",
+            "kind": "image",
+            "src": "assets/generated/medieval/traveler-arm.png",
+            "x": -22,
+            "y": -3,
+            "width": 40,
+            "height": 106
+          }
+        ]
+      },
+      {
+        "id": "torso",
+        "kind": "image",
+        "src": "assets/generated/medieval/traveler-torso.png",
+        "x": -52,
+        "y": -216,
+        "width": 104,
+        "height": 131
+      },
+      {
+        "id": "headPivot",
+        "kind": "group",
+        "x": 0,
+        "y": -251,
+        "rotation": [
+          {
+            "t": 0,
+            "value": -4,
+            "ease": "smooth"
+          },
+          {
+            "t": 0.5,
+            "value": 4,
+            "ease": "smooth"
+          },
+          {
+            "t": 1,
+            "value": -4,
+            "ease": "smooth"
+          }
+        ],
+        "children": [
+          {
+            "id": "headArt",
+            "kind": "image",
+            "src": "assets/generated/medieval/traveler-head.png",
+            "x": -42,
+            "y": -72,
+            "width": 84,
+            "height": 98
+          }
+        ]
+      },
+      {
+        "id": "frontLeg",
+        "kind": "group",
+        "x": 17,
+        "y": -111,
+        "rotation": [
+          {
+            "t": 0,
+            "value": 13,
+            "ease": "smooth"
+          },
+          {
+            "t": 0.25,
+            "value": -12,
+            "ease": "smooth"
+          },
+          {
+            "t": 0.5,
+            "value": 12,
+            "ease": "smooth"
+          },
+          {
+            "t": 0.75,
+            "value": -12,
+            "ease": "smooth"
+          },
+          {
+            "t": 1,
+            "value": 13,
+            "ease": "smooth"
+          }
+        ],
+        "children": [
+          {
+            "id": "frontLegArt",
+            "kind": "image",
+            "src": "assets/generated/medieval/traveler-leg.png",
+            "x": -21,
+            "y": 0,
+            "width": 44,
+            "height": 115
+          }
+        ]
+      },
+      {
+        "id": "frontArm",
+        "kind": "group",
+        "x": 35,
+        "y": -204,
+        "rotation": [
+          {
+            "t": 0,
+            "value": 11,
+            "ease": "smooth"
+          },
+          {
+            "t": 0.25,
+            "value": -14,
+            "ease": "smooth"
+          },
+          {
+            "t": 0.5,
+            "value": -64,
+            "ease": "smooth"
+          },
+          {
+            "t": 0.75,
+            "value": -20,
+            "ease": "smooth"
+          },
+          {
+            "t": 1,
+            "value": 10,
+            "ease": "smooth"
+          }
+        ],
+        "children": [
+          {
+            "id": "frontArmArt",
+            "kind": "image",
+            "src": "assets/generated/medieval/traveler-arm.png",
+            "x": -14,
+            "y": -3,
+            "width": 40,
+            "height": 106
+          }
+        ]
+      }
+    ]
+  },
+  "scenes": [
+    {
+      "template": "scene_graph",
+      "say": "A quiet hillside village awakens.",
+      "highlight": "village",
+      "illustrative": true,
+      "sfx": "none",
+      "props": {
+        "background": "#183148",
+        "style": {
+          "name": "cartoon"
+        },
+        "camera": {
+          "x": [
+            {
+              "t": 0,
+              "value": 0,
+              "ease": "smooth"
+            },
+            {
+              "t": 1,
+              "value": -12
+            }
+          ],
+          "y": [
+            {
+              "t": 0,
+              "value": 0,
+              "ease": "smooth"
+            },
+            {
+              "t": 1,
+              "value": 3
+            }
+          ],
+          "zoom": [
+            {
+              "t": 0,
+              "value": 1,
+              "ease": "smooth"
+            },
+            {
+              "t": 1,
+              "value": 1.025
+            }
+          ]
+        },
+        "objects": [
+          {
+            "id": "sky",
+            "kind": "image",
+            "src": "assets/generated/medieval/sky.png",
+            "x": 0,
+            "y": 0,
+            "width": 540,
+            "height": 960
+          },
+          {
+            "id": "hills",
+            "kind": "image",
+            "src": "assets/generated/medieval/hills.png",
+            "x": [
+              {
+                "t": 0,
+                "value": -8,
+                "ease": "smooth"
+              },
+              {
+                "t": 1,
+                "value": -15
+              }
+            ],
+            "y": 555,
+            "width": 555,
+            "height": 355
+          },
+          {
+            "id": "cloudA",
+            "kind": "image",
+            "src": "assets/generated/medieval/cloud.png",
+            "x": [
+              {
+                "t": 0,
+                "value": 24,
+                "ease": "smooth"
+              },
+              {
+                "t": 1,
+                "value": 74
+              }
+            ],
+            "y": 244,
+            "width": 238,
+            "height": 105,
+            "opacity": 0.61
+          },
+          {
+            "id": "cloudB",
+            "kind": "image",
+            "src": "assets/generated/medieval/cloud.png",
+            "x": [
+              {
+                "t": 0,
+                "value": 322,
+                "ease": "smooth"
+              },
+              {
+                "t": 1,
+                "value": 282
+              }
+            ],
+            "y": 182,
+            "width": 210,
+            "height": 92,
+            "opacity": 0.35
+          },
+          {
+            "kind": "instance",
+            "id": "cottageA",
+            "symbol": "cottage",
+            "x": 30,
+            "y": 518,
+            "scale": 0.88
+          },
+          {
+            "kind": "instance",
+            "id": "cottageB",
+            "symbol": "cottage",
+            "x": 275,
+            "y": 573,
+            "scale": 0.65,
+            "opacity": [
+              {
+                "t": 0,
+                "value": 0.18,
+                "ease": "smooth"
+              },
+              {
+                "t": 0.62,
+                "value": 0.95,
+                "ease": "smooth"
+              },
+              {
+                "t": 1,
+                "value": 1,
+                "ease": "smooth"
+              }
+            ]
+          },
+          {
+            "kind": "instance",
+            "id": "oakA",
+            "symbol": "oak",
+            "x": 392,
+            "y": 521,
+            "scale": 0.68
+          },
+          {
+            "kind": "instance",
+            "id": "travelerA",
+            "symbol": "traveler",
+            "x": [
+              {
+                "t": 0,
+                "value": 115,
+                "ease": "smooth"
+              },
+              {
+                "t": 1,
+                "value": 267
+              }
+            ],
+            "y": 781,
+            "scale": 0.64
+          },
+          {
+            "id": "masthead",
+            "kind": "text",
+            "x": 43,
+            "y": 219,
+            "text": "The village awakens",
+            "size": 30,
+            "color": "#F6E5C8",
+            "face": "serif",
+            "bold": true
+          }
+        ]
+      }
+    },
+    {
+      "template": "scene_graph",
+      "say": "Merchants arrive as the town expands.",
+      "highlight": "town",
+      "illustrative": true,
+      "sfx": "none",
+      "props": {
+        "background": "#213B4B",
+        "style": {
+          "name": "cartoon"
+        },
+        "camera": {
+          "x": [
+            {
+              "t": 0,
+              "value": 0,
+              "ease": "smooth"
+            },
+            {
+              "t": 1,
+              "value": 6
+            }
+          ],
+          "y": [
+            {
+              "t": 0,
+              "value": 0,
+              "ease": "smooth"
+            },
+            {
+              "t": 1,
+              "value": -2
+            }
+          ],
+          "zoom": [
+            {
+              "t": 0,
+              "value": 1.015,
+              "ease": "smooth"
+            },
+            {
+              "t": 1,
+              "value": 1.045
+            }
+          ]
+        },
+        "objects": [
+          {
+            "id": "sky",
+            "kind": "image",
+            "src": "assets/generated/medieval/sky.png",
+            "x": 0,
+            "y": 0,
+            "width": 540,
+            "height": 960
+          },
+          {
+            "id": "hills",
+            "kind": "image",
+            "src": "assets/generated/medieval/hills.png",
+            "x": -5,
+            "y": 562,
+            "width": 555,
+            "height": 355
+          },
+          {
+            "id": "cloudC",
+            "kind": "image",
+            "src": "assets/generated/medieval/cloud.png",
+            "x": [
+              {
+                "t": 0,
+                "value": 11,
+                "ease": "smooth"
+              },
+              {
+                "t": 1,
+                "value": 48
+              }
+            ],
+            "y": 267,
+            "width": 225,
+            "height": 96,
+            "opacity": 0.4
+          },
+          {
+            "id": "tower",
+            "kind": "image",
+            "src": "assets/generated/medieval/tower.png",
+            "x": 240,
+            "y": 393,
+            "width": 223,
+            "height": 338,
+            "scale": [
+              {
+                "t": 0,
+                "value": 0.88,
+                "ease": "smooth"
+              },
+              {
+                "t": 1,
+                "value": 1,
+                "ease": "smooth"
+              }
+            ]
+          },
+          {
+            "kind": "instance",
+            "id": "cottageC",
+            "symbol": "cottage",
+            "x": 28,
+            "y": 548,
+            "scale": 0.67
+          },
+          {
+            "kind": "instance",
+            "id": "oakB",
+            "symbol": "oak",
+            "x": 423,
+            "y": 602,
+            "scale": 0.51
+          },
+          {
+            "id": "marketStall",
+            "kind": "image",
+            "src": "assets/generated/medieval/market.png",
+            "x": 104,
+            "y": 601,
+            "width": 211,
+            "height": 197,
+            "scale": [
+              {
+                "t": 0,
+                "value": 0.82,
+                "ease": "smooth"
+              },
+              {
+                "t": 0.8,
+                "value": 1,
+                "ease": "smooth"
+              },
+              {
+                "t": 1,
+                "value": 1,
+                "ease": "smooth"
+              }
+            ]
+          },
+          {
+            "kind": "instance",
+            "id": "travelerB",
+            "symbol": "traveler",
+            "x": [
+              {
+                "t": 0,
+                "value": 36,
+                "ease": "smooth"
+              },
+              {
+                "t": 1,
+                "value": 178
+              }
+            ],
+            "y": 801,
+            "scale": 0.68
+          },
+          {
+            "kind": "instance",
+            "id": "travelerC",
+            "symbol": "traveler",
+            "x": [
+              {
+                "t": 0,
+                "value": 456,
+                "ease": "smooth"
+              },
+              {
+                "t": 1,
+                "value": 350
+              }
+            ],
+            "y": 824,
+            "scale": 0.55,
+            "rotation": 3
+          },
+          {
+            "id": "townLabel",
+            "kind": "text",
+            "x": 41,
+            "y": 224,
+            "text": "A market takes shape",
+            "size": 30,
+            "color": "#F6E5C8",
+            "face": "serif",
+            "bold": true
+          }
+        ]
+      }
+    }
+  ]
+}
