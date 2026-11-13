@@ -48,7 +48,7 @@ import sys,subprocess,wave,math,array,json
 from pathlib import Path
 args=sys.argv[1:];cmd=args[0]
 if cmd=='tts':
-    speech=args[1];wav=Path(args[args.index('--output')+1]);wav.parent.mkdir(parents=True,exist_ok=True)
+    speech=Path(args[1]).read_text();wav=Path(args[args.index('--output')+1]);wav.parent.mkdir(parents=True,exist_ok=True)
     (wav.parent/'text.json').write_text(json.dumps(speech))
     seconds=len(speech.split())*.4;rate=24000
     samples=array.array('h',(int(math.sin(i/rate*2*math.pi*230)*2100) for i in range(int(seconds*rate))))
