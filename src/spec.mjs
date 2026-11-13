@@ -55,10 +55,32 @@ function validateProps(scene, i, errors) {
   }
 }
 
-export const EDITORIAL_TEMPLATES = Object.freeze(['editorial_split','editorial_text_card','illustration_motion','video_card','diagram_reveal']);
+export const EDITORIAL_TEMPLATES = Object.freeze(['editorial_split','editorial_text_card','illustration_motion','video_card','diagram_reveal','kinetic_bars']);
 function validateEditorialProps(scene,i,errors,assetRoot) {
   const p='scenes['+i+'].props',v=scene.props;
   if(!isRecord(v)){errors.push(p+': expected object');return;}
+  if(scene.template==='kinetic_bars'){
+    exactKeys(v,['heading','kicker','note','unit','tone','bars'],p,errors);
+    if(!isNonempty(v.heading)||v.heading.length>70)errors.push(p+'.heading: expected 1–70 characters');
+    if(v.kicker!==undefined&&(!isNonempty(v.kicker)||v.kicker.length>38))errors.push(p+'.kicker: expected 1–38 characters');
+    if(v.note!==undefined&&(typeof v.note!=='string'||v.note.length>90))errors.push(p+'.note: expected at most 90 characters');
+    if(!['percent','score'].includes(v.unit))errors.push(p+'.unit: expected percent or score');
+    if(!['midnight','parchment'].includes(v.tone))errors.push(p+'.tone: expected midnight or parchment');
+    if(!Array.isArray(v.bars)||v.bars.length<2||v.bars.length>5)errors.push(p+'.bars: expected 2–5 labeled values');
+    else {
+      const labels=new Set();
+      v.bars.forEach((bar,j)=>{
+        const at=p+'.bars['+j+']';
+        if(!isRecord(bar)){errors.push(at+': expected object');return;}
+        exactKeys(bar,['label','value'],at,errors);
+        if(!isNonempty(bar.label)||bar.label.length>26||wordCount(bar.label)>3)errors.push(at+'.label: expected 1–26 characters and at most 3 words');
+        else if(labels.has(bar.label.toLocaleLowerCase()))errors.push(at+'.label: duplicate label');
+        else labels.add(bar.label.toLocaleLowerCase());
+        if(!Number.isInteger(bar.value)||bar.value<0||bar.value>100)errors.push(at+'.value: expected integer in [0, 100]');
+      });
+    }
+    return;
+  }
   if(scene.template==='diagram_reveal'){
     exactKeys(v,['heading','nodes','links'],p,errors);
     if(!isNonempty(v.heading)||v.heading.length>70)

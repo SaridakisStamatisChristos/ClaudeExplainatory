@@ -1,0 +1,43 @@
+{
+  "schema_version": 2,
+  "mode": "editorial_illustrated",
+  "title": "Patterns of Connection",
+  "handle": "@claudeexplainatory",
+  "voice": "af_heart",
+  "accent": "#E4AD63",
+  "caption": "Illustrative local vector chart animation.",
+  "hashtags": [
+    "#animation",
+    "#education"
+  ],
+  "scenes": [
+    {
+      "template": "kinetic_bars",
+      "say": "These three bars reveal a changing pattern.",
+      "highlight": "changing pattern",
+      "illustrative": true,
+      "sfx": "none",
+      "props": {
+        "heading": "The shape of a pattern",
+        "kicker": "MOTION GRAPHICS",
+        "unit": "percent",
+        "tone": "midnight",
+        "note": "Illustrative sample values, not measured findings.",
+        "bars": [
+          {
+            "label": "Start",
+            "value": 25
+          },
+          {
+            "label": "Middle",
+            "value": 62
+          },
+          {
+            "label": "Finish",
+            "value": 88
+          }
+        ]
+      }
+    }
+  ]
+}
