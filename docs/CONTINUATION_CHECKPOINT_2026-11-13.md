@@ -227,3 +227,11 @@ Run [43431447690](https://github.com/SaridakisStamatisChristos/ClaudeExplainator
 - New `tools/puppet_rig_smoke.mjs` checks actual AetherMotion H.264/AAC output with independently generated WAV tones; the existing real-model acceptance is extended to genuine Kokoro/Whisper audio on the new animated scenario.
 - First CI exposed and repaired a brittle test assumption (both frame lengths can hit the 64-key cap) and a missing per-step AETHERMOTION_CLI environment in the test workflow. The final verification status must be determined from the *latest* run after landscape-layer correction, rather than earlier partial runs.
 - Ongoing limitations: stylized flat 2D, no asset-generating model in render path, no skeletal IK/physical contacts, no phoneme-level face sync, and no automatic scene composition quality assessment.
+
+## 14 November 2026 — Source-level generic motion behavior engine
+
+- Added `src/motion/behaviors.mjs`: deterministic float/sway/pulse/orbit/polyline-follow motion on any drawable or nested asset, with normalized source keys, bounded native frame sampling and additive/multiplicative composition.
+- Added strict `behaviors` validation to `src/motion/contract.mjs` and compilation to `src/motion/bridge.mjs`, including puppet and reusable instance expansion.
+- Updated `examples/illustrated_village.json` to animate a path-following bird flock, drifting clouds, trees and animated sprite characters. Unit tests cover path arc-length, orientation, oscillation envelopes, 256-key ceiling, strict rejection and reproducibility.
+- Updated optional Gemini director to request animation behaviors for relevant actions, still validating every generated script and not contacting providers during local rendering.
+- **Verification status at authoring:** source committed to development branch; independently check the newest GitHub Actions run for full native renderer video + genuine narration success before promoting this milestone. Full-length productions remain unrendered pending owner approval.

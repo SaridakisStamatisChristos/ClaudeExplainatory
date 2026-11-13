@@ -17,6 +17,8 @@ test('Gemini generates inert, validated scene graph with explicit provider token
  assert.equal(body.generationConfig.maxOutputTokens,8192);
  assert.equal(body.generationConfig.responseMimeType,'application/json');
  assert.match(body.contents[0].parts[0].text,/different|distinct/i);
+ assert.match(body.contents[0].parts[0].text,/behaviors/);
+ assert.match(body.contents[0].parts[0].text,/arc-length/);
 });
 test('Bad JSON is rejected before writing; bounded repair passes explicit validation feedback',async()=>{
  let attempts=0,first=structuredClone(good);

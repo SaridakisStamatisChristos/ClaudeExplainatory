@@ -136,3 +136,36 @@ A puppet is a **declarative compiler primitive**, not a new frame renderer. `src
 The artist supplies basic position/color and action intent. `start/end` use normalized scene progress; `cycles` controls a gait or wave count and `strength` bounds the gait angle. Articulation keys are baked at compilation, retimed to the actual narration length. Every generated part receives a unique deterministic internal ID, even when many puppets share the scene. `height` controls character scale while the ground position remains the root origin. This prototype currently offers three outfits (villager, merchant, scholar) and four mouth/eye expressions, but is not genuine lip sync. The richer test demo intentionally places 2D landscape layers behind the figures; object ordering is painter's-order, not automatic depth estimation.
 
 The complete ongoing rig and narrated example is `examples/scene_graph_puppets.json`. Full validation, deterministic frame generation and local-real-model acceptance run in GitHub CI. Avoid classifying a synthetic-tone test as narrated speech.
+
+## Reusable motion behaviors
+
+The renderer can produce different frames continuously without manually describing all intermediary positions. Any drawable, nested group, instance, procedural puppet, or reusable symbol-part may supply `behaviors` (1–4 entries). The compiler samples source pose plus motion at integer frame indices and emits native AetherMotion timeline keys. No runtime JavaScript expressions, randomness, model calls or per-scene animation programs are executed.
+
+| Kind | Required parameters | Optional parameters | Semantics |
+| --- | --- | --- | --- |
+| `float` | `axis:"x" or "y"`, `amplitude` (0–120 px), `cycles` (0.25–12) | `phase` (0–1), `start/end` | Add sinusoidal offset along a single axis. |
+| `sway` | `degrees` (0–32), `cycles` (0.25–12) | phase, start/end | Add oscillating clockwise rotation. |
+| `pulse` | `amount` (0–0.65), `cycles` (0.25–12) | phase, start/end | Multiply the underlying scale by `1 + amount × sin(phase)`. |
+| `orbit` | `radiusX/radiusY` (0–250 px, not both zero), cycles (0.25–12) | phase, start/end | Add a bounded 2D elliptical offset to the object's starting pose. |
+| `path` | `points` (2–12 local `[dx,dy]` coordinates in ±2000 px) | `start/end`, `ease: "linear" or "smooth"`, `orient:boolean` | Follow the polyline by *distance* rather than by segment index; endpoints hold before and after the interval. |
+
+The start/end window is normalized 0–1 within the spoken shot, with a minimum duration of 0.05. Periodic behaviors fade in/out at the edges of that window (returning to the source pose); path movements persist at their final offset. A `path` may compose with `float` or `sway`, but no object may have more than one `path`. Object position and rotation are additive; pulses multiply scale. Native bounds are enforced after composition. When an object has both authored tracks and behaviors, each frame samples the authored pose first and then applies the modifiers without modifying the source JSON.
+
+**Example: animated flock**
+
+```json
+{
+  "kind":"group","id":"flock","x":46,"y":440,
+  "behaviors":[
+    {"kind":"path","points":[[0,0],[85,-24],[180,-5],[284,-46],[390,-14]],"ease":"smooth"},
+    {"kind":"float","axis":"y","amplitude":5.5,"cycles":3,"phase":0}
+  ],
+  "children":[
+    {"kind":"path","id":"wing","points":[[-16,2],[0,-5],[16,2]],"stroke":3,"color":"#264656"}
+  ]
+}
+```
+
+For compact scenes of up to 256 frames the compiler evaluates every frame exactly; longer shots use up to 256 deterministic evenly distributed keys per property, subsequently interpolated by AetherMotion. Thus >256-frame behavior curves are an approximation, not a per-frame exact evaluation. Both paths and periodic modifiers are deterministic for a given JSON script and duration. Input path geometry and all behavior keys are strictly validated before rendering. The full `illustrated_village` sample demonstrates behaviors on a group, imported raster artwork, and expanded sprite instances; the short native smoke checks the visibly changing frames and repeated-frame hashes.
+
+The first visual improvements are **stylized procedural motions**. Convincing character acting, complex natural phenomena, physically simulated collisions and photorealistic motion require better rigs, art assets and/or simulation and are not claimed to be solved.

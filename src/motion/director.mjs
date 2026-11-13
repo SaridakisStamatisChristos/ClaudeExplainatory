@@ -47,6 +47,33 @@ radius and color, group with nested children and its own animated x/y/scale.
 Other object kinds or free-form properties are forbidden. NO image URLs or
 imaginary local file paths. Use procedural vector composition; detailed artwork
 would need separate provided assets.
+Reusable motion: ANY object, instance, group, puppet or symbol part can use
+a `behaviors` array of 1–4 deterministic motion modifiers. These are designed
+to avoid verbose frame-by-frame positions; use them where the animation's subject
+would naturally move.
+* {"kind":"float","axis":"y","amplitude":8,"cycles":1.5,"phase":0}
+  gently oscillates position (clouds, hanging lanterns, water details).
+* {"kind":"sway","degrees":3,"cycles":1.2} rocks a parent group (trees, flags).
+* {"kind":"pulse","amount":0.035,"cycles":1.5} gently scales an object
+  (lantern glow or emphasis; keep amounts small for characters).
+* {"kind":"orbit","radiusX":38,"radiusY":18,"cycles":1.5}
+  traces a bounded ellipse around the author's x/y position.
+* {"kind":"path","points":[[0,0],[65,-18],[130,-8],[220,10]],
+   "start":0,"end":1,"ease":"smooth","orient":false}
+  moves along a LOCAL OFFSET path with arc-length parameterization.
+  Optional orient:true rotates the object to point in the path direction;
+  prefer it for flying objects, NOT upright people.
+All behaviors run at 30 fps using the actual spoken scene length.
+Periodic modifiers optionally use start/end (0–1), cycles (0.25–12),
+phase (0–1). The motion envelope fades in and out, returning the object
+to its authored pose at both ends of the scene. Paths hold their start/end
+positions instead. An author may mix a path with float or sway on the SAME
+object, but do not add more than one path to a single object.
+For cloud movement, choose float; for birds, choose a path plus gentle float;
+for a walking character, use puppet.walk and x keyframes or a local path.
+Keep floating amplitudes under about 12 px and tree sway under 4 degrees
+unless a dramatic event warrants otherwise. Avoid unnecessary random motion.
+Use 2+ meaningful behaviors across most dynamic shots when appropriate.
 An animatable property accepts a number OR an array of keys,
 [{"t":0,"value":10,"ease":"smooth"},{"t":1,"value":240}].
 t is relative progress (0-1) through the ACTUAL narration-timed scene; values

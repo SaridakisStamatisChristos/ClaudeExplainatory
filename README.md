@@ -207,3 +207,29 @@ npm run explain -- render examples/illustrated_village.json --draft --target 15
 ```
 
 The script uses the same **full-frame scene graph**, named cottage/tree/traveler symbols and local PNG sprites with independent limb pivot rotations, movement, cloud drift and fades. Source is preserved, generated PNGs are ignored by Git, and the rasterizer verifies its own output dimensions and digest. The build step is explicit so users can modify a single SVG and regenerate artwork deterministically. Tests: `npm test` (after `assets:build`) and `npm run test:illustrated` with the pinned AetherMotion CLI. This first pack depicts a painterly medieval editorial village; it does **not** yet generate arbitrary new worlds or replace sprite illustration with neural image-to-video.
+
+## Reusable object motion without hand-authoring every frame
+
+Any scene-graph `image`, `group`, `instance`, `puppet`, `rect`, `circle`, `path`, or `polygon` can now specify an optional **`behaviors`** array. Available deterministic effects: `float`, `sway`, `pulse`, `orbit`, and `path` (polyline following, including optional facing direction). These compile to bounded native AetherMotion frame tracks, so one JSON directive animates an object at every frame of the narrated scene. They compose with existing animation tracks, reusable art assets, and nested groups.
+
+For example, an illustrated flying object can follow a curved path and bob vertically:
+
+```json
+{
+  "kind": "group",
+  "id": "bird",
+  "x": 40,
+  "y": 420,
+  "behaviors": [
+    {"kind":"path","points":[[0,0],[100,-25],[230,-5],[380,-40]],"ease":"smooth"},
+    {"kind":"float","axis":"y","amplitude":5,"cycles":3}
+  ],
+  "children": [
+    {"kind":"path","id":"wings","points":[[-14,2],[0,-6],[14,2]],"stroke":3,"color":"#234752"}
+  ]
+}
+```
+
+The updated `examples/illustrated_village.json` uses moving birds, trees, clouds and sprite characters. The original demo and all existing scenes remain compatible. See [time-based movement guide](docs/SCENE_GRAPH_RUNTIME.md#reusable-motion-behaviors) for complete safety limits and motion semantics.
+
+The optional Gemini director now knows how to choose and compose these motions when generating fresh scripts. This does **not** mean the model invents professional artwork: it still needs real assets or supported vector shapes, and live Gemini-generated quality is a separate acceptance milestone.
