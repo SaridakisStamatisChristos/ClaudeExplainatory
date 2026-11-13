@@ -44,6 +44,8 @@ function validateObject(obj,path,errors,assetRoot){
    if(obj[k]!==undefined)track(obj[k],path+'.'+k,errors,...animated[k]);
  for(const k of ['width','height','radius','stroke','size'])
    if(obj[k]!==undefined&&!span(obj[k],.001,16384))errors.push(path+'.'+k+': expected positive finite dimension');
+ const required={rect:['width','height'],circle:['radius'],path:['points','stroke'],text:['text','size'],image:['src','width','height'],actor:['height','skin','shirt','trousers','hair','shoes']};
+ for(const k of required[obj.kind])if(obj[k]===undefined)errors.push(path+'.'+k+': required field');
  if(obj.kind==='rect'||obj.kind==='circle'||obj.kind==='path'||obj.kind==='text'){
   if(!color(obj.color))errors.push(path+'.color: expected #RRGGBB');
  }

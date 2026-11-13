@@ -5,6 +5,41 @@ on:
 permissions:
   contents: read
 jobs:
+  scene-graph-renderer:
+    # This pins the one reusable animation engine; ClaudeExplainatory does not
+    # ship or reimplement another drawing runtime.
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+        with:
+          repository: SaridakisStamatisChristos/AetherMotion
+          ref: 8d9ebee4acd531ee263a9bbd264b66369f776c52
+          path: .aethermotion-engine
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg
+      - run: npm ci --no-audit --no-fund && npm run build
+        working-directory: .aethermotion-engine
+      - run: npm test
+      - run: node --check src/motion/bridge.mjs && node --check src/motion/contract.mjs && node --check bin/reel.mjs
+      - run: npm run explain -- check examples/scene_graph_village.json --target 15
+      - name: Real independent-object animation and pixel reproducibility
+        run: npm run test:scene-graph
+        env:
+          AETHERMOTION_CLI: ${{ github.workspace }}/.aethermotion-engine/dist/cli/main.js
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: village-city-scene-graph-mp4
+          path: |
+            .reel-work/scene-graph-smoke/scene-graph.mp4
+            .reel-work/scene-graph-smoke/frames/*.png
+          retention-days: 7
+          if-no-files-found: warn
+
   static-and-short-renders:
     runs-on: ubuntu-latest
     steps:
@@ -13,6 +48,7 @@ jobs:
         with:
           node-version: 22
       - run: npm test
+      - run: node --check src/motion/bridge.mjs && node --check src/motion/contract.mjs
       - run: node --check bin/reel.mjs && node --check src/spec.mjs && node --check src/composition.mjs && node --check src/editorial/assets.mjs && node --check src/editorial/layout.mjs && node --check src/editorial/diagram.mjs && node --check src/editorial/bars.mjs
       - run: python3 -m py_compile tools/*.py
       - run: sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg

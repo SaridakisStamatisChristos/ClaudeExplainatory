@@ -115,3 +115,29 @@ Use `npm run explain -- check examples/kinetic_bars.example.json --target 15`, t
 ### Latest verified video checkpoint — 13 November 2026
 
 At source commit `648e4e2918960b2d4450b52542c05791c88d042f` the [validation run](https://github.com/SaridakisStamatisChristos/ClaudeExplainatory/actions/runs/43428630212) passed the entire baseline static, 47-unit-test and short-render suite, including a **real HyperFrames two-second kinetic chart MP4** and frame-determinism checks. The [four-scene narrated run](https://github.com/SaridakisStamatisChristos/ClaudeExplainatory/actions/runs/43428527901) separately passed the Kokoro/Whisper and narrated video acceptance steps; it exported **8.152-second** H.264+AAC 48-kHz portrait (540×960) and landscape (960×540) videos. Its source differs from the current commit only in the later correction of an obsolete template-count test. The [narrated artifact](https://github.com/SaridakisStamatisChristos/ClaudeExplainatory/actions/runs/43428527901/artifacts/14038494562) and [kinetic chart artifact](https://github.com/SaridakisStamatisChristos/ClaudeExplainatory/actions/runs/43428630212/artifacts/14038770274) are temporary (retention seven days). Machine pass does not establish human speech-intelligibility, animation polish or fully disconnected operation.
+
+## Reusable scene graph powered by AetherMotion (opt-in)
+
+This is **not a new drawing engine**. The `scene_graph` template compiles a rigorously validated script into [AetherMotion](https://github.com/SaridakisStamatisChristos/AetherMotion)'s existing frame-indexed Canvas2D engine. It supports independent rectangles, circles, SVG-like stroked paths, text, imported local PNG/JPEG artwork, and a lightweight rigged cartoon actor with walking, gestures, expression and mouth movement. Every object can have its own position, scale, rotation and opacity keyframes; paths may progressively reveal; cameras can move and zoom. The built-in example depicts buildings emerging and two people walking across a growing town, **not just chart or diagram reveals**.
+
+The source JSON uses **540×960 portrait authoring coordinates**. Animated properties may be fixed numbers or a `[{ "t": 0, "value": ... }, { "t": 1, "value": ..., "ease": "smooth" }]` sequence. A value of `t=1` means the last frame of that individual scene, so speech duration changes do not demand manual retiming. Supported easing: linear, smooth, hold. Each scene is assigned actual frame count from validated HyperFrames/Kokoro narration; the compiled film can be rendered deterministically at any integer frame index. The backend's actor is a basic procedural cartoon, **not** AI-generated photorealistic character performance.
+
+**One-time local renderer setup:** clone AetherMotion into a sibling directory, check out the pinned compatible commit, install and build:
+
+```bash
+cd ..
+git clone https://github.com/SaridakisStamatisChristos/AetherMotion.git
+cd AetherMotion
+git checkout 8d9ebee4acd531ee263a9bbd264b66369f776c52
+npm ci
+npm run build
+cd ../ClaudeExplainatory
+export AETHERMOTION_CLI="$(pwd)/../AetherMotion/dist/cli/main.js"
+npm run explain -- check examples/scene_graph_village.json --target 15
+npm run explain -- preview examples/scene_graph_village.json --draft --target 15
+npm run explain -- render examples/scene_graph_village.json --draft --target 15
+```
+
+The preview generates stills of the moving objects; render uses the **same local HyperFrames Kokoro and Whisper speech** and delegates only frame-by-frame graphics to AetherMotion, then loudness-normalizes and exports portrait/landscape videos. A standalone offline-asset smoke test uses FFmpeg-generated test tones and tests actual H.264/AAC frame output: `npm run test:scene-graph`. The real-model narration path is distinct.
+
+For safety and clarity, a script using `scene_graph` must presently contain **only** graph scenes; old templates still work unchanged in their original pipeline. Scene graphs currently use `sfx: "none"`; mixing independent template types, richer character rigs, advanced asset creation, music and full-length production have not yet been verified. Use only local assets, not URLs or executable scene content. The engine's imported artwork is never generated automatically by a local renderer; you must supply it or generate it in a separate asset-preparation stage.
