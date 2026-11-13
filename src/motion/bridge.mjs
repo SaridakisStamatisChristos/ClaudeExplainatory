@@ -5,6 +5,7 @@ import {createHash} from 'node:crypto';
 import {join,extname} from 'node:path';
 import {resolveLocalAsset} from '../editorial/assets.mjs';
 import {buildPuppetGroup} from './puppet.mjs';
+import {compileBehaviorTracks} from './behaviors.mjs';
 export const MOTION_FPS=30;
 export const sceneGraphOnly=script=>Array.isArray(script.scenes)&&script.scenes.length>0&&script.scenes.every(s=>s.template==='scene_graph');
 const spatial=new Set(['x','y','height','width','radius','stroke','size']);
@@ -21,6 +22,7 @@ function compileObject(obj,frames,mult,assets,imageSources,sceneIndex,path,symbo
   // Generated puppet is a deterministic hierarchical AetherMotion group; it never
   // runs a per-frame JS painter and uses no external image generation.
   const puppet=buildPuppetGroup(obj,frames);
+  if(obj.behaviors!==undefined)puppet.behaviors=obj.behaviors;
   const compiled=compileObject(puppet,frames,mult,assets,imageSources,sceneIndex,path,symbols,true);
   if(!mangle)compiled.id=obj.id; // Preserve author ID; namespace every nested drawable.
   return compiled;
@@ -44,6 +46,16 @@ function compileObject(obj,frames,mult,assets,imageSources,sceneIndex,path,symbo
  }
  if(obj.kind==='path'||obj.kind==='polygon')dest.points=obj.points.map(([x,y])=>[x*mult,y*mult]);
  if(obj.kind==='group')dest.children=obj.children.map((child,j)=>compileObject(child,frames,mult,assets,imageSources,sceneIndex,path+'_'+j,symbols,mangle));
+ if(obj.behaviors!==undefined){
+  // Operators act on the source pose. They emit native absolute frame keys,
+  // without feeding their output back into the source or shifting nested children.
+  const tracks=compileBehaviorTracks(obj,frames);
+  for(const [key,keys] of Object.entries(tracks)){
+   const factor=spatial.has(key)?mult:1;
+   dest[key]=keys.map(point=>({...point,value:Math.round(point.value*factor*1e6)/1e6}));
+  }
+  delete dest.behaviors;
+ }
  if(obj.kind==='image'){
   const id='image_'+sceneIndex+'_'+path;
   dest.asset=id;delete dest.src;

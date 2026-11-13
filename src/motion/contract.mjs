@@ -35,7 +35,59 @@ const shapeFields={
  text:['text','size','color','face','bold'],image:['src','width','height'],
  actor:['height','skin','shirt','trousers','hair','shoes','expression','facing','phase','stride','gesture','mouth']
 };
-const common=['id','kind','x','y','scale','rotation','opacity'];
+// Motion modifiers are inert declarations. They may target any drawable,
+// reusable instance, nested group, symbol part or generated puppet. Safe bounds
+// protect the native frame interpolation contract and its memory budgets.
+function validateBehaviors(value,path,errors){
+ if(!Array.isArray(value)||value.length<1||value.length>4){
+  errors.push(path+': expected 1–4 motion behavior objects');return;
+ }
+ let paths=0;
+ for(const [i,b] of value.entries()){
+  const p=path+'['+i+']';
+  if(!record(b)){errors.push(p+': expected behavior object');continue;}
+  const kind=b.kind, timing=['start','end'], periodic=['cycles','phase'];
+  const fields={
+   float:['axis','amplitude',...periodic,...timing],
+   sway:['degrees',...periodic,...timing],
+   pulse:['amount',...periodic,...timing],
+   orbit:['radiusX','radiusY',...periodic,...timing],
+   path:['points','orient','ease',...timing]
+  };
+  if(!Object.hasOwn(fields,kind)){errors.push(p+'.kind: unsupported motion behavior');continue;}
+  exact(b,['kind',...fields[kind]],p,errors);
+  const start=b.start??0,end=b.end??1;
+  if(!span(start,0,1)||!span(end,0,1)||end-start<.05)
+   errors.push(p+': require 0 <= start < end <= 1 with interval at least 0.05');
+  if(kind==='path'){
+   paths++;
+   if(paths>1)errors.push(p+': at most one path behavior is allowed per object');
+   const pts=b.points;
+   if(!Array.isArray(pts)||pts.length<2||pts.length>12||
+     !pts.every(pt=>Array.isArray(pt)&&pt.length===2&&pt.every(x=>span(x,-2000,2000))))
+    errors.push(p+'.points: expected 2–12 finite offset pairs in [-2000,2000]');
+   else for(let j=1;j<pts.length;j++)if(Math.hypot(pts[j][0]-pts[j-1][0],pts[j][1]-pts[j-1][1])<.01)
+    errors.push(p+'.points['+j+']: consecutive coordinates must be distinct');
+   if(b.orient!==undefined&&typeof b.orient!=='boolean')errors.push(p+'.orient: expected boolean');
+   if(b.ease!==undefined&&!['smooth','linear'].includes(b.ease))errors.push(p+'.ease: expected linear or smooth');
+   continue;
+  }
+  if(!span(b.cycles,.25,12))errors.push(p+'.cycles: expected 0.25–12');
+  if(b.phase!==undefined&&!span(b.phase,0,1))errors.push(p+'.phase: expected 0–1');
+  if(kind==='float'){
+   if(!['x','y'].includes(b.axis))errors.push(p+'.axis: expected x or y');
+   if(!span(b.amplitude,0,120))errors.push(p+'.amplitude: expected 0–120');
+  } else if(kind==='sway'){
+   if(!span(b.degrees,0,32))errors.push(p+'.degrees: expected 0–32');
+  } else if(kind==='pulse'){
+   if(!span(b.amount,0,.65))errors.push(p+'.amount: expected 0–0.65');
+  } else if(kind==='orbit'){
+   if(!span(b.radiusX,0,250)||!span(b.radiusY,0,250)||b.radiusX+b.radiusY<=0)
+    errors.push(p+': expected orbit radii in [0,250], not both zero');
+  }
+ }
+}
+const common=['id','kind','x','y','scale','rotation','opacity','behaviors'];
 function validateObject(obj,path,errors,assetRoot,ids,stats,depth=1,symbols=null){
  if(depth>8){errors.push(path+': nested group depth exceeds eight');return;}
  if(++stats.total>256){errors.push(path+': scene graph exceeds 256 drawable objects');return;}
@@ -45,6 +97,7 @@ function validateObject(obj,path,errors,assetRoot,ids,stats,depth=1,symbols=null
  if(!id(obj.id))errors.push(path+'.id: expected safe unique identifier');
  else if(ids.has(obj.id))errors.push(path+'.id: duplicate identifier');
  else ids.add(obj.id);
+ if(obj.behaviors!==undefined)validateBehaviors(obj.behaviors,path+'.behaviors',errors);
  for(const k of ['x','y','scale','rotation','opacity'])
    if(obj[k]!==undefined)track(obj[k],path+'.'+k,errors,...animated[k]);
  for(const k of ['width','height','radius','stroke','size'])
