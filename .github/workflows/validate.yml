@@ -4,6 +4,9 @@ on:
   pull_request:
 permissions:
   contents: read
+concurrency:
+  group: claudeexplainatory-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 jobs:
   scene-graph-renderer:
     # This pins the one reusable animation engine; ClaudeExplainatory does not
