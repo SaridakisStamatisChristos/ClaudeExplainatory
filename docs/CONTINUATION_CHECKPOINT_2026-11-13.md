@@ -102,3 +102,58 @@ Primary references:
 ## 5. First action for the next work session
 
 **Do not rebuild the application.** Read this file, inspect `src/audio/hyperframes.mjs` and `bin/reel.mjs`, execute the current tests, then prove or falsify genuine HyperFrames Kokoro + Whisper round-trip on a <=10s draft. Repair demonstrated defects with regression tests, commit evidence to the feature branch, and report exact run results. If real weights or browser cannot be used in the execution environment, mark that gate BLOCKED and continue with independently testable improvements without claiming production completion.
+
+
+---
+
+## 6. Verified production-acceptance milestone — 13 November 2026
+
+> This section supersedes the earlier historical baseline above. The original handoff remains for traceability. **Do not interpret the old pending task list as the current status.**
+
+**Repository:** `SaridakisStamatisChristos/ClaudeExplainatory`  
+**Working branch:** `feature/production-acceptance-v0.3`  
+**Latest verified production run at the start of this entry:** [43425328542](https://github.com/SaridakisStamatisChristos/ClaudeExplainatory/actions/runs/43425328542) at commit `73f9fef79fcd94357b535e898445ee3d4204868c`.  
+**Main remains unchanged:** last known `e6a593a2a12de128b94b95f6f9faa8447c9390a6`.
+
+### Completed and independently verified
+
+| Gate | Status | Evidence |
+| --- | --- | --- |
+| JSON v1/v2 compatibility and strict validator | **PASS** | GitHub Actions 43425328542, 44/44 Node unit tests |
+| Mock TTS/Whisper-to-FFmpeg pipeline | **PASS, MOCKED** | Integration log, including explicit <=10s draft synthesis cutoff |
+| Genuine HyperFrames renderer | **PASS, REAL RENDER** | 1s and 2s MP4 smoke tests |
+| Genuine Kokoro `af_heart` WAV and local Whisper word alignment | **PASS, REAL MODEL** | Independent real-model-acceptance job, 43425328542 |
+| Actual narrated portrait and landscape MP4 | **PASS, REAL MODEL + MACHINE VERIFICATION** | 43425328542, 3.97s H.264/AAC, 540x960 and 960x540, ~-14.45 LUFS |
+| Full-canvas art without simulated player chrome | **PASS, SHORT SAMPLE REVIEW** | Actual narration stills reviewed; old inset-player design absent |
+| JSON procedural nodes/connections animation (`diagram_reveal`) | **PASS, REAL RENDER** | 2s HyperFrames `npm run test:diagram`, distinct early/late frames, deterministic repeated timestamp |
+| Broken audio cache invalidation and ASR skipped words | **PASS, REGRESSION** | `d878cea` changes and unit tests |
+| Standalone Linux Mint user install | **NOT RUN** | CI verified on Ubuntu runner, not a Mint workstation |
+| Completely disconnected production | **NOT RUN** | Models downloaded during CI |
+| Full 15/30/60-second reels and delivery 1080x1920 | **NOT RUN** | Owner-approved length limits still apply |
+| Independent character rigging, walking, expressions | **NOT IMPLEMENTED** | Do not conflate diagram motion/parallax with skeletal animation |
+| Human intelligibility and final editorial quality approval | **PENDING** | Machine ASR/timing, stream and peak checks are not a listening test |
+
+**Relevant commits:** `d878cea` strict ASR/cache/draft fixes; `fcc901d` explicit real-model acceptance; `270e2bd` isolated Python runtime internal to HyperFrames; `23f5358` JSON diagram engine, animation render test; `73f9fef` corrected expected synthetic draft frame truncation.
+
+The native HyperFrames CLI **internally requires** `kokoro-onnx` and `soundfile` in an isolated Python environment. This is now installed with `bash tools/setup_kokoro_runtime.sh` and used through `HYPERFRAMES_PYTHON`. Do not reinstate a second separate TTS or faster-whisper pipeline.
+
+**Updated local setup:** install Node.js 22+, FFmpeg/FFprobe, Python3 + `python3-venv`, `espeak-ng`; then `npm install --no-audit --no-fund`; `bash tools/setup_kokoro_runtime.sh`; `npm run doctor`. Models are installed or downloaded on first real run.
+
+**Examples and reproducible commands:**
+
+```bash
+npm test
+npm run test:integration
+npm run test:hyperframes
+npm run test:editorial
+npm run test:diagram
+npm run test:draft
+npm run test:real-audio
+npm run explain -- check examples/real_model_acceptance.json --target 15
+npm run explain -- render examples/real_model_acceptance.json --draft --target 15
+node tools/real_video_verify.mjs
+```
+
+**Artifact links:** real narrated video with source audio and machine evidence in [run 43425328542](https://github.com/SaridakisStamatisChristos/ClaudeExplainatory/actions/runs/43425328542); `editorial-stills` includes procedural diagram early/late/repeat frame evidence. Subsequent workflow versions also upload the 2-second `procedural-diagram-mp4` artifact. GitHub Actions artifact retention is currently seven days; durable release preservation must be separately authorized.
+
+**Next priority:** improve script-dependent scene-specific illustration diversity, object-level animations, captions/typography refinements, and real narrated end-to-end quality evaluation. Implement changes only when measurable and independently verifiable. Keep all work on `feature/production-acceptance-v0.3`; **never merge to `main` without authorization**.

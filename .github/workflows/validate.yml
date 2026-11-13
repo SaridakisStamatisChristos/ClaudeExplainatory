@@ -13,7 +13,7 @@ jobs:
         with:
           node-version: 22
       - run: npm test
-      - run: node --check bin/reel.mjs && node --check src/spec.mjs && node --check src/composition.mjs && node --check src/editorial/assets.mjs && node --check src/editorial/layout.mjs
+      - run: node --check bin/reel.mjs && node --check src/spec.mjs && node --check src/composition.mjs && node --check src/editorial/assets.mjs && node --check src/editorial/layout.mjs && node --check src/editorial/diagram.mjs
       - run: python3 -m py_compile tools/*.py
       - run: sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg
       - run: npm run test:integration
@@ -32,6 +32,16 @@ jobs:
             .reel-work/editorial-draft-smoke/output/still-*.png
             .reel-work/diagram-smoke/frames/*.png
           if-no-files-found: ignore
+          retention-days: 7
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: procedural-diagram-mp4
+          path: |
+            .reel-work/diagram-smoke/diagram.mp4
+            .reel-work/diagram-smoke/frames/early.png
+            .reel-work/diagram-smoke/frames/late.png
+          if-no-files-found: warn
           retention-days: 7
       - uses: actions/upload-artifact@v4
         if: always()
