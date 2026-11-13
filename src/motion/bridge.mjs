@@ -1,6 +1,7 @@
 // Thin adapter: compile declarative ClaudeExplainatory scenes into AetherMotion's
 // established versioned film schema. Motion rendering remains owned by AetherMotion.
 import {copyFile,mkdir,writeFile} from 'node:fs/promises';
+import {createHash} from 'node:crypto';
 import {join,extname} from 'node:path';
 import {resolveLocalAsset} from '../editorial/assets.mjs';
 export const MOTION_FPS=30;
@@ -14,8 +15,17 @@ function scalar(v,frames,mult=1,path='track'){
    throw Error(path+': normalized keyframes collapse onto the same source frame; use fewer keys');
  return keys;
 }
-function compileObject(obj,frames,mult,assets,imageSources,sceneIndex,path){
+function compileObject(obj,frames,mult,assets,imageSources,sceneIndex,path,symbols={},mangle=false){
+ if(obj.kind==='instance'){
+  const definition=symbols[obj.symbol];
+  if(!Array.isArray(definition))throw Error('Unknown symbol '+obj.symbol);
+  const group={...obj,kind:'group',children:[]};delete group.symbol;
+  const compiled=compileObject(group,frames,mult,assets,imageSources,sceneIndex,path,symbols,mangle);
+  compiled.children=definition.map((part,j)=>compileObject(part,frames,mult,assets,imageSources,sceneIndex,path+'_sym_'+j,symbols,true));
+  return compiled;
+ }
  const dest={...obj};
+ if(mangle)dest.id='sym_'+createHash('sha256').update(sceneIndex+'/'+path+'/'+obj.id).digest('hex').slice(0,20);
  for(const key of ['x','y','height','width','radius','stroke','size','scale','rotation','opacity','phase','stride','gesture','mouth','reveal']){
   if(obj[key]===undefined)continue;
   // Body stride is limited to 30px in AetherMotion, even at higher delivery resolutions.
@@ -24,7 +34,7 @@ function compileObject(obj,frames,mult,assets,imageSources,sceneIndex,path){
     ?scalar(obj[key],frames,factor,'object '+obj.id+'.'+key):obj[key]*factor;
  }
  if(obj.kind==='path'||obj.kind==='polygon')dest.points=obj.points.map(([x,y])=>[x*mult,y*mult]);
- if(obj.kind==='group')dest.children=obj.children.map((child,j)=>compileObject(child,frames,mult,assets,imageSources,sceneIndex,path+'_'+j));
+ if(obj.kind==='group')dest.children=obj.children.map((child,j)=>compileObject(child,frames,mult,assets,imageSources,sceneIndex,path+'_'+j,symbols,mangle));
  if(obj.kind==='image'){
   const id='image_'+sceneIndex+'_'+path;
   dest.asset=id;delete dest.src;
@@ -44,7 +54,7 @@ export function compileMotionFilm(script,timing,{draft=true}={}){
   if(!Number.isInteger(frames)||frames<2)throw Error('scene '+i+': invalid frame count');
   const p=scene.props;
   const camera=p.camera?Object.fromEntries(Object.entries(p.camera).map(([k,v])=>[k,scalar(v,frames,k==='zoom'?1:mult,'camera.'+k)])):undefined;
-  const objects=p.objects.map((obj,j)=>compileObject(obj,frames,mult,assets,imageSources,i,String(j)));
+  const objects=p.objects.map((obj,j)=>compileObject(obj,frames,mult,assets,imageSources,i,String(j),script.scene_symbols??{}));
   const transition=script.scene_transition;
   let fade;
   if(transition){

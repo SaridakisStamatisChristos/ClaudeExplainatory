@@ -388,6 +388,43 @@
                 "value": 0.5
               }
             ]
+          },
+          {
+            "kind": "instance",
+            "id": "fresh_cottage",
+            "symbol": "cottage",
+            "x": 264,
+            "y": 595,
+            "scale": [
+              {
+                "t": 0,
+                "value": 0.04,
+                "ease": "smooth"
+              },
+              {
+                "t": 0.84,
+                "value": 0.95
+              }
+            ],
+            "opacity": [
+              {
+                "t": 0,
+                "value": 0,
+                "ease": "smooth"
+              },
+              {
+                "t": 0.84,
+                "value": 1
+              }
+            ]
+          },
+          {
+            "kind": "instance",
+            "id": "first_oak",
+            "symbol": "oak_tree",
+            "x": 462,
+            "y": 707,
+            "scale": 0.62
           }
         ]
       }
@@ -439,6 +476,14 @@
           ]
         },
         "objects": [
+          {
+            "kind": "instance",
+            "id": "left_oak",
+            "symbol": "oak_tree",
+            "x": 48,
+            "y": 705,
+            "scale": 0.72
+          },
           {
             "id": "glow",
             "kind": "circle",
@@ -988,6 +1033,25 @@
                 ]
               }
             ]
+          },
+          {
+            "kind": "instance",
+            "id": "distant_cottage",
+            "symbol": "cottage",
+            "x": 367,
+            "y": 603,
+            "scale": 0.8,
+            "opacity": [
+              {
+                "t": 0,
+                "value": 0.4,
+                "ease": "smooth"
+              },
+              {
+                "t": 0.6,
+                "value": 1
+              }
+            ]
           }
         ]
       }
@@ -997,5 +1061,177 @@
     "kind": "fade",
     "duration": 0.26,
     "color": "#1C2937"
+  },
+  "scene_symbols": {
+    "cottage": [
+      {
+        "id": "wall",
+        "kind": "rect",
+        "x": 0,
+        "y": 0,
+        "width": 100,
+        "height": 92,
+        "color": "#DFC19A"
+      },
+      {
+        "id": "gable",
+        "kind": "polygon",
+        "x": -8,
+        "y": 2,
+        "points": [
+          [
+            0,
+            0
+          ],
+          [
+            59,
+            -48
+          ],
+          [
+            116,
+            0
+          ]
+        ],
+        "color": "#B8664A"
+      },
+      {
+        "id": "gableTrim",
+        "kind": "path",
+        "x": -8,
+        "y": 2,
+        "points": [
+          [
+            0,
+            0
+          ],
+          [
+            59,
+            -48
+          ],
+          [
+            116,
+            0
+          ]
+        ],
+        "stroke": 4,
+        "color": "#F5D8AA"
+      },
+      {
+        "id": "door",
+        "kind": "rect",
+        "x": 42,
+        "y": 46,
+        "width": 25,
+        "height": 46,
+        "color": "#514232"
+      },
+      {
+        "id": "window",
+        "kind": "rect",
+        "x": 12,
+        "y": 37,
+        "width": 18,
+        "height": 20,
+        "color": "#86ACB6"
+      },
+      {
+        "id": "frame",
+        "kind": "path",
+        "x": 12,
+        "y": 37,
+        "points": [
+          [
+            0,
+            10
+          ],
+          [
+            18,
+            10
+          ]
+        ],
+        "stroke": 2,
+        "color": "#FFF0CF"
+      }
+    ],
+    "oak_tree": [
+      {
+        "id": "trunk",
+        "kind": "rect",
+        "x": -10,
+        "y": -92,
+        "width": 20,
+        "height": 94,
+        "color": "#715543"
+      },
+      {
+        "id": "branchLeft",
+        "kind": "path",
+        "x": 0,
+        "y": -75,
+        "points": [
+          [
+            0,
+            0
+          ],
+          [
+            -29,
+            -34
+          ]
+        ],
+        "stroke": 9,
+        "color": "#715543"
+      },
+      {
+        "id": "branchRight",
+        "kind": "path",
+        "x": 0,
+        "y": -64,
+        "points": [
+          [
+            0,
+            0
+          ],
+          [
+            23,
+            -32
+          ]
+        ],
+        "stroke": 8,
+        "color": "#715543"
+      },
+      {
+        "id": "leavesLeft",
+        "kind": "circle",
+        "x": -29,
+        "y": -116,
+        "radius": 35,
+        "color": "#47745C"
+      },
+      {
+        "id": "leavesRight",
+        "kind": "circle",
+        "x": 26,
+        "y": -124,
+        "radius": 39,
+        "color": "#4C805E"
+      },
+      {
+        "id": "leavesTop",
+        "kind": "circle",
+        "x": 0,
+        "y": -153,
+        "radius": 45,
+        "color": "#638F6A"
+      },
+      {
+        "id": "sunspot",
+        "kind": "glow",
+        "x": -13,
+        "y": -145,
+        "radius": 50,
+        "color": "#A3C58B",
+        "opacity": 0.25
+      }
+    ]
   }
 }

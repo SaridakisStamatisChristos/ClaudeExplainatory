@@ -77,3 +77,33 @@ test('nested identifiers, bad polygons, excessive depth and mismatched transitio
   const short=structuredClone(example);
   assert.throws(()=>compileMotionFilm(short,[{duration:.2,audioDuration:.1},{duration:2.6,audioDuration:2}]),/transitions exceed/);
 });
+
+test('reusable symbol catalog expands into native hierarchical groups with unique child IDs',()=>{
+ const r=checkScript(example,undefined,{targetSeconds:15});
+ assert.equal(r.ok,true,r.errors.join('; '));
+ const {film}=compileMotionFilm(example,timing);
+ const first=film.scenes[0].objects.find(o=>o.id==='fresh_cottage');
+ const second=film.scenes[1].objects.find(o=>o.id==='distant_cottage');
+ assert.equal(first.kind,'group');
+ assert.equal(second.kind,'group');
+ assert.equal(first.children.length,6);
+ assert.equal(second.children.length,6);
+ assert.notEqual(first.children[0].id,second.children[0].id);
+ assert.ok(first.children.some(c=>c.kind==='polygon'));
+ assert.equal(first.x,264);
+ assert.equal(first.scale[1].value,.95);
+});
+test('unknown reusable symbol and recursively injected symbol are rejected at script validation',()=>{
+ const unknown=structuredClone(example);
+ unknown.scenes[0].props.objects.at(-1).symbol='does_not_exist';
+ assert.match(checkScript(unknown).errors.join(' '),/unknown or prohibited reusable symbol/);
+ const rec=structuredClone(example);
+ rec.scene_symbols.oak_tree.push({kind:'instance',id:'loop',symbol:'oak_tree'});
+ assert.match(checkScript(rec).errors.join(' '),/unknown or prohibited reusable symbol/);
+ const duplicate=structuredClone(example);
+ duplicate.scene_symbols.cottage[1].id='wall';
+ assert.match(checkScript(duplicate).errors.join(' '),/duplicate identifier/);
+ const malicious=structuredClone(example);
+ malicious.scene_symbols.cottage[0].color='javascript:evil';
+ assert.match(checkScript(malicious).errors.join(' '),/expected #RRGGBB/);
+});

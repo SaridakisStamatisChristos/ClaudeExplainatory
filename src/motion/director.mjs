@@ -26,6 +26,17 @@ Supported object kinds:
 * actor: id,kind,height,skin,shirt,trousers,hair,shoes (all #RRGGBB); optional
   x,y,phase,stride (0–30),gesture,mouth,expression:"happy"|"curious"|"neutral"|
   "concerned",facing:"left"|"right".
+For richer reusability you MAY define top-level scene_symbols as a map from
+safe symbol names to arrays of relative-coordinate objects (rect, circle,
+path, polygon, glow, text, group, actor). Scene objects can then use
+{"kind":"instance","id":"safeId","symbol":"name","x":120,"y":650,
+"scale":[{"t":0,"value":0.1},{"t":1,"value":1}]}.
+The runtime expands an instance as a nested group; it evaluates its motion
+independently per frame and can reuse the same symbol in multiple scenes.
+Symbols cannot reference other symbols and all internal drawable IDs must
+be unique within a symbol; keep relative offsets within 200 pixels.
+Other useful kinds: polygon with 3+ coordinate pairs and color, glow with
+radius and color, group with nested children and its own animated x/y/scale.
 Other object kinds or free-form properties are forbidden. NO image URLs or
 imaginary local file paths. Use procedural vector composition; detailed artwork
 would need separate provided assets.

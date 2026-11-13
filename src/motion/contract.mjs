@@ -30,13 +30,13 @@ const animated={
  phase:[-100000,100000], stride:[0,30], gesture:[-100000,100000], mouth:[-100000,100000]
 };
 const shapeFields={
- group:['children'],polygon:['points','color'],glow:['radius','color'],
+ group:['children'],instance:['symbol'],polygon:['points','color'],glow:['radius','color'],
  rect:['width','height','color'],circle:['radius','color'],path:['points','stroke','color','reveal'],
  text:['text','size','color','face','bold'],image:['src','width','height'],
  actor:['height','skin','shirt','trousers','hair','shoes','expression','facing','phase','stride','gesture','mouth']
 };
 const common=['id','kind','x','y','scale','rotation','opacity'];
-function validateObject(obj,path,errors,assetRoot,ids,stats,depth=1){
+function validateObject(obj,path,errors,assetRoot,ids,stats,depth=1,symbols=null){
  if(depth>8){errors.push(path+': nested group depth exceeds eight');return;}
  if(++stats.total>256){errors.push(path+': scene graph exceeds 256 drawable objects');return;}
  if(!record(obj)){errors.push(path+': expected object');return;}
@@ -49,7 +49,7 @@ function validateObject(obj,path,errors,assetRoot,ids,stats,depth=1){
    if(obj[k]!==undefined)track(obj[k],path+'.'+k,errors,...animated[k]);
  for(const k of ['width','height','radius','stroke','size'])
    if(obj[k]!==undefined&&!span(obj[k],.001,16384))errors.push(path+'.'+k+': expected positive finite dimension');
- const required={group:['children'],polygon:['points'],glow:['radius'],rect:['width','height'],circle:['radius'],path:['points','stroke'],text:['text','size'],image:['src','width','height'],actor:['height','skin','shirt','trousers','hair','shoes']};
+ const required={instance:['symbol'],group:['children'],polygon:['points'],glow:['radius'],rect:['width','height'],circle:['radius'],path:['points','stroke'],text:['text','size'],image:['src','width','height'],actor:['height','skin','shirt','trousers','hair','shoes']};
  for(const k of required[obj.kind])if(obj[k]===undefined)errors.push(path+'.'+k+': required field');
  if(['rect','circle','path','text','polygon','glow'].includes(obj.kind)){
   if(!color(obj.color))errors.push(path+'.color: expected #RRGGBB');
@@ -60,10 +60,19 @@ function validateObject(obj,path,errors,assetRoot,ids,stats,depth=1){
     errors.push(path+'.points: expected '+min+'–64 finite coordinate pairs');
   if(obj.reveal!==undefined)track(obj.reveal,path+'.reveal',errors,...animated.reveal);
  }
+ if(obj.kind==='instance'){
+  if(!symbols || typeof obj.symbol!=='string' || !Object.hasOwn(symbols,obj.symbol))
+   errors.push(path+'.symbol: unknown or prohibited reusable symbol');
+  else {
+   const walk=list=>list.reduce((n,part)=>n+1+(part.kind==='group'?walk(part.children||[]):0),0);
+   stats.total+=walk(symbols[obj.symbol]);
+   if(stats.total>256)errors.push(path+': expanded scene graph exceeds 256 drawable objects');
+  }
+ }
  if(obj.kind==='group'){
   if(!Array.isArray(obj.children)||obj.children.length<1||obj.children.length>64)
    errors.push(path+'.children: expected 1–64 nested objects');
-  else obj.children.forEach((child,j)=>validateObject(child,path+'.children['+j+']',errors,assetRoot,ids,stats,depth+1));
+  else obj.children.forEach((child,j)=>validateObject(child,path+'.children['+j+']',errors,assetRoot,ids,stats,depth+1,symbols));
  }
  if(obj.kind==='text'){
   if(!text(obj.text,200))errors.push(path+'.text: expected 1–200 characters');
@@ -84,7 +93,22 @@ function validateObject(obj,path,errors,assetRoot,ids,stats,depth=1){
   }catch(e){errors.push(path+'.src: '+e.message);}
  }
 }
-export function validateSceneGraphProps(props,p,errors,assetRoot){
+export function validateSceneSymbols(symbols,errors,assetRoot){
+ if(!record(symbols)){errors.push('scene_symbols: expected object catalog');return;}
+ const entries=Object.entries(symbols);
+ if(entries.length<1||entries.length>12){errors.push('scene_symbols: expected 1–12 named symbols');return;}
+ for(const [name,parts] of entries){
+  const p='scene_symbols.'+name;
+  if(!/^[A-Za-z][A-Za-z0-9_-]{0,23}$/.test(name))
+   errors.push(p+': expected safe symbol name up to 24 characters');
+  if(!Array.isArray(parts)||parts.length<1||parts.length>32){
+   errors.push(p+': expected 1–32 reusable drawable parts');continue;
+  }
+  const ids=new Set(),stats={total:0};
+  parts.forEach((part,j)=>validateObject(part,p+'['+j+']',errors,assetRoot,ids,stats,1,null));
+ }
+}
+export function validateSceneGraphProps(props,p,errors,assetRoot,symbols={}){
  if(!record(props)){errors.push(p+': expected scene_graph props object');return;}
  exact(props,['background','style','camera','objects'],p,errors);
  if(!color(props.background))errors.push(p+'.background: expected #RRGGBB');
@@ -110,6 +134,6 @@ export function validateSceneGraphProps(props,p,errors,assetRoot){
  }
  const ids=new Set(),stats={total:0};
  for(const [i,obj] of props.objects.entries()){
-  validateObject(obj,p+'.objects['+i+']',errors,assetRoot,ids,stats);
+  validateObject(obj,p+'.objects['+i+']',errors,assetRoot,ids,stats,1,symbols);
  }
 }

@@ -1,6 +1,6 @@
 import { readFile } from 'node:fs/promises';
 import { DEFAULT_ASSET_ROOT, validateMediaDescriptor } from './editorial/assets.mjs';
-import { validateSceneGraphProps } from './motion/contract.mjs';
+import { validateSceneGraphProps, validateSceneSymbols } from './motion/contract.mjs';
 
 export const TEMPLATES = Object.freeze(['caption_screen', 'counter', 'app_screen', 'callout', 'object_3d', 'compare']);
 export const SFX = Object.freeze(['whoosh', 'pop', 'tick', 'stamp', 'ding', 'swipe', 'none']);
@@ -57,9 +57,9 @@ function validateProps(scene, i, errors) {
 }
 
 export const EDITORIAL_TEMPLATES = Object.freeze(['editorial_split','editorial_text_card','illustration_motion','video_card','diagram_reveal','kinetic_bars','scene_graph']);
-function validateEditorialProps(scene,i,errors,assetRoot) {
+function validateEditorialProps(scene,i,errors,assetRoot,symbols={}) {
   const p='scenes['+i+'].props',v=scene.props;
-  if(scene.template==='scene_graph')return validateSceneGraphProps(v,p,errors,assetRoot);
+  if(scene.template==='scene_graph')return validateSceneGraphProps(v,p,errors,assetRoot,symbols);
   if(!isRecord(v)){errors.push(p+': expected object');return;}
   if(scene.template==='kinetic_bars'){
     exactKeys(v,['heading','kicker','note','unit','tone','bars'],p,errors);
@@ -160,10 +160,15 @@ export function checkScript(script, config = DEFAULTS, { targetSeconds = DEFAULT
   if (!isRecord(script)) return { ok: false, errors: ['script: expected JSON object'], warnings, estimatedSeconds: 0, targetSeconds };
   const editorial=script.schema_version===2 && script.mode==='editorial_illustrated';
   const templates=editorial ? [...TEMPLATES,...EDITORIAL_TEMPLATES] : TEMPLATES;
-  exactKeys(script,editorial?['schema_version','mode','title','handle','voice','accent','caption','hashtags','scenes','scene_transition']:['title','handle','voice','accent','caption','hashtags','scenes'],'script',errors);
+  exactKeys(script,editorial?['schema_version','mode','title','handle','voice','accent','caption','hashtags','scenes','scene_transition','scene_symbols']:['title','handle','voice','accent','caption','hashtags','scenes'],'script',errors);
   if(Object.hasOwn(script,'schema_version') && script.schema_version!==2)errors.push('schema_version: expected integer 2');
   if(script.schema_version===2 && script.mode!=='editorial_illustrated')errors.push('mode: expected editorial_illustrated');
   if(Object.hasOwn(script,'mode') && script.schema_version!==2)errors.push('mode: requires schema_version 2');
+  if(script.scene_symbols!==undefined){
+    if(!editorial||!Array.isArray(script.scenes)||script.scenes.some(s=>s?.template!=='scene_graph'))
+      errors.push('scene_symbols: only scene_graph productions may declare reusable symbols');
+    validateSceneSymbols(script.scene_symbols,errors,assetRoot);
+  }
   if (!isNonempty(script.title)) errors.push('title: expected nonempty string');
   if (typeof script.handle !== 'string' || !/^@[A-Za-z0-9._]{1,30}$/.test(script.handle)) errors.push('handle: expected @handle');
   if (script.voice !== undefined && (!isNonempty(script.voice) || !/^[a-z]{2}_[a-z0-9_]+$/.test(script.voice))) errors.push('voice: expected Kokoro voice id such as af_heart');
@@ -193,7 +198,7 @@ export function checkScript(script, config = DEFAULTS, { targetSeconds = DEFAULT
       else if (s.highlight.trim() && typeof s.say === 'string' && !s.say.toLocaleLowerCase().includes(s.highlight.toLocaleLowerCase())) errors.push(`${p}.highlight: phrase not found in say`);
       if (typeof s.illustrative !== 'boolean') errors.push(`${p}.illustrative: expected boolean`);
       if (TEMPLATES.includes(s.template)) validateProps(s, i, errors);
-      if (editorial && EDITORIAL_TEMPLATES.includes(s.template)) validateEditorialProps(s,i,errors,assetRoot);
+      if (editorial && EDITORIAL_TEMPLATES.includes(s.template)) validateEditorialProps(s,i,errors,assetRoot,script.scene_symbols??{});
     });
   }
   if(editorial&&Array.isArray(script.scenes)&&script.scenes.some(s=>s?.template==='scene_graph'&&s.sfx!=='none'))
