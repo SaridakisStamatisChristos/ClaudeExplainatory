@@ -48,7 +48,7 @@ Other object kinds or free-form properties are forbidden. NO image URLs or
 imaginary local file paths. Use procedural vector composition; detailed artwork
 would need separate provided assets.
 Reusable motion: ANY object, instance, group, puppet or symbol part can use
-a `behaviors` array of 1–4 deterministic motion modifiers. These are designed
+a behaviors array of 1–4 deterministic motion modifiers. These are designed
 to avoid verbose frame-by-frame positions; use them where the animation's subject
 would naturally move.
 * {"kind":"float","axis":"y","amplitude":8,"cycles":1.5,"phase":0}
