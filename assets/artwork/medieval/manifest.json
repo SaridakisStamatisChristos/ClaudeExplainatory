@@ -1,0 +1,74 @@
+{
+  "pack": "medieval-editorial-v1",
+  "license": "CC0-1.0 (original authored artwork for ClaudeExplainatory)",
+  "description": "Editable vector source art for a stylized 2.5D medieval village, environment parallax and articulated traveler sprites.",
+  "assets": [
+    {
+      "name": "sky",
+      "src": "sky.svg",
+      "width": 540,
+      "height": 960,
+      "opaque": true
+    },
+    {
+      "name": "hills",
+      "src": "hills.svg",
+      "width": 540,
+      "height": 350
+    },
+    {
+      "name": "cloud",
+      "src": "cloud.svg",
+      "width": 240,
+      "height": 105
+    },
+    {
+      "name": "cottage",
+      "src": "cottage.svg",
+      "width": 218,
+      "height": 224
+    },
+    {
+      "name": "tower",
+      "src": "tower.svg",
+      "width": 225,
+      "height": 338
+    },
+    {
+      "name": "oak",
+      "src": "oak.svg",
+      "width": 202,
+      "height": 275
+    },
+    {
+      "name": "market",
+      "src": "market.svg",
+      "width": 221,
+      "height": 202
+    },
+    {
+      "name": "traveler-head",
+      "src": "traveler-head.svg",
+      "width": 84,
+      "height": 98
+    },
+    {
+      "name": "traveler-torso",
+      "src": "traveler-torso.svg",
+      "width": 102,
+      "height": 131
+    },
+    {
+      "name": "traveler-arm",
+      "src": "traveler-arm.svg",
+      "width": 44,
+      "height": 117
+    },
+    {
+      "name": "traveler-leg",
+      "src": "traveler-leg.svg",
+      "width": 48,
+      "height": 122
+    }
+  ]
+}

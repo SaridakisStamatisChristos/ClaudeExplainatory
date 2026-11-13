@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="221" height="202" viewBox="0 0 221 202"><defs><linearGradient id="awning" x2="0" y2="1"><stop stop-color="#f5d69d"/><stop offset="1" stop-color="#cd865e"/></linearGradient><linearGradient id="wood" x2="0" y2="1"><stop stop-color="#b79064"/><stop offset="1" stop-color="#6e4f3c"/></linearGradient></defs>
+<path d="M30 73V191M192 73V191" stroke="#72553d" stroke-width="12" stroke-linecap="round"/>
+<path d="M13 70L47 34H179L211 70L207 92H16Z" fill="url(#awning)" stroke="#744d3f" stroke-width="5" stroke-linejoin="round"/>
+<g fill="#a9534c" opacity=".82"><path d="M45 37H74L63 89H32Z"/><path d="M105 37H137L146 89H90Z"/><path d="M175 37L194 68L193 90H164Z"/></g>
+<path d="M14 90Q28 109 42 90Q56 109 70 90Q84 109 98 90Q112 109 126 90Q140 109 154 90Q168 109 182 90Q197 110 210 89" fill="none" stroke="#f1d19b" stroke-width="6"/>
+<path d="M16 154H205L196 183H25Z" fill="url(#wood)" stroke="#654c3d" stroke-width="5"/>
+<path d="M28 185H193" stroke="#dfb181" stroke-width="3"/><g fill="#bd594d"><circle cx="68" cy="147" r="11"/><circle cx="90" cy="145" r="12"/><circle cx="116" cy="148" r="11"/></g><g fill="#d8b36a"><circle cx="139" cy="147" r="11"/><circle cx="159" cy="145" r="9"/></g>
+<path d="M44 137Q113 130 182 137" stroke="#7c5e47" stroke-width="5" fill="none"/>
+</svg>
