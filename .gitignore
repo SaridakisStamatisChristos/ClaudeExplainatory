@@ -1,0 +1,12 @@
+node_modules/
+.venv/
+.cache/
+.reel-work/
+out/
+__pycache__/
+*.pyc
+assets/sfx/*.wav
+assets/references/*
+!assets/references/.gitkeep
+assets/music/*
+!assets/music/.gitkeep
