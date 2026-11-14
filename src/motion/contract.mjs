@@ -87,7 +87,7 @@ function validateBehaviors(value,path,errors){
   }
  }
 }
-const common=['id','kind','x','y','scale','rotation','opacity','behaviors'];
+const common=['id','kind','x','y','scale','rotation','opacity','behaviors','depth'];
 function validateObject(obj,path,errors,assetRoot,ids,stats,depth=1,symbols=null){
  if(depth>8){errors.push(path+': nested group depth exceeds eight');return;}
  if(++stats.total>256){errors.push(path+': scene graph exceeds 256 drawable objects');return;}
@@ -97,6 +97,10 @@ function validateObject(obj,path,errors,assetRoot,ids,stats,depth=1,symbols=null
  if(!id(obj.id))errors.push(path+'.id: expected safe unique identifier');
  else if(ids.has(obj.id))errors.push(path+'.id: duplicate identifier');
  else ids.add(obj.id);
+ if(obj.depth!==undefined){
+  if(depth!==1||symbols===null)errors.push(path+'.depth: parallax belongs only on top-level scene objects');
+  if(!span(obj.depth,0,1.8))errors.push(path+'.depth: expected finite 0–1.8 (0=screen-locked, 1=world, >1=foreground)');
+ }
  if(obj.behaviors!==undefined)validateBehaviors(obj.behaviors,path+'.behaviors',errors);
  for(const k of ['x','y','scale','rotation','opacity'])
    if(obj[k]!==undefined)track(obj[k],path+'.'+k,errors,...animated[k]);

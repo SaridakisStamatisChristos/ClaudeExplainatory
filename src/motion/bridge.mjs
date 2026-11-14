@@ -9,6 +9,40 @@ import {compileBehaviorTracks} from './behaviors.mjs';
 export const MOTION_FPS=30;
 export const sceneGraphOnly=script=>Array.isArray(script.scenes)&&script.scenes.length>0&&script.scenes.every(s=>s.template==='scene_graph');
 const spatial=new Set(['x','y','height','width','radius','stroke','size']);
+function sampleFrame(track,frame,fallback){
+ if(track===undefined)return fallback;
+ if(typeof track==='number')return track;
+ if(frame<=track[0].frame)return track[0].value;
+ for(let i=1;i<track.length;i++){
+  const l=track[i-1],r=track[i];
+  if(frame>=r.frame)continue;
+  const u=(frame-l.frame)/(r.frame-l.frame);
+  const w=l.ease==='hold'?0:l.ease==='smooth'?u*u*(3-2*u):u;
+  return l.value+(r.value-l.value)*w;
+ }
+ return track.at(-1).value;
+}
+// Parallax is an authoring composition transform, not a second renderer.
+// AetherMotion translates the world by -camera.x. Offset world pixels by
+// +(1-depth)*camera.x so depth 0 stays screen-locked, depth 1 behaves normally,
+// and depth>1 foreground elements respond more strongly to camera travel.
+function applySceneDepth(compiled,depth,camera,frames){
+ if(depth===1)return compiled;
+ const count=Math.min(256,frames), properties=['x','y'];
+ for(const key of properties){
+  const base=compiled[key],pan=camera?.[key],points=[];
+  for(let i=0;i<count;i++){
+   const frame=Math.round(i*(frames-1)/(count-1));
+   if(points.length&&points.at(-1).frame>=frame)continue;
+   const value=sampleFrame(base,frame,0)+(1-depth)*sampleFrame(pan,frame,0);
+   if(!Number.isFinite(value)||Math.abs(value)>100000)
+    throw Error('Object '+compiled.id+': depth compensation exceeds native coordinates');
+   points.push({frame,value:Math.round(value*1e6)/1e6});
+  }
+  compiled[key]=points;
+ }
+ return compiled;
+}
 function scalar(v,frames,mult=1,path='track'){
  if(typeof v==='number')return v*mult;
  if(!Array.isArray(v)||!v.length)throw Error(path+': empty keyframe track');
@@ -56,6 +90,7 @@ function compileObject(obj,frames,mult,assets,imageSources,sceneIndex,path,symbo
   }
   delete dest.behaviors;
  }
+ delete dest.depth;
  if(obj.kind==='image'){
   const id='image_'+sceneIndex+'_'+path;
   dest.asset=id;delete dest.src;
@@ -75,7 +110,11 @@ export function compileMotionFilm(script,timing,{draft=true}={}){
   if(!Number.isInteger(frames)||frames<2)throw Error('scene '+i+': invalid frame count');
   const p=scene.props;
   const camera=p.camera?Object.fromEntries(Object.entries(p.camera).map(([k,v])=>[k,scalar(v,frames,k==='zoom'?1:mult,'camera.'+k)])):undefined;
-  const objects=p.objects.map((obj,j)=>compileObject(obj,frames,mult,assets,imageSources,i,String(j),script.scene_symbols??{}));
+  const objects=p.objects.map((obj,j)=>{
+   const compiled=compileObject(obj,frames,mult,assets,imageSources,i,String(j),script.scene_symbols??{});
+   if(obj.depth!==undefined)applySceneDepth(compiled,obj.depth,camera,frames);
+   return compiled;
+  });
   const transition=script.scene_transition;
   let fade;
   if(transition){
