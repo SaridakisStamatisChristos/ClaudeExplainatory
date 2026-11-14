@@ -6,6 +6,7 @@ import {join,extname} from 'node:path';
 import {resolveLocalAsset} from '../editorial/assets.mjs';
 import {buildPuppetGroup} from './puppet.mjs';
 import {compileBehaviorTracks} from './behaviors.mjs';
+import {animateBipedInstance} from './locomotion.mjs';
 export const MOTION_FPS=30;
 export const sceneGraphOnly=script=>Array.isArray(script.scenes)&&script.scenes.length>0&&script.scenes.every(s=>s.template==='scene_graph');
 const spatial=new Set(['x','y','height','width','radius','stroke','size']);
@@ -64,9 +65,10 @@ function compileObject(obj,frames,mult,assets,imageSources,sceneIndex,path,symbo
  if(obj.kind==='instance'){
   const definition=symbols[obj.symbol];
   if(!Array.isArray(definition))throw Error('Unknown symbol '+obj.symbol);
-  const group={...obj,kind:'group',children:[]};delete group.symbol;
+  const group={...obj,kind:'group',children:[]};delete group.symbol;delete group.locomotion;
   const compiled=compileObject(group,frames,mult,assets,imageSources,sceneIndex,path,symbols,mangle);
-  compiled.children=definition.map((part,j)=>compileObject(part,frames,mult,assets,imageSources,sceneIndex,path+'_sym_'+j,symbols,true));
+  const parts=obj.locomotion?animateBipedInstance(obj,definition,frames):definition;
+  compiled.children=parts.map((part,j)=>compileObject(part,frames,mult,assets,imageSources,sceneIndex,path+'_sym_'+j,symbols,true));
   return compiled;
  }
  const dest={...obj};

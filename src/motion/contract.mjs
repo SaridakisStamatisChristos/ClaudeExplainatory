@@ -30,7 +30,7 @@ const animated={
  phase:[-100000,100000], stride:[0,30], gesture:[-100000,100000], mouth:[-100000,100000]
 };
 const shapeFields={
- group:['children'],instance:['symbol'],puppet:['height','skin','shirt','trousers','hair','shoes','expression','outfit','facing','walk','wave'],polygon:['points','color'],glow:['radius','color'],
+ group:['children'],instance:['symbol','locomotion'],puppet:['height','skin','shirt','trousers','hair','shoes','expression','outfit','facing','walk','wave'],polygon:['points','color'],glow:['radius','color'],
  rect:['width','height','color'],circle:['radius','color'],path:['points','stroke','color','reveal'],
  text:['text','size','color','face','bold'],image:['src','width','height'],
  actor:['height','skin','shirt','trousers','hair','shoes','expression','facing','phase','stride','gesture','mouth']
@@ -118,6 +118,24 @@ function validateObject(obj,path,errors,assetRoot,ids,stats,depth=1,symbols=null
   if(obj.reveal!==undefined)track(obj.reveal,path+'.reveal',errors,...animated.reveal);
  }
  if(obj.kind==='instance'){
+  if(obj.locomotion!==undefined){
+   const m=obj.locomotion,p=path+'.locomotion';
+   if(!record(m))errors.push(p+': expected object');
+   else{
+    exact(m,['stepLength','legSwing','armSwing','bounce','lift','start','end'],p,errors);
+    for(const [field,lo,hi] of [['stepLength',30,180],['legSwing',4,45],['armSwing',0,35],['bounce',0,10],['lift',0,16]])
+     if(!span(m[field],lo,hi))errors.push(p+'.'+field+': expected finite '+lo+'–'+hi);
+    const start=m.start??0,end=m.end??1;
+    if(!span(start,0,1)||!span(end,0,1)||end-start<.05)errors.push(p+': expected 0 <= start < end <= 1');
+    if(symbols&&typeof obj.symbol==='string'&&Object.hasOwn(symbols,obj.symbol)){
+     const byName=new Map(symbols[obj.symbol].map(part=>[part.id,part]));
+     for(const name of ['rearLeg','frontLeg','rearArm','frontArm','headPivot','torso']){
+      const kind=name==='torso'?'image':'group';
+      if(byName.get(name)?.kind!==kind)errors.push(p+': sprite rig requires '+name+' as '+kind);
+     }
+    }
+   }
+  }
   if(!symbols || typeof obj.symbol!=='string' || !Object.hasOwn(symbols,obj.symbol))
    errors.push(path+'.symbol: unknown or prohibited reusable symbol');
   else {
