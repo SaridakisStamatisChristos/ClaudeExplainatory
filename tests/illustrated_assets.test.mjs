@@ -42,7 +42,7 @@ test('illustrated JSON is reusable and valid with independent moving image layer
 });
 test('unsafe asset paths and missing source are rejected by the existing guarded validator',()=>{
  const unsafe=structuredClone(script);
- unsafe.scene_symbols.traveler[0].children[0].src='assets/../secret.png';
+ unsafe.scene_symbols.traveler.find(part=>part.id==='rearLeg').children[0].src='assets/../secret.png';
  assert.match(checkScript(unsafe).errors.join(' '),/expected relative assets|traversal/);
  const unknown=structuredClone(script);
  unknown.scene_symbols.cottage[0].src='assets/generated/medieval/does-not-exist.png';
