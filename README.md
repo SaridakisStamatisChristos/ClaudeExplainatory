@@ -233,3 +233,26 @@ For example, an illustrated flying object can follow a curved path and bob verti
 The updated `examples/illustrated_village.json` uses moving birds, trees, clouds and sprite characters. The original demo and all existing scenes remain compatible. See [time-based movement guide](docs/SCENE_GRAPH_RUNTIME.md#reusable-motion-behaviors) for complete safety limits and motion semantics.
 
 The optional Gemini director now knows how to choose and compose these motions when generating fresh scripts. This does **not** mean the model invents professional artwork: it still needs real assets or supported vector shapes, and live Gemini-generated quality is a separate acceptance milestone.
+
+### Cinematic staging and grounded sprite gait (development branch)
+
+The illustrated village example now uses a **depth property** on root scene objects, compensating AetherMotion camera movement so distant and foreground artwork move at different rates. `depth: 0` anchors sky and editorial text; `0.28` is distant scenery, `0.72` midground buildings, `1` regular world objects, and `1.32` nearby character layers. Depth is bounded to 0–1.8 and accepted **only on top-level scene drawables**, not on symbol definitions or child limbs.
+
+An `instance` using the specifically authored layered `traveler` biped symbol may declare `locomotion` to generate limb motion from actual x-distance. For example:
+
+```json
+{
+  "id":"traveler",
+  "kind":"instance",
+  "symbol":"traveler",
+  "x":[{"t":0,"value":60,"ease":"smooth"},{"t":1,"value":275}],
+  "y":790,
+  "scale":0.64,
+  "depth":1.25,
+  "locomotion":{
+    "stepLength":70,"legSwing":22,"armSwing":17,"bounce":3.5,"lift":6
+  }
+}
+```
+
+The authored symbol must have the named image/group components `rearLeg`, `frontLeg`, `rearArm`, `frontArm`, `headPivot` and `torso`. These are **2D rigid sprite pivots**, not a physically solved IK skeleton. The generated swing/lift slows and stops as horizontal travel slows, and a new transparent contact-shadow source is attached beneath the feet. For deeper details and accepted limitations, see [cinematic scene staging](docs/CINEMATIC_STAGING.md). The asset pack now has 12 editable SVG masters and rasterized PNGs.

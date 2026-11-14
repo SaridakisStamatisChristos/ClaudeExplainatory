@@ -69,6 +69,14 @@ phase (0–1). The motion envelope fades in and out, returning the object
 to its authored pose at both ends of the scene. Paths hold their start/end
 positions instead. An author may mix a path with float or sway on the SAME
 object, but do not add more than one path to a single object.
+For shots with camera pan/zoom, top-level scene objects can declare numeric
+depth: 0 makes an item screen-locked (sky plate and readable editorial text),
+0.25 for distant hills, 0.7 for buildings, 1 for normal world motion,
+or 1.2–1.4 for close foreground details. Only root scene objects may use
+depth; do not put it on nested symbol parts or groups. Depth does not
+generate a background automatically; it merely changes camera translation.
+Do not animate close foreground characters with independent aimless floating
+if their walking/foot placement should look natural.
 For cloud movement, choose float; for birds, choose a path plus gentle float;
 for a walking character, use puppet.walk and x keyframes or a local path.
 Keep floating amplitudes under about 12 px and tree sway under 4 degrees
