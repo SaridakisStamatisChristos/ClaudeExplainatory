@@ -79,8 +79,8 @@ test('top-level depth and locomotion reject hostile or incompatible source decla
  assert.match(checkScript(invalid).errors.join(' '),/sprite rig requires/);
 });
 test('compiled film has a persistent contact shadow and two independently driven walkers',()=>{
- const film=compileMotionFilm(art,timing).film;
- assert.ok(Object.values(film.assets).some(a=>a.includes('contact-shadow.png')));
+ const {film,imageSources}=compileMotionFilm(art,timing);
+ assert.ok([...imageSources.values()].some(a=>a.includes('contact-shadow.png')));
  for(const shot of film.scenes){
   for(const root of shot.objects.filter(x=>x.id.startsWith('traveler'))){
    assert.ok(root.children.some(child=>child.kind==='image'),'sprite should contain PNG-grounded contact shadow');
