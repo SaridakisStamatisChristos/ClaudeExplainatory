@@ -40,6 +40,15 @@
     ],
     "traveler": [
       {
+        "id": "contactShadow",
+        "kind": "image",
+        "src": "assets/generated/medieval/contact-shadow.png",
+        "x": -100,
+        "y": -11,
+        "width": 200,
+        "height": 48
+      },
+      {
         "id": "rearLeg",
         "kind": "group",
         "x": -17,
@@ -315,7 +324,8 @@
             "x": 0,
             "y": 0,
             "width": 540,
-            "height": 960
+            "height": 960,
+            "depth": 0
           },
           {
             "id": "hills",
@@ -334,7 +344,8 @@
             ],
             "y": 555,
             "width": 555,
-            "height": 355
+            "height": 355,
+            "depth": 0.28
           },
           {
             "id": "cloudA",
@@ -363,7 +374,8 @@
                 "cycles": 1.5,
                 "phase": 0.1
               }
-            ]
+            ],
+            "depth": 0.13
           },
           {
             "id": "cloudB",
@@ -383,7 +395,8 @@
             "y": 182,
             "width": 210,
             "height": 92,
-            "opacity": 0.35
+            "opacity": 0.35,
+            "depth": 0.13
           },
           {
             "kind": "group",
@@ -480,7 +493,8 @@
             "symbol": "cottage",
             "x": 30,
             "y": 518,
-            "scale": 0.88
+            "scale": 0.88,
+            "depth": 0.72
           },
           {
             "kind": "instance",
@@ -505,7 +519,8 @@
                 "value": 1,
                 "ease": "smooth"
               }
-            ]
+            ],
+            "depth": 0.72
           },
           {
             "kind": "instance",
@@ -521,7 +536,8 @@
                 "cycles": 1.2,
                 "phase": 0.3
               }
-            ]
+            ],
+            "depth": 1.24
           },
           {
             "kind": "instance",
@@ -548,7 +564,15 @@
                 "cycles": 3.3,
                 "phase": 0.25
               }
-            ]
+            ],
+            "depth": 1.32,
+            "locomotion": {
+              "stepLength": 70,
+              "legSwing": 22,
+              "armSwing": 17,
+              "bounce": 3.5,
+              "lift": 6
+            }
           },
           {
             "id": "masthead",
@@ -559,7 +583,8 @@
             "size": 30,
             "color": "#F6E5C8",
             "face": "serif",
-            "bold": true
+            "bold": true,
+            "depth": 0
           }
         ]
       }
@@ -618,7 +643,8 @@
             "x": 0,
             "y": 0,
             "width": 540,
-            "height": 960
+            "height": 960,
+            "depth": 0
           },
           {
             "id": "hills",
@@ -627,7 +653,8 @@
             "x": -5,
             "y": 562,
             "width": 555,
-            "height": 355
+            "height": 355,
+            "depth": 0.28
           },
           {
             "id": "cloudC",
@@ -656,7 +683,8 @@
                 "cycles": 1.3,
                 "phase": 0.2
               }
-            ]
+            ],
+            "depth": 0.13
           },
           {
             "id": "tower",
@@ -677,7 +705,8 @@
                 "value": 1,
                 "ease": "smooth"
               }
-            ]
+            ],
+            "depth": 0.72
           },
           {
             "kind": "instance",
@@ -685,7 +714,8 @@
             "symbol": "cottage",
             "x": 28,
             "y": 548,
-            "scale": 0.67
+            "scale": 0.67,
+            "depth": 0.72
           },
           {
             "kind": "instance",
@@ -701,7 +731,8 @@
                 "cycles": 1.4,
                 "phase": 0.4
               }
-            ]
+            ],
+            "depth": 1.24
           },
           {
             "id": "marketStall",
@@ -735,7 +766,8 @@
                 "cycles": 1.1,
                 "phase": 0.2
               }
-            ]
+            ],
+            "depth": 0.72
           },
           {
             "kind": "instance",
@@ -753,7 +785,15 @@
               }
             ],
             "y": 801,
-            "scale": 0.68
+            "scale": 0.68,
+            "depth": 1.32,
+            "locomotion": {
+              "stepLength": 70,
+              "legSwing": 22,
+              "armSwing": 17,
+              "bounce": 3.5,
+              "lift": 6
+            }
           },
           {
             "kind": "instance",
@@ -781,7 +821,15 @@
                 "cycles": 3.1,
                 "phase": 0.3
               }
-            ]
+            ],
+            "depth": 1.32,
+            "locomotion": {
+              "stepLength": 70,
+              "legSwing": 22,
+              "armSwing": 17,
+              "bounce": 3.5,
+              "lift": 6
+            }
           },
           {
             "id": "townLabel",
@@ -792,7 +840,8 @@
             "size": 30,
             "color": "#F6E5C8",
             "face": "serif",
-            "bold": true
+            "bold": true,
+            "depth": 0
           }
         ]
       }

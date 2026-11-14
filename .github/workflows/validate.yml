@@ -29,7 +29,7 @@ jobs:
       - run: sudo apt-get update -qq && sudo apt-get install -y -qq librsvg2-bin
       - run: npm run assets:build
       - run: npm test
-      - run: node --check tools/build_art_pack.mjs && node --check src/motion/puppet.mjs && node --check src/motion/behaviors.mjs && node --check src/motion/bridge.mjs && node --check src/motion/contract.mjs && node --check src/motion/director.mjs && node --check bin/direct-graph.mjs && node --check bin/reel.mjs
+      - run: node --check tools/build_art_pack.mjs && node --check src/motion/puppet.mjs && node --check src/motion/locomotion.mjs && node --check src/motion/behaviors.mjs && node --check src/motion/bridge.mjs && node --check src/motion/contract.mjs && node --check src/motion/director.mjs && node --check bin/direct-graph.mjs && node --check bin/reel.mjs
       - run: npm run explain -- check examples/scene_graph_village.json --target 15
       - name: Real independent-object animation and pixel reproducibility
         env:
@@ -74,7 +74,7 @@ jobs:
       - run: sudo apt-get update -qq && sudo apt-get install -y -qq librsvg2-bin
       - run: npm run assets:build
       - run: npm test
-      - run: node --check tools/build_art_pack.mjs && node --check src/motion/puppet.mjs && node --check src/motion/behaviors.mjs && node --check src/motion/bridge.mjs && node --check src/motion/contract.mjs
+      - run: node --check tools/build_art_pack.mjs && node --check src/motion/puppet.mjs && node --check src/motion/locomotion.mjs && node --check src/motion/behaviors.mjs && node --check src/motion/bridge.mjs && node --check src/motion/contract.mjs
       - run: node --check bin/reel.mjs && node --check src/spec.mjs && node --check src/composition.mjs && node --check src/editorial/assets.mjs && node --check src/editorial/layout.mjs && node --check src/editorial/diagram.mjs && node --check src/editorial/bars.mjs
       - run: python3 -m py_compile tools/*.py
       - run: sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg

@@ -69,6 +69,12 @@
       "src": "traveler-leg.svg",
       "width": 48,
       "height": 122
+    },
+    {
+      "name": "contact-shadow",
+      "src": "contact-shadow.svg",
+      "width": 200,
+      "height": 72
     }
   ]
 }

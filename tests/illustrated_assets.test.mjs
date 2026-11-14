@@ -10,9 +10,9 @@ const manifest=JSON.parse(await read('assets/artwork/medieval/manifest.json'));
 const evidence=JSON.parse(await read('assets/generated/medieval/manifest.json'));
 const script=JSON.parse(await read('examples/illustrated_village.json'));
 const timings=[{duration:2.3,audioDuration:2},{duration:2.6,audioDuration:2}];
-test('all 11 editable vector masters rasterize to matching dimensioned PNG files',async()=>{
- assert.equal(manifest.assets.length,11);
- assert.equal(evidence.assets.length,11);
+test('all 12 editable vector masters rasterize to matching dimensioned PNG files',async()=>{
+ assert.equal(manifest.assets.length,12);
+ assert.equal(evidence.assets.length,12);
  for(const item of manifest.assets){
   const svg=String(await read('assets/artwork/medieval/'+item.src));
   assert.match(svg,/^<svg/);

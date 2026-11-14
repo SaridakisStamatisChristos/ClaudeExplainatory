@@ -10,7 +10,7 @@ const srcRoot=join(ROOT,'assets','artwork','medieval');
 const output=join(ROOT,'assets','generated','medieval');
 const manifest=JSON.parse(await readFile(join(srcRoot,'manifest.json'),'utf8'));
 const names=new Set();
-if(manifest.pack!=='medieval-editorial-v1'||manifest.assets?.length!==11)
+if(manifest.pack!=='medieval-editorial-v1'||manifest.assets?.length!==12)
  throw Error('Unexpected illustration pack manifest');
 const convert=process.env.RSVG_CONVERT||'rsvg-convert';
 const evidence=[];
